@@ -30,6 +30,12 @@
               "src/assets"
             ],
             "styles": [
+              "primeng/resources/themes/lara-light-indigo/theme.css",
+              "primeng/resources/primeng.min.css",
+              "primeflex/primeflex.css",
+              "src/assets/styles/layout/layout.scss",
+              "primeicons/primeicons.css",
+              "quill/dist/quill.snow.css",
               "src/styles.scss"
             ],
             "scripts": []
@@ -93,6 +99,12 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/primeng/resources/themes/lara-light-indigo/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/primeflex/primeflex.css",
+              "assets/styles/layout/layout.scss",
+              "primeicons/primeicons.css",
+              "quill/dist/quill.snow.css",
               "src/styles.scss"
             ],
             "scripts": []
