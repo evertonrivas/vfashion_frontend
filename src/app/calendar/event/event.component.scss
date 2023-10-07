@@ -1,0 +1,27 @@
+.event-object{
+    height: 24px;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 5px;
+    z-index: 1;
+    position: relative;
+    font-size: 12px!important;
+    padding-top: 2px!important;
+    color: #ffffff!important;
+    font-weight: bold!important;
+}
+
+.milestone-object{
+    margin-left: 5px;
+    width: 15px;
+    height: 15px;
+    transform: rotate(45deg);
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 2px;
+    z-index: 1;
+    position: relative;
+    font-size: 12px!important;
+    padding-top: 2px!important;
+    color: #ffffff!important;
+    font-weight: bold!important;
+    opacity: 40%;
+}

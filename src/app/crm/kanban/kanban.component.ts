@@ -1,0 +1,677 @@
+import { Component,AfterContentInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { Common } from 'src/app/classes/common';
+import { CrmService } from 'src/app/services/crm.service';
+import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
+import { Funnel, FunnelOptions, FunnelStage } from 'src/app/models/crm.model';
+import { DataOrder, DataSearch } from 'src/app/models/system.enum';
+import { Entity, EntityContact, EntityWeb } from 'src/app/models/entity.model';
+import { Dropdown, DropdownChangeEvent } from 'primeng/dropdown';
+import { Checkbox } from 'src/app/models/checkbox.model';
+import { HttpHeaders } from '@angular/common/http';
+import { CustomerEmailComponent } from './customer-email/customer-email.component';
+import { RequestOptions } from 'src/app/services/my-http';
+import { EntitiesService } from 'src/app/services/entities.service';
+import * as sys_config from 'src/assets/config.json';
+import { RequestResponse, ResponseError } from 'src/app/models/paginate.model';
+import { User } from 'src/app/models/user.model';
+import { AutoCompleteCompleteEvent } from 'primeng/autocomplete';
+import { UserService } from 'src/app/services/user.service';
+
+@Component({
+  selector: 'app-kanban',
+  templateUrl: './kanban.component.html',
+  styleUrls: ['./kanban.component.scss'],
+  providers:[MessageService,ConfirmationService]
+})
+export class KanbanComponent extends Common implements AfterContentInit{
+  @ViewChild('funSel') funSel:Dropdown|null = null;
+  @ViewChild('cstEmail') cstEmail:CustomerEmailComponent|null = null;
+  toEdit:boolean = false;
+  selectedFunnel:Funnel|null = null;
+  stageToMove:FunnelStage = {
+    id: 0,
+    name: '',
+    icon: '',
+    color: '',
+    order: 0,
+    date_created: '',
+    date_updated: null
+  }
+  stagesOfFunnel:FunnelStage[] = [];
+  stagesToMove:FunnelStage[] = [];
+  customersOfStage:RequestResponse[] = [];
+  representativeList:Entity[] = [];
+  rows:number[]  = [];
+  first:number[] = [];
+  globalSearchInput:string|null = null;
+  url_upload:string = '';
+  upload_max:number = ((sys_config as any).default).company.max_upload_files as number;
+  uploadHeaders:HttpHeaders = new HttpHeaders()
+    .set("Authorization",localStorage.getItem('token_type')+" "+localStorage.getItem('token_access'));
+
+  stageChecked:Checkbox[] = [];
+  massiveEmail:boolean = false;
+
+  //menu para ordenacao e atualizacao de cada estagio
+  stageMenu:MenuItem[][] = [];
+  stageOrderBy:DataOrder[] = [];
+  
+  //menu de busca de cada estagio
+  stageSearch:any[][] = [];
+  stageSearchCondition:DataSearch[] = [];
+  stageSearchTerm:string[] = [];
+
+  //trabalho com historico
+  historyVisible:boolean = false;
+
+  //upload de arquivo
+  uploadVisible:boolean = false;
+
+  //envio de email
+  emailVisible:boolean = false;
+  
+  //painel de informacoes do cliente
+  infoVisible:boolean    = false;
+  infoCustomer:Entity = {
+    id: 0,
+    origin_id: 0,
+    name: '',
+    fantasy_name: '',
+    taxvat: '',
+    city: {
+      id: 0,
+      state_region: {
+        id: 0,
+        country: {
+          id: 0,
+          name: ''
+        },
+        name: '',
+        acronym: ''
+      },
+      name: '',
+      brazil_ibge_code: null
+    },
+    contacts: [],
+    web: [],
+    files:[],
+    postal_code: '',
+    neighborhood: '',
+    address: '',
+    type: 'C',
+    date_created: undefined,
+    date_updated: undefined,
+    agent: null
+  };
+
+  //dagable customer
+  draggedCustomer:Entity|null = null;
+  originDragableStage:number = 0;
+
+  all_users:User[] = [];
+  filtered_users:User[] = [];
+
+  constructor(
+    private msgSvc:MessageService,
+    private svc:CrmService,
+    private entSvc:EntitiesService,
+    private usrSvc:UserService,
+    private confirmService:ConfirmationService,
+    route:Router){
+    super(route);
+  }
+  
+  ngAfterContentInit(): void {
+    this.getFunnels();
+    this.usrSvc.userList({query:'can:list-all 1',page:1,pageSize:1}).subscribe({
+      next: (data) =>{
+        if ( (data as ResponseError).error_details != undefined ){
+          //ocorreu um erro
+        }else if( (data as RequestResponse).data != undefined ){
+          //estah listando com paginacao
+        }else{
+          this.all_users = (data as User[]);
+        }
+      }
+    });
+  }
+
+  getFunnels(p_query:string|null = null):void{
+    //clear itens
+    this.stagesOfFunnel = [];
+    this.stageMenu      = [];
+    this.stageSearch    = [];
+
+    this.options.query ="can:list-all 1||"
+    this.serviceSub[0] = this.svc.getFunnels(this.options).subscribe({
+      next: (data) =>{
+        this.response.data = data;
+        this.response.data.forEach((funnel:Funnel) => {
+          //verifica seh ha funil selecionado
+          if(this.selectedFunnel==null){
+            //nao havendo funil selecionado verifica se eh padrao
+            if(funnel.is_default){
+              //se o funil fo padrao define ele como selecionado
+              this.selectedFunnel = funnel;
+              //define os estagios do funil
+              this.stagesOfFunnel = funnel.stages;
+            }
+          }else{
+            //se dentro dos funis houver algum que eh igual ao selecionado
+            if (funnel.id==(this.selectedFunnel as Funnel).id){
+              this.stagesOfFunnel = funnel.stages;
+            }
+          }
+
+          //monta o menu para cada estagio
+          //monta o menu de busca para cada estagio
+          //realiza a carga dos clientes de cada estagio
+          //constroi o checkbox para cada stage
+          this.stagesToMove = this.stagesOfFunnel;
+          this.stagesOfFunnel.forEach((stg) =>{
+            this.stageChecked[stg.id] = {};
+            this.mountStageMenu(stg.id);
+            this.mountSearchMenu(stg.id);
+            this.loadCustomerState({
+              first: 0,
+              rows: 25,
+              page:0
+            },stg.id,false,p_query);
+          });
+        });
+      },complete: () =>{
+        //forca o dropdown a escolher o item selecionado, o ngModel eh bugado nesse componente
+       (this.funSel as Dropdown).selectItem(new Event(''),this.selectedFunnel);
+      }
+    });
+  }
+
+  private mountStageMenu(idStage:number){
+    if (this.stageMenu[idStage]==undefined){
+      this.stageMenu[idStage] = [{
+        icon:'crm-icon-refresh',
+        label: 'Recarregar',
+        command: () => {
+          this.doLocalReload(idStage);
+        }
+      },{
+        icon: 'pi pi-sort-alpha-down',
+        label:'Ordernar de A-Z',
+        escape:false,
+        command:() =>{
+          this.doLocalReload(idStage,DataOrder.ALFA_ASC)
+        }
+      },{
+        icon: 'pi pi-sort-alpha-down-alt',
+        label: 'Ordernar de Z-A',
+        escape: false,
+        command:() =>{
+          this.doLocalReload(idStage,DataOrder.ALFA_DESC)
+        }
+      },{
+        icon: 'pi pi-sort-amount-down-alt',
+        label: 'Novos primeiro',
+        escape:false,
+        command:() =>{
+          this.doLocalReload(idStage,DataOrder.QTD_DESC)
+        }
+      },{
+        icon: 'pi pi-sort-amount-down',
+        label: 'Antigos primeiro',
+        escape:false,
+        command:() =>{
+          this.doLocalReload(idStage,DataOrder.QTD_ASC)
+        }
+      }];
+    }
+  }
+
+  private mountSearchMenu(idStage:number){
+    if(this.stageSearch[idStage]==undefined){
+      this.stageSearch[idStage] = [{
+        label: 'Contenha...',
+        type: DataSearch.CONTAINS
+      },{
+        label: 'Exatamente...',
+        type: DataSearch.EXACT
+      },{
+        label: 'Iniciando com...',
+        type: DataSearch.START_WITH
+      },{
+        label: 'Terminando com...',
+        type: DataSearch.ENDS_WITH
+      }];
+    }
+  }
+
+  loadCustomerState(evt:any,idStage:number,has_next:boolean=false,query:string|null = null){
+    this.rows[idStage]  = evt.rows;
+    this.first[idStage] = evt.first;
+    let opts:RequestOptions = {
+      page: (evt.page+1),
+      query: query,
+      pageSize: 0
+    }
+    this.customersOfStage[idStage] = {
+      pagination:{
+        has_next: false,
+        page: 1,
+        pages: 0,
+        per_page: 25,
+        registers:0
+      },
+      data: []
+    };
+    this.svc.getCustomersOfStage(idStage,opts).subscribe({
+      next: (data) =>{
+        this.customersOfStage[idStage] = data;
+      }
+    });
+  }
+
+  doGlobalSearch(evt:KeyboardEvent):void{
+    if(evt.key=='Enter'){
+      this.stagesOfFunnel.forEach((stg:FunnelStage) =>{
+        this.loadCustomerState({
+          first:0,
+          rows:25,
+          page:0
+        },stg.id,false,"is:search %"+this.globalSearchInput+"%");
+      });
+    }
+  }
+
+  doLocalSearch(stagId:number):void{
+    let query = "";
+    if(this.stageSearchCondition[stagId]==DataSearch.CONTAINS && this.stageSearchTerm[stagId].trim().length>0){
+      query = "is:search %"+this.stageSearchTerm[stagId]+"%";
+    }else if(this.stageSearchCondition[stagId]==DataSearch.ENDS_WITH && this.stageSearchTerm[stagId].trim().length>0){
+      query = "is:search %"+this.stageSearchTerm[stagId];
+    }else if(this.stageSearchCondition[stagId]==DataSearch.EXACT && this.stageSearchTerm[stagId].trim().length>0){
+      query = "is:search "+this.stageSearchTerm[stagId];
+    }else if(this.stageSearchCondition[stagId]==DataSearch.START_WITH && this.stageSearchTerm[stagId].trim().length>0){
+      query = "is:search "+this.stageSearchTerm[stagId]+"%";
+    }else{
+      this.stageSearchCondition[stagId] = DataSearch.CONTAINS;
+      this.stageSearchTerm[stagId] = "";
+    }
+
+    if(query!=""){
+      if (this.stageOrderBy[stagId]==DataOrder.ALFA_ASC){
+        query += "||is:order ASC||is:order_by name"
+      }else if(this.stageOrderBy[stagId]==DataOrder.ALFA_DESC){
+        query += "||is:order DESC||is:order_by name"
+      }else if(this.stageOrderBy[stagId]==DataOrder.QTD_ASC){
+        query += "||is:order ASC||is:order_by date_created"
+      }else if(this.stageOrderBy[stagId]==DataOrder.QTD_DESC){
+        query += "||is:order DESC||is:order_by date_created"
+      }
+    }
+
+    this.loadCustomerState({
+      first:0,
+      rows:25,
+      page:0
+    },stagId,false,query);
+  }
+
+  doLocalReload(stagId:number,ord:DataOrder = DataOrder.NONE){
+    this.hasSended = true;
+    let query:string = "";
+
+    //se mandar atualizar pelo botao refresh irah zerar a query
+    //e tambem os comandos jah executados
+    if(ord==DataOrder.NONE){
+      this.stageOrderBy[stagId] = DataOrder.NONE;
+      this.stageSearchCondition[stagId] = DataSearch.CONTAINS;
+      this.stageSearchTerm[stagId] = "";
+    }
+
+    this.stageOrderBy[stagId] = ord;
+
+    if(ord==DataOrder.ALFA_ASC){
+      query = "is:order ASC||is:order_by name";
+    }
+    if(ord==DataOrder.ALFA_DESC){
+      query = "is:order DESC||is:order_by name";
+    }
+    if(ord==DataOrder.QTD_ASC){
+      query = "is:order ASC||is:order_by date_created";
+    }
+    if(ord==DataOrder.QTD_DESC){
+      query = "is:order DESC||is:order_by date_created";
+    }
+
+    if (query!=""){
+      if(this.stageSearchCondition[stagId]==DataSearch.CONTAINS && this.stageSearchTerm[stagId].trim().length>0){
+        query += "||is:search %"+this.stageSearchTerm[stagId]+"%";
+      }else if(this.stageSearchCondition[stagId]==DataSearch.ENDS_WITH && this.stageSearchTerm[stagId].trim().length>0){
+        query += "||is:search %"+this.stageSearchTerm[stagId];
+      }else if(this.stageSearchCondition[stagId]==DataSearch.EXACT && this.stageSearchTerm[stagId].trim().length>0){
+        query += "||is:search "+this.stageSearchTerm[stagId];
+      }else if(this.stageSearchCondition[stagId]==DataSearch.START_WITH && this.stageSearchTerm[stagId].trim().length>0){
+        query += "||is:search "+this.stageSearchTerm[stagId]+"%";
+      }
+    }
+
+    this.loadCustomerState({
+      first: 0,
+      rows: 25,
+      page:0
+    },stagId,false,query);
+    
+  }
+
+  showHistory(customer:Entity){
+    this.infoCustomer = customer;
+    this.historyVisible = true;
+  }
+
+  showUpload(customer:Entity){
+    this.infoCustomer = customer;
+    this.url_upload = ((sys_config as any).default).backend_cmm+'/upload/'+customer.id;
+    this.uploadVisible = true;
+  }
+
+  showCustomerInfo(idCustomer:number,isEdit:boolean){
+    this.toEdit = isEdit;
+    this.svc.getRepresentatives({
+      page: 0,
+      pageSize: 0,
+      query: "can:list_all true||is:type R||is:order_by name||is:order ASC"
+    }).subscribe({
+      next: (data) =>{
+        this.representativeList = data;
+        this.representativeList.unshift({
+          id: 0,
+          origin_id: 0,
+          name: 'NÃO UTILIZAR REPRESENTANTE',
+          fantasy_name: 'NÃO UTILIZAR REPRESENTANTE',
+          taxvat: '',
+          city: {
+            id: 0,
+            state_region: {
+              id: 0,
+              country: {
+                id: 0,
+                name: ''
+              },
+              name: '',
+              acronym: ''
+            },
+            name: '',
+            brazil_ibge_code: null
+          },
+          contacts: [],
+          web: [],
+          files:[],
+          postal_code: '',
+          neighborhood: '',
+          address: '',
+          type: '',
+          date_created: undefined,
+          date_updated: undefined,
+          agent: null
+        });
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
+    
+    if(isEdit){
+      this.entSvc.loadEntity(idCustomer).subscribe({
+        next: (data) => {
+          this.infoCustomer = data;
+          this.infoVisible = true;
+        }
+      });
+    }else{
+      this.infoCustomer = {
+        id: 0,
+        origin_id: 0,
+        name: '',
+        fantasy_name: '',
+        taxvat: '',
+        city: {
+          id: 0,
+          state_region: {
+            id: 0,
+            country: {
+              id: 0,
+              name: ''
+            },
+            name: '',
+            acronym: ''
+          },
+          name: '',
+          brazil_ibge_code: null
+        },
+        contacts: [],
+        web: [],
+        files:[],
+        postal_code: '',
+        neighborhood: '',
+        address: '',
+        type: '',
+        date_created: undefined,
+        date_updated: undefined,
+        agent: null
+      };
+      this.infoVisible = true;
+    }
+  }
+
+  showEmailSend(customer:Entity){
+    this.infoCustomer = customer;
+    this.emailVisible = true;
+    this.massiveEmail = false;
+    (this.cstEmail as CustomerEmailComponent).emailToList = customer.contacts.filter(contact => contact.contact_type=='E');
+  }
+
+  showEmailSendMassive(){
+    (this.cstEmail as CustomerEmailComponent).emailToList = [];
+    let customers:number[] = [];
+    //varre cada um dos estagios do funil
+    this.stagesOfFunnel.forEach((stag:FunnelStage) =>{
+      this.customersOfStage[stag.id].data.forEach((customer:Entity) =>{
+        //move cada cliente
+        if(this.stageChecked[stag.id][customer.id]==true){
+          customers.push(customer.id);
+          let contact = customer.contacts.filter((contact) => {
+            return (contact.contact_type=='E' && contact.is_default==true)              
+          });
+          (this.cstEmail as CustomerEmailComponent).emailToList.push(contact[0] as EntityContact);
+        }
+      });
+    });
+
+    if(customers.length>0){
+      this.emailVisible = true;
+      this.massiveEmail = true;
+    }else{
+      this.confirmService.confirm({
+        message: 'Não há cliente(s) selecionado(s), por favor selecione ao menos 1 para enviar e-mail!',
+        header: 'Seleção de cliente(s)',
+        icon: 'pi pi-exclamation-triangle',
+        acceptLabel:'OK',
+        rejectVisible: false
+      });
+    }
+  }
+
+  checkAll(stagId:number){
+    this.customersOfStage[stagId].data.forEach((customer:Entity) =>{
+      this.stageChecked[stagId][customer.id] = !this.stageChecked[stagId][customer.id];
+    });
+  }
+
+  startMove(customer:Entity,stagId:number):void{
+    this.draggedCustomer = customer;
+    this.originDragableStage = stagId;
+  }
+
+  finishMove(stagId:number):void{
+    if(this.originDragableStage!=stagId){
+      let dragged:Entity = this.draggedCustomer as Entity;
+      this.svc.moveCustomerToStage(dragged.id,stagId).subscribe();
+      this.draggedCustomer = null;
+      this.doLocalReload(stagId);
+      this.doLocalReload(this.originDragableStage)
+      this.originDragableStage = 0;
+      //desmarca no estagio de origem
+      this.stageChecked[this.originDragableStage][dragged.id] = false;
+    }
+  }
+
+  moveSelectedsToStage(){
+    let customers:number[] = [];
+    //varre cada um dos estagios do funil
+    this.stagesOfFunnel.forEach((stag:FunnelStage) =>{
+      this.customersOfStage[stag.id].data.forEach((customer:Entity) =>{
+        //move cada cliente
+        if(this.stageChecked[stag.id][customer.id]==true){
+          customers.push(customer.id);
+        }
+      });
+    });
+
+    if (customers.length > 0){
+      this.svc.moveCustomersToState(customers,this.stageToMove.id).subscribe({
+        next: (data) =>{
+          if(data){
+            this.showMessage({ key:'systemToast',severity:'success',summary:'Cliente(s) movido(s) com sucesso!'});
+            this.getFunnels('can:list_all true');
+          }else{
+            this.showMessage({ key:'systemToast',severity:'error',summary:'Não foi possível mover o(s) cliente(s)!'});
+          }            
+        }
+      });
+    }else{
+      this.confirmService.confirm({
+        message: 'Não há cliente(s) selecionado(s), por favor selecione ao menos 1 para mover!',
+        header: 'Seleção de cliente(s)',
+        icon: 'pi pi-exclamation-triangle',
+        acceptLabel:'OK',
+        rejectVisible: false
+      });
+    }
+  }
+
+  getStagesOfFunnel(evt:DropdownChangeEvent){
+    this.stagesToMove = evt.value.stages as FunnelStage[];
+  }
+
+  showMessage(msg:Message){
+    this.msgSvc.clear();
+    this.msgSvc.add(msg);
+  }
+
+  resetForm(evt:Event){
+    this.infoVisible = false;
+    this.infoCustomer = {
+      id: 0,
+      origin_id: 0,
+      name: '',
+      fantasy_name: '',
+      taxvat: '',
+      city: {
+        id: 0,
+        state_region: {
+          id: 0,
+          country: {
+            id: 0,
+            name: ''
+          },
+          name: '',
+          acronym: ''
+        },
+        name: '',
+        brazil_ibge_code: null
+      },
+      contacts: [],
+      web: [],
+      files: [],
+      postal_code: '',
+      neighborhood: '',
+      address: '',
+      type: 'C',
+      date_created: undefined,
+      date_updated: undefined,
+      agent: null
+    };
+  }
+
+  uploadDone(){
+    this.uploadVisible = false;
+    this.showMessage({ key:'systemToast',severity:'success',summary:'Arquivo(s) enviado(s) com sucesso!'});
+  }
+
+  addTask(cst:Entity):void{
+
+  }
+
+  delCustomersSelected(){
+    let customers:number[] = [];
+    //varre cada um dos estagios do funil
+    this.stagesOfFunnel.forEach((stag:FunnelStage) =>{
+      this.customersOfStage[stag.id].data.forEach((customer:Entity) =>{
+        //move cada cliente
+        if(this.stageChecked[stag.id][customer.id]==true){
+          customers.push(customer.id);
+        }
+      });
+    });
+
+    if (customers.length > 0){
+      this.confirmService.confirm({
+        message: 'Esta ação apenas irá remover o(s) cliente(s) do Funil/Estágio! <br>Deseja realmente continuar?<br><br><small>* Para excluir um cliente do sistema, acesse o módulo Admin.</small>',
+        header:'Confirmar remoção de cliente(s)',
+        icon: 'pi pi-exclamation-triangle',
+        acceptLabel:'Sim',
+        rejectLabel: 'Não',
+        rejectButtonStyleClass:'p-button-danger',
+        accept: () =>{
+          this.svc.removeCustomers(customers).subscribe({
+            next: (data) =>{
+              if(data){
+                this.showMessage({key:'systemToast',severity:'success',summary:'Cliente(s) removido(s) com sucesso!'});
+                this.getFunnels('can:list_all true');
+              }else{
+                this.showMessage({key:'systemToast',severity:'error',summary:'Ocorreu um erro ao tentar remover o(s) cliente(s)!'});
+              }
+            }
+          });
+        }
+      });
+    }else{
+      this.confirmService.confirm({
+        message: 'Não há cliente(s) selecionado(s), por favor selecione ao menos 1 para remover!',
+        header: 'Seleção de cliente(s)',
+        icon: 'pi pi-exclamation-triangle',
+        acceptLabel:'OK',
+        rejectVisible: false
+      });
+    }
+  }
+
+  searchUser(evt:AutoCompleteCompleteEvent){
+    if(evt.query.length>3){
+      let filtered:any[] = [];
+      let query = evt.query;
+      for (let i = 0; i < (this.all_users as User[]).length; i++) {
+        let user = (this.all_users as User[])[i];
+        if (user.username.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+            filtered.push(user);
+        }
+      }
+
+      this.filtered_users = filtered;
+    }
+  }
+
+  saveNotification(customer:Entity){
+
+  }
+}

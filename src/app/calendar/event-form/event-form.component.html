@@ -1,0 +1,73 @@
+<p-dialog [(visible)]="openForm" [draggable]="true" [modal]="true" [draggable]="false" class="p-fluid" [style]="{ width: '50vw' }" header="Cadastro/Edição de Evento" (onHide)="closeForm()" (onShow)="loadData()">
+    <ng-template pTemplate="content">
+    <div class="field">
+        <label for="slEventType">Tipo do Evento</label>
+        <p-dropdown #ddet 
+            appendTo="body" 
+            id="slEventType" 
+            [options]="eventTypes" 
+            placeholder="Seleção de Tipo de Evento..." 
+            [showClear]="true" 
+            [group]="true" 
+            [optionGroupChildren]="'children'" 
+            optionLabel="name" 
+            (onChange)="onChangeType()" 
+            [(ngModel)]="selectedEventType" 
+            (onClear)="resetPlaceHolder()"
+            emptyMessage="Nenhum tipo de evento disponível"
+            [ngClass]="{'ng-invalid ng-dirty' : hasSended && selectedEventType==null}">
+            <ng-template pTemplate="selectedItem">
+                {{selectedEventType?.name}}
+            </ng-template>
+            <ng-template let-event pTemplate="group">
+                <div (click)="setSelectedEventType(event)" style="cursor: pointer;" class="flex flex-wrap align-items-center vertical-align-middle"><div [ngStyle]="{'width':'15px','height':'15px','background-color': event.hex_color}" class="vertical-align-middle"></div> &nbsp;<span style="font-weight: normal!important;">{{event.name}}</span></div>
+            </ng-template>
+            <ng-template let-children pTemplate="item">
+                <span style="margin-left: 15px!important;" class="flex flex-wrap align-items-center vertical-align-middle"><div [ngStyle]="{'width':'15px','height':'15px','background-color': children.hex_color}" class="vertical-align-middle"></div> &nbsp;{{children.name}}</span>
+            </ng-template>
+        </p-dropdown>
+    </div>
+    <div class="field" *ngIf="selectedEventType!=null && selectedEventType.use_collection">
+        <label for="slEventCollection">Coleção</label>
+        <p-dropdown appendTo="body" id="slEventCollection" placeholder="Seleção de Coleção..." emptyMessage="Nenhuma coleção disponível"></p-dropdown>
+    </div>
+    <div class="field" *ngIf="showParentEvents">
+        <label for="slEventParent">Evento</label>
+        <p-dropdown 
+            #ddep
+            appendTo="body" 
+            [options]="exsistentEvents" 
+            optionLabel="name" 
+            optionValue="id" 
+            emptyMessage="Nenhum evento disponível"
+            placeholder="Seleção de Evento..."
+            [(ngModel)]="eventParentEventId"
+            [ngClass]="{'ng-invalid ng-dirty' : hasSended && showParentEvents && eventParentEventId==0}"
+        ></p-dropdown>
+    </div>
+    <div class="field">
+        <label for="txtEventName">Nome</label>
+        <input pInputText id="txtEventName" class="p-inputtext-sm" [(ngModel)]="eventName" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !eventName}">
+    </div>
+    <div class="formgrid grid">
+        <div class="field col">
+            <label for="dtEventStart">De</label>
+            <p-calendar appendTo="body" [showIcon]="true" id="dtEventStart" dateFormat="dd/mm/yy" class="p-inputtext-sm" [(ngModel)]="eventStart" [ngClass]="{'ng-invalid ng-dirty' : hasSended && (eventStart==null || !validPeriod)}"></p-calendar>
+            <small class="ng-dirty ng-invalid" *ngIf="hasSended && validPeriod==false">Per&iacute;odo inv&aacute;lido.</small>
+        </div>
+        <div class="field col">
+            <label for="dtEventEnd">Até</label>
+            <p-calendar appendTo="body" [showIcon]="true" id="dtEventEnd" dateFormat="dd/mm/yy" [(ngModel)]="eventEnd" [ngClass]="{'ng-invalid ng-dirty' : hasSended && (eventEnd==null || !validPeriod) }"></p-calendar>
+            <small class="ng-dirty ng-invalid" *ngIf="hasSended && validPeriod==false">Per&iacute;odo inv&aacute;lido.</small>
+        </div>
+    </div>
+    <div class="field" *ngIf="selectedEventType!=null && selectedEventType.has_budget">
+        <label for="txtEventBudget">Orçamento</label>
+        <p-inputNumber mode="currency" currency="BRL" locale="pt-BR" [(ngModel)]="eventBudget" [ngClass]="{'ng-invalid ng-dirty' : hasSended && selectedEventType!=null && selectedEventType.has_budget && eventBudget==null}"></p-inputNumber>
+    </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="closeForm()"></button>
+        <button pButton pRipple label="Salvar" icon="pi pi-check" class="p-button-text" (click)="onSubmit()"></button>
+    </ng-template>
+</p-dialog>

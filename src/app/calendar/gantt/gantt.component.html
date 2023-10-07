@@ -1,0 +1,77 @@
+<p-toast key="systemToast"></p-toast>
+<div class="card p-3 flex flex-wrap align-items-center justify-content-end vertical-align-middle mb-3">
+    <p-button icon="pi pi-calendar-plus" styleClass="p-button-rounded  p-button-text" (onClick)="onEvent(null)" pTooltip="Novo Evento" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button>
+    <p-button icon="pi pi-calendar-minus" styleClass="p-button-rounded p-button-danger p-button-text" (onClick)="onDeleteEvents()" pTooltip="Excluir Evento(s) selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button>
+    <p-button icon="pi pi-flag" styleClass="p-button-rounded  p-button-text p-button-help" (onClick)="onMilestone(null)" pTooltip="Novo Milestone(Marco)" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button>
+    <!-- <p-button icon="pi pi-bolt" styleClass="p-button-rounded  p-button-text p-button-warning" (onClick)="onMilestone(null)" pTooltip="Gerar a partir de modelo" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button> -->
+    <p-button icon="pi pi-file-excel" styleClass="p-button-rounded  p-button-success p-button-text" (onClick)="exportCSV()" pTooltip="Exportar para CSV" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button>
+    <p-button icon="pi pi-file-export" styleClass="p-button-rounded  p-button-info p-button-text" (onClick)="exportJSON()" pTooltip="Exportar para JSON" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button>
+    <p-calendar #dpp selectionMode="range" [readonlyInput]="true" [(ngModel)]="periodDates" class="p-inputtext-sm pr-2" [showClear]="true" rangeSeparator="-" placeholder="Período desejado..." (ngModelChange)="onDateChanged()"></p-calendar>
+    <span class="p-input-icon-right">
+        <i class="pi pi-search"></i>
+        <input type="text" pInputText placeholder="Procurar evento..." (input)="doSearch($event)" class="p-inputtext-sm"/>
+    </span>
+</div>
+<div class="card">
+    <p-table #dt [scrollable]="true"  [(selection)]="selectedEvents" dataKey="name" [globalFilterFields]="['name','type.name']" scrollDirection="both" responsiveLayout="scroll" [value]="calendarEvents" styleClass="p-datatable-sm p-datatable-gridlines">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pFrozenColumn colspan="2">&nbsp;</th>
+                <ng-container *ngFor="let cal of response.data">
+                    <ng-container *ngFor="let month of cal.months">
+                        <th [attr.colspan]="month.weeks.length" class="text-center"><small>{{getMonthName(month.position)}}/{{cal.year}}</small></th>
+                    </ng-container>
+                </ng-container>
+            </tr>
+            <tr>
+                <th pFrozenColumn><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+                <th pFrozenColumn><small>Evento</small></th>
+                <ng-container *ngFor="let year of response.data">
+                    <ng-container *ngFor="let month of year.months">
+                        <ng-container *ngFor="let week of month.weeks">
+                            <th class="text-center gantt-td-content">
+                                <small *ngIf="isCurrentWeek(week)" style="color:red" pTooltip="Semana Atual" tooltipPosition="top" tooltipStyleClass="text-xs">{{week}}</small>
+                                <small *ngIf="!isCurrentWeek(week)">{{week}}</small>
+                            </th>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-event let-expanded="expanded">
+            <tr>
+                <td pFrozenColumn><p-tableCheckbox [value]="event"></p-tableCheckbox></td>
+                <td pFrozenColumn style="white-space: nowrap">
+                    <a href="javascript:void(0);" *ngIf="event.children.length>0" [pRowToggler]="event" class="p-button-text p-button-rounded p-button-plain p-button-sm vertical-align-middle">
+                        <i class="material-symbols-outlined">{{expanded ? 'expand_more' : 'chevron_right'}}</i>
+                    </a> <small class="vertical-align-middle">{{event.name}}</small></td>
+                <ng-container *ngFor="let cal of response.data">
+                    <td *ngFor="let w of totalWeeks[cal.year]" class="gantt-td-content">
+                        <a href="javascript:void(0);" *ngIf="w==event.start_week && event.year==cal.year" class="text-decoration-none link-light" (click)="event.type.is_milestone?onMilestone(event):onEvent(event)">
+                            <app-event [isMilestone]="event.type.is_milestone" [ComponentSize]="(((event.end_week-event.start_week)+1)*30)-2" [ComponentColor]="event.type.hex_color" [ComponentCollection]="event.collection.name" [ComponentBrand]="event.collection.brand.name" [ComponentDateStart]="formatEventDate(event.start_date)" [ComponentDateEnd]="formatEventDate(event.end_date)"></app-event>
+                        </a>
+                    </td>
+                </ng-container>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="rowexpansion" let-event>
+            <ng-container *ngFor="let child of event.children">
+            <tr>
+                <td pFrozenColumn><p-tableCheckbox [value]="child"></p-tableCheckbox></td>
+                <td pFrozenColumn style="white-space: nowrap;"><span style="margin-left: 30px!important;"><small>{{child.name}}</small></span></td>
+                <ng-container *ngFor="let cal of response.data">
+                    <td *ngFor="let w of totalWeeks[cal.year]" class="gantt-td-content">
+                        <a href="javascript:void(0);" *ngIf="w==child.start_week && child.year==cal.year" class="text-decoration-none link-light" (click)="onEvent(child)">
+                            <app-event [isMilestone]="child.type.is_milestone" [ComponentSize]="(((child.end_week-child.start_week)+1)*30)-2" [ComponentColor]="child.type.hex_color" [ComponentCollection]="child.collection.name" [ComponentBrand]="child.collection.brand.name" [ComponentDateStart]="formatEventDate(child.start_date)" [ComponentDateEnd]="formatEventDate(child.end_date)"></app-event>
+                        </a>
+                    </td>
+                </ng-container>
+            </tr>
+            </ng-container>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-confirmDialog [style]="{width: '50vw'}" acceptButtonStyleClass="p-button-outlined" rejectButtonStyleClass="p-button-outlined" acceptLabel="Sim" rejectLabel="Não"></p-confirmDialog>
+<app-event-form [selectedEvent]="eventToEdit" [periodStart]="null" [periodEnd]="null" [openForm]="showDialogEvent" (CloseModal)="onCloseModalEvent($event)"></app-event-form>
+<app-milestone-form [selectedEvent]="milestoneToEdit" [periodStart]="null" [periodEnd]="null" [openForm]="showDialogMilestone" (CloseModal)="onCloseModalMilestone($event)"></app-milestone-form>

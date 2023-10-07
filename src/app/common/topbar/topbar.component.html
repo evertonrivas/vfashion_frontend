@@ -1,0 +1,69 @@
+<div class="layout-topbar">
+    <img src="assets/images/Bee2Bee.png" height="30" class="mr-4">
+    <button #menubutton class="p-link layout-menu-button layout-topbar-button" *ngIf="module==modules.ADM || module==modules.B2B" [pTooltip]="module==modules.ADM?'Exibir/Ocultar Menu':'Exibir/Ocultar Filtros'" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+        <i class="material-symbols-outlined">
+            menu
+            </i>
+    </button>
+    <button class="p-link layout-topbar-button" [routerLink]="[modulePath+'/dashboard']" pTooltip="Dashboard" tooltipPosition="bottom" tooltipStyleClass="text-xs" *ngIf="module!=modules.B2B">
+        <i class="material-symbols-outlined">dashboard</i>
+    </button>
+    <ng-container *ngIf="module==modules.SCM">
+        <button class="p-link layout-topbar-button" [routerLink]="['/calendar/gantt']" pTooltip="Calendário" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+            <i class="material-symbols-outlined">calendar_month</i>
+        </button>
+    </ng-container>
+    <ng-container *ngIf="module==modules.CRM">
+        <button class="p-link layout-topbar-button" [routerLink]="['/crm/kanban']" pTooltip="Kanban" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+            <i class="material-symbols-outlined">view_kanban</i>
+        </button>
+        <button class="p-link layout-topbar-button" [routerLink]="['/crm/reports']" pTooltip="Relatórios" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+            <i class="material-symbols-outlined">picture_as_pdf</i>
+        </button>
+    </ng-container>
+    <div #topbarmenu class="layout-topbar-menu">
+        <button class="p-link layout-topbar-button" *ngIf="userLevel=='A'" [routerLink]="['/selector']" pTooltip="Trocar módulo" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+            <i class="material-symbols-outlined">
+                deployed_code
+            </i>
+        </button>
+        <button *ngIf="module==modules.B2B" class="p-link layout-topbar-button" pTooltip="Produtos do Pedido" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+            <i class="material-symbols-outlined" pBadge value="1" severity="warning" styleClass="text-xs">shopping_cart</i>
+        </button>
+        <p-overlayPanel #msgs>
+            <ng-template pTemplate="content">
+                Teste de mensagem
+            </ng-template>
+        </p-overlayPanel>
+        <!-- <button class="p-link layout-topbar-button" pTooltip="Verificar mensagens" (click)="msgs.toggle($event)" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+            <i *ngIf="module!=modules.B2B" class="material-symbols-outlined" pBadge value="{{totalMessages}}" severity="danger">mail</i>
+            <i *ngIf="module==modules.B2B" class="material-symbols-outlined" pBadge severity="danger">mail</i>
+        </button> -->
+        <button class="p-link layout-topbar-button" pTooltip="Editar Perfil" [routerLink]="[modulePath+'/profile']" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+            <i class="material-symbols-outlined">person</i>
+        </button>
+        <button class="p-link layout-topbar-button" pTooltip="Sair do Sistema" (click)="onLogoff()" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+            <i class="material-symbols-outlined">logout</i>
+        </button>
+    </div>
+</div>
+<p-toast key="sessionRenew"></p-toast>
+<p-toast key="sessionToast" (onClose)="dontRenew()">
+    <ng-template let-message pTemplate="message">
+        <div class="flex flex-column" style="flex:1">
+            <div class="text-center">
+                <i class="pi pi-exclamation-triangle" style="font-size: 2rem"></i>
+                <h6>{{message.summary}}</h6>
+                <p>{{message.detail}}</p>
+            </div>
+            <div class="grid p-fluid justify-content-center">
+                <div class="col-6">
+                    <button type="button" pButton pRipple (click)="renewSession()" label="Sim" class="p-button-sm"></button>
+                </div>
+                <div class="col-6">
+                    <button type="button" pButton pRipple (click)="dontRenew()" label="Não" class="p-button-sm"></button>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</p-toast>

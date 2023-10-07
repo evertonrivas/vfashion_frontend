@@ -1,0 +1,198 @@
+<p-toast key="systemToast" [position]="'bottom-right'"></p-toast>
+<p-confirmDialog></p-confirmDialog>
+<div class="card p-3 flex flex-wrap align-items-center justify-content-between vertical-align-middle mb-2">
+    <div><p-dropdown #funSel [options]="response.data" optionLabel="name" [(ngModel)]="selectedFunnel" styleClass="p-inputtext-sm"></p-dropdown></div>
+    <div class="flex flex-row justify-content-end vertical-align-super">
+        <p-button icon="pi pi-plus-circle" styleClass="p-button-rounded  p-button-text" pTooltip="Novo Cliente" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="showCustomerInfo(0,false)"></p-button>
+        <p-button icon="pi pi-minus-circle" styleClass="p-button-rounded p-button-text" pTooltip="Remover selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="delCustomersSelected()"></p-button>
+        <div style="border-right: 1px solid #ced4da;min-height: 100%; width: 5px;"></div>
+
+        <p-button icon="pi pi-sync" styleClass="p-button-rounded p-button-text p-button-warning" pTooltip="Recarregar Funil" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="getFunnels('can:list_all true')"></p-button>
+        <p-button styleClass="p-button-rounded p-button-text p-button-warning" pTooltip="Enviar e-mail para selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="showEmailSendMassive()"><span class="material-symbols-outlined text-lg">stacked_email</span></p-button>
+        <p-button styleClass="p-button-rounded p-button-text p-button-warning" pTooltip="Mover selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="opStages.toggle($event)"><span class="material-symbols-outlined text-lg">move_group</span></p-button>
+        <p-overlayPanel #opStages>
+            <ng-template pTemplate="content">
+                <div class="flex flex-column">
+                    <label>Funil</label>
+                    <p-dropdown [options]="response.data" optionLabel="name" styleClass="p-inputtext-sm w-full" (onChange)="getStagesOfFunnel($event)" [ngModel]="selectedFunnel"></p-dropdown>
+                    <label>Etapa</label>
+                    <p-dropdown [options]="stagesToMove" optionLabel="name" (onChange)="moveSelectedsToStage()" [(ngModel)]="stageToMove" emptyMessage="Nenhum registro encontrado!" styleClass="p-inputtext-sm w-full"></p-dropdown>
+                </div>
+            </ng-template>
+        </p-overlayPanel>
+        <p-button [disabled]="true" icon="pi pi-users" styleClass="p-button-rounded p-button-text p-button-warning" pTooltip="Detectar e Mesclar" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button>
+
+        <div style="border-right: 1px solid #ced4da;min-height: 100%; width: 5px;"></div>
+        <p-button icon="pi pi-upload" styleClass="p-button-rounded  p-button-text p-button-success" pTooltip="Importar registros de clientes" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button>
+        <!-- <p-button [disabled]="true" icon="pi pi-file-excel" styleClass="p-button-rounded  p-button-success p-button-text" pTooltip="Exportar para CSV" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button> -->
+        <!-- <p-button [disabled]="true" icon="pi pi-file-export" styleClass="p-button-rounded  p-button-success p-button-text" pTooltip="Exportar para JSON" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button> -->
+        <span class="p-input-icon-right">
+            <i class="pi pi-search"></i>
+            <input type="text" pInputText placeholder="Procurar..." (keydown)="doGlobalSearch($event)" class="p-inputtext-sm" [(ngModel)]="globalSearchInput"/>
+        </span>
+    </div>
+</div>
+
+<div class="flex justify-content-between overflow-x-scroll col-12 min-w-full overflow-y-hidden crm-kanban-stages-height">
+    <ng-container *ngFor="let stage of stagesOfFunnel;let i=index">
+        <!--Inicio do stagio de funil-->
+        <div class="p-panel w-full" [ngClass]="i<stagesOfFunnel.length-1?'pr-2':''">
+            <div class="p-panel-header flex justify-content-between flex-grow-1 bg-{{stage.color}}-100">
+                <div class="flex flex-column vertical-align-middle">
+                    <span class="font-medium"><span class="material-symbols-outlined vertical-align-text-bottom text-{{stage.color}}-500 icon-small">{{stage.icon}}</span> {{stage.name}}</span>
+                    <a href="javascript:void(0)" class="text-sm text-800" (click)="checkAll(stage.id)"><span class="material-symbols-outlined text-{{stage.color}}-500 vertical-align-text-bottom icon-small">done_all</span> Marcar todos</a>
+                    <span class="text-xs ml-1">{{customersOfStage[stage.id].pagination.registers}} clientes</span>
+                </div>
+                <div class="flex flex-column justify-content-start vertical-align-top">
+                    <p-menu #menu [popup]="true" [model]="stageMenu[stage.id]" styleClass="text-sm"></p-menu>
+                    <a href='javascript:void(0)' (click)="menu.toggle($event)" class="pb-2"><i class="pi pi-ellipsis-v text-900 text-sm pt-0"></i></a>
+                    <p-overlayPanel #filter>
+                        <ng-template pTemplate="content">
+                            <p-dropdown styleClass="w-full" [options]="stageSearch[stage.id]" [(ngModel)]="stageSearchCondition[stage.id]" optionValue="type"></p-dropdown>
+                            <div class="p-inputgroup pt-2">
+                                <input type="text" pInputText placeholder="Procurar..." [(ngModel)]="stageSearchTerm[stage.id]" styleClass="p-inputtext-sm"/>
+                                <button type="button" pButton icon="pi pi-search" (click)="doLocalSearch(stage.id)"></button>
+                            </div>
+                        </ng-template>
+                    </p-overlayPanel>
+                    <a href="javascript:void(0)" (click)="filter.toggle($event)"><i class="pi pi-filter text-900 text-sm"></i></a>
+                </div>
+            </div>
+            <div class="flex flex-column crm-kanban-stage bg-{{stage.color}}-50" pDroppable (onDrop)="finishMove(stage.id)">
+                <div class="pl-2 pr-2">
+                    <!--Inicio do card de cliente-->
+                    <ng-container *ngIf="customersOfStage[stage.id].pagination.registers>0">
+                        <ng-container *ngFor="let customer of customersOfStage[stage.id].data">
+                            <div class="mt-2 p-card p-component" pDraggable (onDragStart)="startMove(customer,stage.id)">
+                                    <div class="flex flex-row justify-content-between pb-2">
+                                        <div class="flex flex-column overflow-hidden  pt-3 pl-2 pr-3">
+                                            <div class="flex flex-row gap-1">
+                                                <p-checkbox inputId="chkEmpresa{{customer.id}}" [style]="{ width: '20px', height:'18px'}" [(ngModel)]="stageChecked[stage.id][customer.id]" [binary]="true"></p-checkbox>
+                                                <label class="text-overflow-ellipsis white-space-nowrap overflow-hidden font-medium" for="chkEmpresa" pTooltip="{{customer.name}}" tooltipStyleClass="text-xs text-center" tooltipPosition="top">{{customer.name}}</label>
+                                            </div>
+                                            <p class="text-xs" style="margin-left: 27px!important;">Desde: {{customer.date_created | date}}</p>
+                                        </div>
+                                        <div class="hidden pt-3 pr-2">
+                                        <!-- <div class="flex pt-3 pr-2"> -->
+                                            <div class="flex flex-column align-content-center text-xs text-center" style="padding:1px">
+                                                <i class="pi pi-star" style="font-size:9px!important"></i>
+                                                F
+                                            </div>
+                                            <div class="flex flex-column align-content-center text-xs text-center" style="padding:1px">
+                                                <i class="pi pi-star" style="font-size:9px!important"></i>
+                                                L
+                                            </div>
+                                            <div class="flex flex-column align-content-center text-xs text-center" style="padding:1px">
+                                                <i class="pi pi-star" style="font-size:9px!important"></i>
+                                                I
+                                            </div>
+                                            <div class="flex flex-column align-content-center text-xs text-center" style="padding:1px">
+                                                <i class="pi pi-star" style="font-size:9px!important"></i>
+                                                M
+                                            </div>
+                                            <div class="flex flex-column align-content-center text-xs text-center" style="padding:1px">
+                                                <i class="pi pi-star" style="font-size:9px!important"></i>
+                                                V
+                                            </div>
+                                        </div>
+                                    </div>
+                                <p-divider styleClass="m-1"></p-divider>
+                                <div class="pt-3 px-2 pb-3 flex flex-row vertical-align-middle justify-content-evenly">
+                                    <p-overlayPanel #tasks>
+                                        <ng-template pTemplate="content">
+                                            <div class="flex flex-column">
+                                                <label class="mr-1">Momento</label>
+                                                <p-calendar [showTime]="true" dateFormat="dd/mm/yy" [showIcon]="true" inputStyleClass="p-inputtext-sm" appendTo="body"></p-calendar>
+                                            </div>
+                                            <div class="flex flex-column">
+                                                <label class="mr-1">Lembrete</label>
+                                                <input pInputText class="w-full p-inputtext-sm">
+                                            </div>
+                                            <div class="flex flex-column">
+                                                <label class="mr-1">Agendar para</label>
+                                                <p-autoComplete inputStyleClass="w-full p-inputtext-sm" styleClass="w-full" placeholder="Outro usuário ou deixe em branco" appendTo="body" [suggestions]="filtered_users" (completeMethod)="searchUser($event)"></p-autoComplete>
+                                            </div>
+                                            <div class="flex flex-row justify-content-end mt-2">
+                                                <p-button styleClass="p-button-sm" icon="pi pi-check" label="Agendar" (onClick)="saveNotification(customer)"></p-button>
+                                            </div>
+                                        </ng-template>
+                                    </p-overlayPanel>
+                                    <a href="javascript:void(0)" pTooltip="Agendar Notificação" tooltipPosition="top" tooltipStyleClass="text-xs" (click)="tasks.toggle($event)"><i class="pi pi-clock text-800"></i></a>
+                                    <a href="javascript:void(0)" pTooltip="Enviar E-mail" tooltipPosition="top" tooltipStyleClass="text-xs" (click)="showEmailSend(customer)"><i class="pi pi-envelope text-800"></i></a>
+                                    <a href="javascript:void(0)" pTooltip="Anexar Arquivo" tooltipPosition="top" tooltipStyleClass="text-xs" (click)="showUpload(customer)"><i class="pi pi-paperclip text-800"></i></a>
+                                    <!-- <a href="javascript:void(0)" pTooltip="Enviar mensagem" tooltipPosition="top"><i class="pi pi-whatsapp text-800"></i></a> -->
+                                    <a href="javascript:void(0)" pTooltip="Informações do Cliente" tooltipPosition="top" tooltipStyleClass="text-xs" (click)="showCustomerInfo(customer.id,true)"><i class="pi pi-info-circle text-800"></i></a>
+                                    <a href="javascript:void(0)" pTooltip="Ver histórico" tooltipPosition="top" (click)="showHistory(customer)" tooltipStyleClass="text-xs"><i class="pi pi-history text-800"></i></a>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                    <!--Fimd do card de cliente-->
+                    <p-paginator 
+                        *ngIf="customersOfStage[stage.id].pagination.registers>0" 
+                        (onPageChange)="loadCustomerState($event,stage.id,customersOfStage[stage.id].pagination.has_next)"
+                        [first]="first[stage.id]"
+                        [rows]="rows[stage.id]"
+                        [totalRecords]="customersOfStage[stage.id].pagination.registers"
+                        styleClass="text-xs mt-2 mb-2"
+                        [showCurrentPageReport]="true"
+                        currentPageReportTemplate="{first} - {last} de {totalRecords}" 
+                        [showPageLinks]="false" 
+                        [showFirstLastIcon]="false"
+                        ></p-paginator>
+                </div>
+            </div>
+        </div>
+        <!--Fim do stagio de funil-->
+    </ng-container>
+</div>
+
+<p-sidebar [(visible)]="historyVisible" position="right" styleClass="w-5">
+    <h3 class="w-full text-center">Histórico do Cliente</h3>
+    <p class="w-full text-center">{{infoCustomer.fantasy_name}}</p>
+    <p-divider></p-divider>
+    <app-customer-history [loadHistory]="historyVisible" [idCustomer]="infoCustomer.id"></app-customer-history>
+</p-sidebar>
+
+<p-sidebar [(visible)]="uploadVisible" position="bottom" styleClass="h-20rem">
+    <h4 class="w-full text-center">Envio de arquivo</h4>
+    <p class="text-center">{{infoCustomer.name}}</p>
+    <p-fileUpload #upl
+        [multiple]="true" 
+        cancelLabel="Cancelar" 
+        chooseLabel="Escolher arquivo(s)" 
+        uploadLabel="Anexar"
+        chooseStyleClass="p-button-outlined p-button-sm"
+        cancelStyleClass="p-button-outlined p-button-sm"
+        uploadStyleClass="p-button-outlined p-button-sm"
+        [url]="url_upload"
+        name="files[]"
+        [withCredentials]="true"
+        [fileLimit]="upload_max"
+        [headers]="uploadHeaders"
+        invalidFileLimitMessageSummary="Número máximo de arquivos excedido."
+        invalidFileLimitMessageDetail="Máximo permitido: {0}"
+        (onUpload)="uploadDone()"></p-fileUpload>
+</p-sidebar>
+ 
+<p-dialog [(visible)]="emailVisible" [style]="{'width':'70vw'}" [modal]="true" [draggable]="false">
+    <ng-template pTemplate="header">
+        <div class="flex justify-content-end w-full mr-1">
+            <span class="w-full text-center align-baseline">Envio de e-mail para: {{infoCustomer.name}}</span>
+        </div>
+    </ng-template>
+    <app-customer-email #cstEmail [emailToList]="cstEmail.emailToList" [uploadHeaders]="uploadHeaders" [uploadMax]="upload_max" [massiveEmail]="massiveEmail"></app-customer-email>
+</p-dialog>
+
+<p-sidebar [(visible)]="infoVisible" [style]="{'width': '70vw'}" [modal]="true" position="right" (onHide)="resetForm($event)">
+    <ng-template pTemplate="header">
+        <h3 class="w-full text-center">Informações do Cliente</h3>
+    </ng-template>  
+    <app-customer-data 
+        (messageToShow)="showMessage($event)" 
+        [isEditing]="toEdit" 
+        [editableCustomer]="infoCustomer" 
+        [isVisible]="infoVisible" 
+        [representatives]="representativeList"
+        [funnels]="response.data"></app-customer-data>
+</p-sidebar>

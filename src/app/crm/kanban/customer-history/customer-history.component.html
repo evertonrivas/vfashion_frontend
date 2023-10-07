@@ -1,0 +1,18 @@
+<div class="p-inputgroup mb-2">
+    <input type="text" pInputText placeholder="Buscar no histórico..." [(ngModel)]="search"/>
+    <button type="button" pButton icon="pi pi-search" styleClass="p-button-warn" (click)="searchHistory()"></button>
+</div>
+<p *ngFor="let history of response.data"><i class="pi pi-clock text-indigo-400 vertical-align-middle"></i> {{history.date_created}} - <strong>{{history.action | customerAction}}</strong>: {{history.history}}</p>
+
+<p-paginator 
+    *ngIf="response.pagination.registers>0" 
+    (onPageChange)="response.pagination.has_next"
+    [first]="response.pagination.page-1"
+    [rows]="response.pagination.per_page"
+    [totalRecords]="response.pagination.registers"
+    styleClass="text-xs mt-2 mb-2"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="{first} - {last} de {totalRecords}" 
+    [showPageLinks]="false" 
+    [showFirstLastIcon]="false"
+    ></p-paginator>

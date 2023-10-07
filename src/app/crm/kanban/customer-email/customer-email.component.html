@@ -1,0 +1,45 @@
+<div class="flex flex-column w-full mt-1">
+    <label>Para</label>
+    <p-dropdown *ngIf="!massiveEmail" [options]="emailToList" styleClass="w-full" [(ngModel)]="selectedEmail" optionLabel="name" placeholder="Selecione um e-mail" appendTo="body" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !selectedEmail}">
+        <ng-template pTemplate="selectedItem">
+            <div>{{selectedEmail.name}} &lt;{{selectedEmail.value}} &gt;</div>
+        </ng-template>
+        <ng-template let-contact pTemplate="item">
+            <div>{{contact.name}} &lt;{{contact.value}} &gt;</div>
+        </ng-template>
+    </p-dropdown>
+    <p-chips *ngIf="massiveEmail" [(ngModel)]="emailToList" field="value" class="p-fluid" [disabled]="true"></p-chips>
+</div>
+<div class="flex flex-column w-full mt-1">
+    <label>Assunto</label>
+    <input pInputText class="w-full" [(ngModel)]="subject" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !subject}">
+</div>
+<div class="flex flex-column w-full mt-1">
+    <label>Mensagem</label>
+    <!-- <textarea pInputTextarea rows="5"></textarea> -->
+    <p-editor [style]="{ height: '150px' }" [(ngModel)]="content" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !content}"></p-editor>
+</div>
+<div class="flex flex-column w-full mt-1">
+    <p-fileUpload 
+    [multiple]="true" 
+    cancelLabel="Cancelar" 
+    chooseLabel="Escolher arquivo(s)" 
+    uploadLabel="Anexar"
+    chooseStyleClass="p-button-outlined p-button-sm"
+    cancelStyleClass="p-button-outlined p-button-sm"
+    uploadStyleClass="p-button-outlined p-button-sm"
+    [url]="url_upload"
+    name="files[]"
+    [withCredentials]="true"
+    [headers]="uploadHeaders"
+    [fileLimit]="uploadMax"
+    invalidFileLimitMessageSummary="Número máximo de arquivos excedido."
+    invalidFileLimitMessageDetail="Máximo permitido: {0}"
+    (onUpload)="uploaded($event)"></p-fileUpload>
+</div>
+<div class="flex flex-column mt-2">
+    <span><i class="pi pi-paperclip"></i>Anexo(s):</span> <span *ngFor="let attach of attachments">{{attach}}</span>
+</div>
+<div class="flex flex-row justify-content-end w-full mt-2">
+    <p-button icon="pi pi-envelope" label="Enviar" styleClass="p-button-sm" (onClick)="sendEmail()"></p-button>
+</div>

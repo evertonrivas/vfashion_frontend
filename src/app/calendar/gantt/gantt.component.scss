@@ -1,0 +1,17 @@
+.gantt-td-content{
+    min-width: 30px!important;
+    max-width: 30px!important;
+    max-height: 40px!important;
+    min-height: 35px!important;
+    padding-left: 1px!important;
+    padding-right: 1px!important;
+}
+
+.p-datatable-scrollable .p-frozen-column{
+    z-index: 10;
+}
+
+/*
+.p-datatable.p-datatable-sm .p-datatable-tbody > tr > td{
+    padding: 2px!important;
+}*/

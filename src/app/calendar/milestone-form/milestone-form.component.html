@@ -1,0 +1,21 @@
+<p-dialog [(visible)]="openForm" [draggable]="true" [modal]="true" class="p-fluid" [style]="{ width: '50vw' }" header="Cadastro/Edição de Milestone (Marco)" (onHide)="closeForm()" (onShow)="loadData()">
+    <ng-template pTemplate="content">
+        <div class="field">
+            <label for="slMilestoneType">Tipo do Evento</label>
+            <p-dropdown  appendTo="body" id="slMilestoneType" [options]="eventTypes" placeholder="Seleção de Tipo de Evento..." [showClear]="true" optionLabel="name" optionValue="id" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !selectedEventType.id}" [(ngModel)]="selectedEventType.id">
+            </p-dropdown>
+        </div>
+        <div class="field">
+            <label for="txtMilestoneName">Nome</label>
+            <input pInputText type="text" id="txtMilestoneName" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !eventName}" [(ngModel)]="eventName">
+        </div>
+        <div class="field">
+            <label for="dtEvent">De</label>
+            <p-calendar appendTo="body" [showIcon]="true" id="dtEvent" dateFormat="dd/mm/yy" class="p-inputtext-sm" [ngClass]="{'ng-invalid ng-dirty' : hasSended && selectedDate==null}" [(ngModel)]="selectedDate"></p-calendar>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="closeForm()" type="button"></button>
+        <button pButton pRipple label="Salvar" icon="pi pi-check" class="p-button-text" type="submit" (click)="onSubmit()"></button>
+    </ng-template>
+</p-dialog>

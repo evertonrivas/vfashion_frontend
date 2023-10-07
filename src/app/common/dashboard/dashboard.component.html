@@ -1,0 +1,35 @@
+<div class="grid">
+    <div class="col-12 lg:col-6 xl:col-3" *ngFor="let card of topCards">
+        <app-card [card]="card"></app-card>
+    </div>
+
+    <ng-container *ngIf="module==modules.SCM">
+        <div class="col-12 xl:col-6">
+            <div class="card">
+                <div echarts [options]="firstChartOption"></div>
+            </div>
+        </div>
+        <div class="col-6 xl:col-3">
+            <div class="card">
+                <div echarts [options]="secondChartOption"></div>
+            </div>
+        </div>
+        <div class="col-6 xl:col-3">
+            <div class="card">
+
+            </div>
+            <div class="card">
+
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="module==modules.ADM">
+
+    </ng-container>
+    <ng-container *ngIf="module==modules.FPR">
+
+    </ng-container>
+    <ng-container *ngIf="module==modules.B2B">
+
+    </ng-container>
+</div>
