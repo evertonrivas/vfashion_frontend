@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { DATE_PIPE_DEFAULT_OPTIONS, registerLocaleData } from '@angular/common';
+import { DATE_PIPE_DEFAULT_OPTIONS, HashLocationStrategy, LocationStrategy, registerLocaleData } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -22,20 +22,23 @@ registerLocaleData(ptBr)
     HttpClientModule,
     BrowserAnimationsModule
   ],
-  providers: [
-    {
-      provide: LOCALE_ID,
-      useValue: ((sys_config as any).default).locale.language
-    },{
-      provide: DEFAULT_CURRENCY_CODE,
-      useValue: ((sys_config as any).default).locale.currency_code
-    },{
-      provide: DATE_PIPE_DEFAULT_OPTIONS,
-      useValue:{
-        dateFormat: ((sys_config as any).default).locale.date_format,
-        timezone: ((sys_config as any).default).locale.timezone
-      }
+  providers: [{
+    provide: LocationStrategy, 
+    useClass: HashLocationStrategy
+  },
+  {
+    provide: LOCALE_ID,
+    useValue: ((sys_config as any).default).locale.language
+  },{
+    provide: DEFAULT_CURRENCY_CODE,
+    useValue: ((sys_config as any).default).locale.currency_code
+  },{
+    provide: DATE_PIPE_DEFAULT_OPTIONS,
+    useValue:{
+      dateFormat: ((sys_config as any).default).locale.date_format,
+      timezone: ((sys_config as any).default).locale.timezone
     }
+  }
   ],
   bootstrap: [AppComponent]
 })

@@ -4,8 +4,6 @@ import { LoginComponent } from './common/login/login.component';
 import { SelectorComponent } from './common/selector/selector.component';
 
 const routes: Routes = [{
-  path:'', pathMatch: 'full', redirectTo: '/login'
-},{
   path: 'login', component:LoginComponent
 },{
   path: 'selector',component:SelectorComponent
@@ -14,7 +12,10 @@ const routes: Routes = [{
 { path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
 { path: 'calendar', loadChildren: () => import('./calendar/calendar.module').then(m => m.CalendarModule) },
 { path: 'crm', loadChildren: () => import('./crm/crm.module').then(m => m.CrmModule) },
-{ path: 'return', loadChildren: () => import('./return/return.module').then(m => m.ReturnModule) }
+{ path: 'return', loadChildren: () => import('./return/return.module').then(m => m.ReturnModule) },
+{
+  path:'', pathMatch: 'full', redirectTo: '/login'
+}
 ];
 
 @NgModule({
