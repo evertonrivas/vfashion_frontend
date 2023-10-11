@@ -1,4 +1,4 @@
-import { Component,AfterContentInit,OnInit,OnDestroy } from '@angular/core';
+import { Component,OnInit,OnDestroy, AfterViewInit } from '@angular/core';
 import { EChartsOption, MarkLineComponentOption } from 'echarts';
 import { Card } from 'src/app/models/card.model';
 import { DashboardService } from 'src/app/services/dashboard.service';
@@ -34,7 +34,7 @@ import * as echarts from 'echarts';
   ],
   standalone: true
 })
-export class DashboardComponent extends Common implements AfterContentInit,OnInit,OnDestroy{
+export class DashboardComponent extends Common implements AfterViewInit,OnInit,OnDestroy{
   firstChartOption:EChartsOption = {};
   secondChartOption:EChartsOption = {};
   symbols = [
@@ -278,7 +278,7 @@ export class DashboardComponent extends Common implements AfterContentInit,OnIni
 
   }
 
-  ngAfterContentInit(): void {
+  ngAfterViewInit(): void {
     
     if (this.module== ModuleName.SCM){
       this.mountSCMdata();
