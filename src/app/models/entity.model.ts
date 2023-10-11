@@ -1,6 +1,7 @@
 import { Paginate } from "./paginate.model"
 import { City } from "./place.model"
 import { CustomerAction, EntityType } from "./system.enum"
+import { User } from "./user.model"
 
 export interface RepEntity{
     id:number,
@@ -79,6 +80,12 @@ export interface EntityHistory{
     history:string,
     action:CustomerAction,
     date_created:string
+}
+
+export interface EntityNotification{
+    moment:Date,
+    user:User,
+    remember:string,
 }
 
 export { EntityType }
