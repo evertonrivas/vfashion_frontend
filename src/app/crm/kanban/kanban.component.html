@@ -1,7 +1,7 @@
 <p-toast key="systemToast" [position]="'bottom-right'"></p-toast>
 <p-confirmDialog></p-confirmDialog>
 <div class="card p-3 flex flex-wrap align-items-center justify-content-between vertical-align-middle mb-2">
-    <div><p-dropdown #funSel [options]="response.data" optionLabel="name" [(ngModel)]="selectedFunnel" styleClass="p-inputtext-sm"></p-dropdown></div>
+    <div><p-dropdown #funSel [options]="response.data" optionLabel="name" [(ngModel)]="selectedFunnel" styleClass="p-inputtext-sm" (onChange)="changeFunnel($event)"></p-dropdown></div>
     <div class="flex flex-row justify-content-end vertical-align-super">
         <p-button icon="pi pi-plus-circle" styleClass="p-button-rounded  p-button-text" pTooltip="Novo Cliente" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="showCustomerInfo(0,false)"></p-button>
         <p-button icon="pi pi-minus-circle" styleClass="p-button-rounded p-button-text" pTooltip="Remover selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="delCustomersSelected()"></p-button>
@@ -20,10 +20,10 @@
                 </div>
             </ng-template>
         </p-overlayPanel>
-        <p-button [disabled]="true" icon="pi pi-users" styleClass="p-button-rounded p-button-text p-button-warning" pTooltip="Detectar e Mesclar" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button>
+        <!-- <p-button [disabled]="true" icon="pi pi-users" styleClass="p-button-rounded p-button-text p-button-warning" pTooltip="Detectar e Mesclar" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button> -->
 
         <div style="border-right: 1px solid #ced4da;min-height: 100%; width: 5px;"></div>
-        <p-button icon="pi pi-upload" styleClass="p-button-rounded  p-button-text p-button-success" pTooltip="Importar registros de clientes" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button>
+        <p-button [disabled]="selectedFunnel?.type=='P'?false:true" icon="pi pi-upload" styleClass="p-button-rounded  p-button-text p-button-success" pTooltip="Importar registros de clientes" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="openToImport()"></p-button>
         <!-- <p-button [disabled]="true" icon="pi pi-file-excel" styleClass="p-button-rounded  p-button-success p-button-text" pTooltip="Exportar para CSV" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button> -->
         <!-- <p-button [disabled]="true" icon="pi pi-file-export" styleClass="p-button-rounded  p-button-success p-button-text" pTooltip="Exportar para JSON" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button> -->
         <span class="p-input-icon-right">
@@ -72,52 +72,47 @@
                                             </div>
                                             <p class="text-xs" style="margin-left: 27px!important;">Desde: {{customer.date_created | date}}</p>
                                         </div>
-                                        <div class="hidden pt-3 pr-2">
-                                        <!-- <div class="flex pt-3 pr-2"> -->
+                                        <!-- <div class="hidden pt-3 pr-2"> -->
+                                        <div *ngIf="selectedFunnel?.type=='S'" class="flex pt-3 pr-2">
                                             <div class="flex flex-column align-content-center text-xs text-center" style="padding:1px">
                                                 <i class="pi pi-star" style="font-size:9px!important"></i>
-                                                F
                                             </div>
                                             <div class="flex flex-column align-content-center text-xs text-center" style="padding:1px">
                                                 <i class="pi pi-star" style="font-size:9px!important"></i>
-                                                L
                                             </div>
                                             <div class="flex flex-column align-content-center text-xs text-center" style="padding:1px">
                                                 <i class="pi pi-star" style="font-size:9px!important"></i>
-                                                I
                                             </div>
                                             <div class="flex flex-column align-content-center text-xs text-center" style="padding:1px">
                                                 <i class="pi pi-star" style="font-size:9px!important"></i>
-                                                M
                                             </div>
                                             <div class="flex flex-column align-content-center text-xs text-center" style="padding:1px">
                                                 <i class="pi pi-star" style="font-size:9px!important"></i>
-                                                V
                                             </div>
                                         </div>
                                     </div>
                                 <p-divider styleClass="m-1"></p-divider>
                                 <div class="pt-3 px-2 pb-3 flex flex-row vertical-align-middle justify-content-evenly">
-                                    <p-overlayPanel #tasks>
+                                    <!-- <p-overlayPanel #tasks>
                                         <ng-template pTemplate="content">
                                             <div class="flex flex-column">
                                                 <label class="mr-1">Momento</label>
-                                                <p-calendar [showTime]="true" dateFormat="dd/mm/yy" [showIcon]="true" inputStyleClass="p-inputtext-sm" appendTo="body"></p-calendar>
+                                                <p-calendar [showTime]="true" dateFormat="dd/mm/yy" [(ngModel)]="notification.moment" [showIcon]="true" inputStyleClass="p-inputtext-sm"></p-calendar>
                                             </div>
                                             <div class="flex flex-column">
                                                 <label class="mr-1">Lembrete</label>
-                                                <input pInputText class="w-full p-inputtext-sm">
+                                                <input pInputText class="w-full p-inputtext-sm" [(ngModel)]="notification.remember">
                                             </div>
                                             <div class="flex flex-column">
                                                 <label class="mr-1">Agendar para</label>
-                                                <p-autoComplete inputStyleClass="w-full p-inputtext-sm" styleClass="w-full" placeholder="Outro usuário ou deixe em branco" appendTo="body" [suggestions]="filtered_users" (completeMethod)="searchUser($event)"></p-autoComplete>
+                                                <p-autoComplete inputStyleClass="w-full p-inputtext-sm" styleClass="w-full" placeholder="Outro usuário ou deixe em branco" appendTo="body" [suggestions]="filtered_users" (completeMethod)="searchUser($event)" [(ngModel)]="notification.user" [field]="'name'"></p-autoComplete>
                                             </div>
                                             <div class="flex flex-row justify-content-end mt-2">
                                                 <p-button styleClass="p-button-sm" icon="pi pi-check" label="Agendar" (onClick)="saveNotification(customer)"></p-button>
                                             </div>
                                         </ng-template>
-                                    </p-overlayPanel>
-                                    <a href="javascript:void(0)" pTooltip="Agendar Notificação" tooltipPosition="top" tooltipStyleClass="text-xs" (click)="tasks.toggle($event)"><i class="pi pi-clock text-800"></i></a>
+                                    </p-overlayPanel> -->
+                                    <!-- <a href="javascript:void(0)" pTooltip="Agendar Notificação" tooltipPosition="top" tooltipStyleClass="text-xs" (click)="tasks.toggle($event)"><i class="pi pi-clock text-800"></i></a> -->
                                     <a href="javascript:void(0)" pTooltip="Enviar E-mail" tooltipPosition="top" tooltipStyleClass="text-xs" (click)="showEmailSend(customer)"><i class="pi pi-envelope text-800"></i></a>
                                     <a href="javascript:void(0)" pTooltip="Anexar Arquivo" tooltipPosition="top" tooltipStyleClass="text-xs" (click)="showUpload(customer)"><i class="pi pi-paperclip text-800"></i></a>
                                     <!-- <a href="javascript:void(0)" pTooltip="Enviar mensagem" tooltipPosition="top"><i class="pi pi-whatsapp text-800"></i></a> -->
@@ -182,6 +177,53 @@
         </div>
     </ng-template>
     <app-customer-email #cstEmail [emailToList]="cstEmail.emailToList" [uploadHeaders]="uploadHeaders" [uploadMax]="upload_max" [massiveEmail]="massiveEmail"></app-customer-email>
+</p-dialog>
+
+<p-dialog header="Importação de Registros" [(visible)]="importVisible" [style]="{'width': '70vw'}" [modal]="true" [draggable]="false">
+    <ng-template pTemplate="header">
+        <div class="flex justify-content-between w-full mr-1">
+            <span class="p-dialog-title w-full">Importação de Registros</span>
+            <span class="w-full text-center align-baseline justify-content-end">Arquivo Exemplo: <a href="/assets/files/exemplo.csv">exemplo.csv</a></span>
+        </div>
+    </ng-template>
+    <div class="flex flex-column">
+        <p-fileUpload #upl
+        cancelLabel="Cancelar" 
+        chooseLabel="Escolher arquivo" 
+        uploadLabel="Anexar"
+        chooseStyleClass="p-button-outlined p-button-sm"
+        cancelStyleClass="p-button-outlined p-button-sm"
+        uploadStyleClass="p-button-outlined p-button-sm"
+        [url]="url_upload"
+        name="files[]"
+        [withCredentials]="true"
+        [fileLimit]="upload_max"
+        [headers]="uploadHeaders"
+        [multiple]="false"
+        accept=".csv"
+        invalidFileLimitMessageSummary="Número máximo de arquivos excedido."
+        invalidFileLimitMessageDetail="Máximo permitido: {0}"
+        (onUpload)="uploadDone()"></p-fileUpload>
+    </div>
+    <div class="flex flex-column">
+        <label class="mb-2">Importações realizadas</label>
+        <p-table>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Arquivo</th>
+                    <th>Data</th>
+                    <th>Ação</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body">
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>                
+            </ng-template>
+        </p-table>
+    </div>
 </p-dialog>
 
 <p-sidebar [(visible)]="infoVisible" [style]="{'width': '70vw'}" [modal]="true" position="right" (onHide)="resetForm($event)">
