@@ -176,7 +176,7 @@
             <span class="w-full text-center align-baseline">Envio de e-mail para: {{infoCustomer.name}}</span>
         </div>
     </ng-template>
-    <app-customer-email #cstEmail [emailToList]="cstEmail.emailToList" [uploadHeaders]="uploadHeaders" [uploadMax]="upload_max" [massiveEmail]="massiveEmail"></app-customer-email>
+    <app-customer-email #cstEmail [emailToList]="cstEmail.emailToList" [uploadHeaders]="uploadHeaders" [uploadMax]="upload_max" [massiveEmail]="massiveEmail" (messageToShow)="showMessage($event)"></app-customer-email>
 </p-dialog>
 
 <p-dialog header="Importação de Registros" [(visible)]="importVisible" [style]="{'width': '70vw'}" [modal]="true" [draggable]="false">

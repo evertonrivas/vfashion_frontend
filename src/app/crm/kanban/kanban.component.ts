@@ -172,7 +172,12 @@ export class KanbanComponent extends Common implements AfterContentInit{
       },complete: () =>{
         //forca o dropdown a escolher o item selecionado, o ngModel eh bugado nesse componente
        (this.funSel as Dropdown).selectItem(new Event(''),this.selectedFunnel);
-      }
+      },
+      error: (err) =>{
+        if (err.status==401){
+          document.location.href='/'
+        }
+      },
     });
   }
 
@@ -553,6 +558,11 @@ export class KanbanComponent extends Common implements AfterContentInit{
   }
 
   showMessage(msg:Message){
+    this.emailVisible   = false;
+    this.infoVisible    = false;
+    this.importVisible  = false;
+    this.uploadVisible  = false;
+    this.historyVisible = false;
     this.msgSvc.clear();
     this.msgSvc.add(msg);
   }
