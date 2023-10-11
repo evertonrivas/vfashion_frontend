@@ -5,7 +5,7 @@ import { CrmService } from 'src/app/services/crm.service';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Funnel, FunnelOptions, FunnelStage } from 'src/app/models/crm.model';
 import { DataOrder, DataSearch } from 'src/app/models/system.enum';
-import { Entity, EntityContact, EntityWeb } from 'src/app/models/entity.model';
+import { Entity, EntityContact, EntityNotification, EntityWeb } from 'src/app/models/entity.model';
 import { Dropdown, DropdownChangeEvent } from 'primeng/dropdown';
 import { Checkbox } from 'src/app/models/checkbox.model';
 import { HttpHeaders } from '@angular/common/http';
@@ -70,7 +70,10 @@ export class KanbanComponent extends Common implements AfterContentInit{
 
   //envio de email
   emailVisible:boolean = false;
-  
+
+  //importacao de registros
+  importVisible:boolean = false;
+
   //painel de informacoes do cliente
   infoVisible:boolean    = false;
   infoCustomer:Entity = {
@@ -109,9 +112,6 @@ export class KanbanComponent extends Common implements AfterContentInit{
   draggedCustomer:Entity|null = null;
   originDragableStage:number = 0;
 
-  all_users:User[] = [];
-  filtered_users:User[] = [];
-
   constructor(
     private msgSvc:MessageService,
     private svc:CrmService,
@@ -124,17 +124,6 @@ export class KanbanComponent extends Common implements AfterContentInit{
   
   ngAfterContentInit(): void {
     this.getFunnels();
-    this.usrSvc.userList({query:'can:list-all 1',page:1,pageSize:1}).subscribe({
-      next: (data) =>{
-        if ( (data as ResponseError).error_details != undefined ){
-          //ocorreu um erro
-        }else if( (data as RequestResponse).data != undefined ){
-          //estah listando com paginacao
-        }else{
-          this.all_users = (data as User[]);
-        }
-      }
-    });
   }
 
   getFunnels(p_query:string|null = null):void{
@@ -656,22 +645,49 @@ export class KanbanComponent extends Common implements AfterContentInit{
     }
   }
 
-  searchUser(evt:AutoCompleteCompleteEvent){
-    if(evt.query.length>3){
-      let filtered:any[] = [];
-      let query = evt.query;
-      for (let i = 0; i < (this.all_users as User[]).length; i++) {
-        let user = (this.all_users as User[])[i];
-        if (user.username.toLowerCase().indexOf(query.toLowerCase()) == 0) {
-            filtered.push(user);
-        }
-      }
+  // searchUser(evt:AutoCompleteCompleteEvent){
+  //   if(evt.query.length>3){
+  //     let filtered:any[] = [];
+  //     let query = evt.query;
+  //     for (let i = 0; i < (this.all_users as User[]).length; i++) {
+  //       let user = (this.all_users as User[])[i];
+  //       if (user.username.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+  //           filtered.push(user);
+  //       }
+  //     }
 
-      this.filtered_users = filtered;
-    }
+  //     this.filtered_users = filtered;
+  //   }
+  // }
+
+  openToImport():void{
+    this.importVisible = true;
   }
 
-  saveNotification(customer:Entity){
+  changeFunnel(evt:DropdownChangeEvent):void{
+    let funnel:Funnel = evt.value as Funnel;
 
+    //se o funil fo padrao define ele como selecionado
+    this.selectedFunnel = funnel;
+    //define os estagios do funil
+    this.stagesOfFunnel = funnel.stages;
+
+    //monta o menu para cada estagio
+    //monta o menu de busca para cada estagio
+    //realiza a carga dos clientes de cada estagio
+    //constroi o checkbox para cada stage
+    this.stagesToMove = this.stagesOfFunnel;
+    this.stagesOfFunnel.forEach((stg) =>{
+      this.stageChecked[stg.id] = {};
+      this.mountStageMenu(stg.id);
+      this.mountSearchMenu(stg.id);
+      this.loadCustomerState({
+        first: 0,
+        rows: 25,
+        page:0
+      },stg.id,false,null);
+    });
+
+    console.log(evt);
   }
 }
