@@ -5,6 +5,7 @@ import { SecurityService } from 'src/app/services/security.service';
 import { MessageService } from 'primeng/api';
 import { ChatService } from 'src/app/services/chat.service';
 import { Common } from 'src/app/classes/common';
+import { LayoutService } from 'src/app/services/layout.service';
 
 @Component({
   selector: 'app-topbar',
@@ -23,6 +24,7 @@ export class TopbarComponent extends Common implements AfterContentInit,OnDestro
   constructor(private svc:SecurityService,
     private msgSvc:MessageService,
     private chatSvc:ChatService,
+    private laySvc:LayoutService,
     route:Router
     ){
       super(route)
@@ -111,5 +113,9 @@ export class TopbarComponent extends Common implements AfterContentInit,OnDestro
     this.svc.logoff().subscribe(() =>{
       this.route.navigate(["/"]);
     });
+  }
+
+  onMenu(){
+    this.laySvc.onMenuToggle();
   }
 }
