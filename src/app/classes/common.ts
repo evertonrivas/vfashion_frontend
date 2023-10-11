@@ -28,6 +28,7 @@ export class Common{
     totalChecked:number = 0;
     message:string = "";
     searchTerm:string = "";
+    loading:boolean = false;
 
     constructor(protected route:Router){
         this.response = {
