@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { CrmComponent } from './crm.component';
 import { DashboardComponent } from '../common/dashboard/dashboard.component';
 import { KanbanComponent } from './kanban/kanban.component';
-import { ReportsComponent } from './reports/reports.component';
+import { ReportsComponent } from '../reports/reports.component';
 import { ProfileComponent } from '../common/profile/profile.component';
 
 const routes: Routes = [{ 
