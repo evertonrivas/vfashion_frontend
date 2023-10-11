@@ -256,7 +256,7 @@
                 </ng-template>
             </p-dataView>
         </p-tabPanel>
-        <p-tabPanel>
+        <p-tabPanel header="Arquivos">
             <ng-template pTemplate="header">
                 <i class="pi pi-file"></i>&nbsp;<span>Arquivos</span>
             </ng-template>
@@ -427,8 +427,6 @@
                     <button pButton pRipple label="Web" icon="pi pi-globe" class="p-button-sm" (click)="pnlWeb.toggle($event)"></button>
                 </span>
             </div>
-            <!--colocar aqui a lista de contatos e web do novo cliente-->
-
             <ng-container>
                 <div class="col-12 gap-4 p-4" *ngFor="let contact of editableCustomer.contacts">
                     <div class="flex flex-column mt-1">
