@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Funnel, FunnelOptions } from '../models/crm.model';
 import { Entity, EntityHistory, EntityResponse } from '../models/entity.model';
+import { ResponseError } from '../models/paginate.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +15,8 @@ export class CrmService  extends MyHttp{
     super(http);
   }
 
-  getFunnels(opt:FunnelOptions):Observable<Funnel[]>{
-    return this.http.get<Funnel[]>(this.sys_config.backend_crm+'/funnels/',
+  getFunnels(opt:FunnelOptions):Observable<Funnel[]|ResponseError>{
+    return this.http.get<Funnel[]|ResponseError>(this.sys_config.backend_crm+'/funnels/',
     {
       headers:this.getHeader(),
       params: new HttpParams().set("query",opt.query as string)
