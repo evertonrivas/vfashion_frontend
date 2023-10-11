@@ -72,3 +72,81 @@ body{
 .crm-kanban-stage{
     min-height: calc(100% - 6rem);
 }
+
+//icones do menu do admin
+
+.pi-dashboard{
+    @include use-md-icon("dashboard")
+}
+
+.pi-settings{
+    @include use-md-icon("settings")
+}
+
+.pi-user-group{
+    @include use-md-icon("groups")
+}
+
+.pi-marks{
+    @include use-md-icon("token")
+}
+
+.pi-category{
+    @include use-md-icon("diversity_2")
+}
+
+.pi-collection{
+    @include use-md-icon("communities")
+}
+
+.pi-models{
+    @include use-md-icon("checkroom")
+}
+
+.pi-prod-type{
+    @include use-md-icon("styler")
+}
+
+.pi-entities{
+    @include use-md-icon("badge");
+}
+
+.pi-price-table{
+    @include use-md-icon("money")
+}
+
+.pi-colors{
+    @include use-md-icon("palette")
+}
+
+.pi-sizes{
+    @include use-md-icon("straighten")
+}
+
+.pi-funnel{
+    @include use-md-icon("filter_alt")
+}
+
+.pi-stages{
+    @include use-md-icon("page_info")
+}
+
+.pi-events{
+    @include use-md-icon("event_note")
+}
+
+.pi-users{
+    @include use-md-icon("group")
+}
+
+.pi-products{
+    @include use-md-icon("package_2")
+}
+
+.pi-steps{
+    @include use-md-icon("footprint")
+}
+
+.pi-fields{
+    @include use-md-icon("edit_note")
+}
