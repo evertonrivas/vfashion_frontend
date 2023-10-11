@@ -118,7 +118,7 @@ export class LoginComponent implements AfterContentInit{
         localStorage.setItem("level_access",String(this.app_token.level_access));
         localStorage.setItem("message_renew","1");
         switch(this.app_token.level_access){
-          case "A": this.route.navigate(["/selector"]); break;
+          case "A": this.route.navigate(["/admin"]); break;
           case "L": this.route.navigate(["/salesforce"]); break;
           case "R": this.route.navigate(["/selector"]); break;
         }
