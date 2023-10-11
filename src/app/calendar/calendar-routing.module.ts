@@ -4,6 +4,8 @@ import { CalendarComponent } from './calendar.component';
 import { DashboardComponent } from '../common/dashboard/dashboard.component';
 import { GanttComponent } from './gantt/gantt.component';
 import { ProfileComponent } from '../common/profile/profile.component';
+import { FlimvComponent } from './flimv/flimv.component';
+import { ReportsComponent } from '../reports/reports.component';
 
 
 const routes: Routes = [{ 
@@ -18,6 +20,12 @@ const routes: Routes = [{
   },{
     path: 'profile',
     component: ProfileComponent
+  },{
+    path:'flimv',
+    component: FlimvComponent
+  },{
+    path:'reports',
+    component: ReportsComponent
   }]
 }];
 
