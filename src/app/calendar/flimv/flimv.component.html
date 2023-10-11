@@ -1,0 +1,44 @@
+<p-toast key="systemToast"></p-toast>
+<div class="card p-3 flex flex-wrap align-items-center vertical-align-middle mb-3">
+    <label class="font-bold">Configuração de Estratégia Comercial - FLIMV</label>
+</div>
+<div class="card">
+    <p-table [value]="rules">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 100px!important;">Critérios</th>
+                <th class="text-center" colspan="2"><u>F</u>requência <i class="pi pi-fw pi-question-circle" pTooltip="Percentual de vezes que comprou" tooltipStyleClass="text-xs"></i></th>
+                <th class="text-center" colspan="2"><u>L</u>iquidez <i class="pi pi-fw pi-question-circle" pTooltip="Percentual de pagamentos em dia: Em construção" tooltipStyleClass="text-xs"></i></th>
+                <th class="text-center" colspan="2"><u>I</u>nsatisfação <i class="pi pi-fw pi-question-circle" pTooltip="Nº de devoluções por defeito" tooltipStyleClass="text-xs"></i></th>
+                <th class="text-center" colspan="2"><u>M</u>ix <i class="pi pi-fw pi-question-circle" pTooltip="Percentual do mix adquirido" tooltipStyleClass="text-xs"></i></th>
+                <th class="text-center" colspan="2"><u>V</u>olume <i class="pi pi-fw pi-question-circle" pTooltip="Volume aquidirido: Min e Máx" tooltipStyleClass="text-xs"></i></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rule>
+            <tr>
+                <td style="width: 100px!important;">
+                    <i class="pi pi-star" *ngIf="rule.id==curves.FIVE_STARS" style="font-size:9px!important"></i>
+                    <i class="pi pi-star" *ngIf="rule.id==curves.FIVE_STARS || rule.id==curves.FOUR_STARS" style="font-size:9px!important"></i>
+                    <i class="pi pi-star" *ngIf="rule.id==curves.FIVE_STARS || rule.id==curves.FOUR_STARS || rule.id==curves.THREE_STARS" style="font-size:9px!important"></i>
+                    <i class="pi pi-star" *ngIf="rule.id==curves.FIVE_STARS || rule.id==curves.FOUR_STARS || rule.id==curves.THREE_STARS || rule.id==curves.TWO_STARS" style="font-size:9px!important"></i>
+                    <i class="pi pi-star" *ngIf="rule.id==curves.FIVE_STARS || rule.id==curves.FOUR_STARS || rule.id==curves.THREE_STARS || rule.id==curves.TWO_STARS || rule.id==curves.ONE_STAR" style="font-size:9px!important"></i>
+                </td>
+                <td class="vertical-align-middle"><p-slider [(ngModel)]="rule.frequency" styleClass="w-full" [step]="5"></p-slider></td>
+                <td style="width: 15px!important;"><span>{{rule.frequency}}%</span></td>
+                <td class="vertical-align-middle"><p-slider [(ngModel)]="rule.liquidity" styleClass="w-full" [step]="5" [disabled]="true"></p-slider></td>
+                <td style="width: 15px!important;"><span>{{rule.liquidity}}%</span></td>
+                <td class="vertical-align-middle"><p-slider [(ngModel)]="rule.injury" styleClass="w-full"></p-slider></td>
+                <td style="width: 15px!important;"><span>{{rule.injury}}</span></td>
+                <td class="vertical-align-middle"><p-slider [(ngModel)]="rule.mix" styleClass="w-full" [step]="5"></p-slider></td>
+                <td style="width: 15px!important;"><span>{{rule.mix}}%</span></td>
+                <td class="vertical-align-middle"><p-slider [(ngModel)]="rule.volume" styleClass="w-full" [max]="50" [min]="1" [range]="true"></p-slider></td>
+                <td style="width: 15px!important;"><span>{{rule.volume}}</span></td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <div class="flex flex-row w-full justify-content-end mt-2">
+        <p-button styleClass="p-button-danger mr-2" icon="pi pi-ban" label="Cancelar"></p-button>
+        <p-button icon="pi pi-save" label="Salvar" (onClick)="save()"></p-button>
+    </div>
+</div>
+<p-toast></p-toast>

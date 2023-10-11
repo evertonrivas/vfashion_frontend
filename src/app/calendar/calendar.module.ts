@@ -21,6 +21,8 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { ToastModule } from 'primeng/toast';
 import { CascadeSelectModule } from 'primeng/cascadeselect';
 import { TooltipModule } from 'primeng/tooltip';
+import { FlimvComponent } from './flimv/flimv.component';
+import { SliderModule } from 'primeng/slider';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,8 @@ import { TooltipModule } from 'primeng/tooltip';
     EventComponent,
     MilestoneFormComponent,
     EventFormComponent,
-    GanttComponent
+    GanttComponent,
+    FlimvComponent
   ],
   imports: [
     CommonModule,
@@ -46,7 +49,8 @@ import { TooltipModule } from 'primeng/tooltip';
     InputNumberModule,
     ToastModule,
     CascadeSelectModule,
-    TooltipModule
+    TooltipModule,
+    SliderModule
   ]
 })
 export class CalendarModule { }
