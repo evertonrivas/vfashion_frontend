@@ -41,5 +41,5 @@
     <span><i class="pi pi-paperclip"></i>Anexo(s):</span> <span *ngFor="let attach of attachments">{{attach}}</span>
 </div>
 <div class="flex flex-row justify-content-end w-full mt-2">
-    <p-button icon="pi pi-envelope" label="Enviar" styleClass="p-button-sm" (onClick)="sendEmail()"></p-button>
+    <p-button icon="pi pi-envelope" label="Enviar" styleClass="p-button-sm" (onClick)="sendEmail()" [loading]="loading"></p-button>
 </div>

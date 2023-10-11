@@ -1,4 +1,4 @@
-import { Component,Input, ViewChild,Output, EventEmitter,OnChanges, SimpleChanges } from '@angular/core';
+import { Component,Input, ViewChild,Output, EventEmitter,OnChanges, SimpleChanges, AfterViewInit } from '@angular/core';
 import { Message } from 'primeng/api';
 import { AutoComplete, AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 import { Entity, EntityContact, EntityWeb, RepEntity } from 'src/app/models/entity.model';
@@ -19,7 +19,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./customer-data.component.scss'],
   providers: [ConfirmationService]
 })
-export class CustomerDataComponent extends Common implements OnChanges{
+export class CustomerDataComponent extends Common implements OnChanges, AfterViewInit{
   @Input() isVisible:boolean = false;
   @Input() isEditing:boolean = false;
   @Input() representatives:Entity[] = [];
@@ -92,16 +92,18 @@ export class CustomerDataComponent extends Common implements OnChanges{
     private localService:LocationService,
     route:Router){
       super(route);
-      let opt:RequestOptions = {
-        page:1,
-        pageSize:0,
-        query:"can:list_all true"
-      };
-      this.localService.listCities(opt).subscribe({
-        next: (data) =>{
-          this.citySuggestions = data;
-        }
-      });
+  }
+  ngAfterViewInit(): void {
+    let opt:RequestOptions = {
+      page:1,
+      pageSize:0,
+      query:"can:list_all true"
+    };
+    this.localService.listCities(opt).subscribe({
+      next: (data) =>{
+        this.citySuggestions = data;
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
