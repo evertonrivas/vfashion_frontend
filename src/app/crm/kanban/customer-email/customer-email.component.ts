@@ -42,6 +42,7 @@ export class CustomerEmailComponent extends Common{
   }
 
   sendEmail(){
+    this.loading = true;
     this.hasSended = true;
     let mailto:string[] = [];
     if(this.massiveEmail){
@@ -63,10 +64,11 @@ export class CustomerEmailComponent extends Common{
     this.svc.send(mailto,this.subject,this.content,this.attachments).subscribe({
       next: (data) =>{
         this.hasSended = false;
+        this.loading = false;
         if(typeof data==='boolean'){
-          if((data as boolean)==true)
+          if((data as boolean)==true){
             this.messageToShow.emit({key:'systemToast',severity:'success',summary:'E-mail enviado com sucesso!'});
-          else{
+          }else{
             this.messageToShow.emit({key:'systemToast',severity:'error',summary:'Não foi possível enviar o e-mail!'});
           }
         }else{
