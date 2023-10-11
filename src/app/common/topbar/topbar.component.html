@@ -15,17 +15,19 @@
         <button class="p-link layout-topbar-button" [routerLink]="['/calendar/flimv']" pTooltip="FLIMV" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">military_tech</i>
         </button>
-        <button class="p-link layout-topbar-button" [routerLink]="['/calendar/reports']" pTooltip="Relatórios" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+        <!--serah implementado mais adiante-->
+        <!-- <button class="p-link layout-topbar-button" [routerLink]="['/calendar/reports']" pTooltip="Relatórios" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">picture_as_pdf</i>
-        </button>
+        </button> -->
     </ng-container>
     <ng-container *ngIf="module==modules.CRM">
         <button class="p-link layout-topbar-button" [routerLink]="['/crm/kanban']" pTooltip="Kanban" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">view_kanban</i>
         </button>
-        <button class="p-link layout-topbar-button" [routerLink]="['/crm/reports']" pTooltip="Relatórios" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+        <!--serah implementado mais adiante-->
+        <!-- <button class="p-link layout-topbar-button" [routerLink]="['/crm/reports']" pTooltip="Relatórios" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">picture_as_pdf</i>
-        </button>
+        </button> -->
     </ng-container>
     <div #topbarmenu class="layout-topbar-menu">
         <p-overlayPanel #p_module>
@@ -36,6 +38,7 @@
                     <span *ngIf="module!=modules.CRM" class="p-2"><a href="javascript:void(0);" [routerLink]="['/crm']">CRM - Funis</a></span>
                     <span *ngIf="module!=modules.FPR" class="p-2"><a href="javascript:void(0);" [routerLink]="['/return']">FPR - Devoluções</a></span>
                     <span *ngIf="module!=modules.SCM" class="p-2"><a href="javascript:void(0);" [routerLink]="['/calendar']">SCM - Calendário</a></span>
+                    <!-- <span *ngIf="module!=modules.SCM" class="p-2"><a href="javascript:void(0);" [routerLink]="['/calendar']">MPG - Marketing</a></span> -->
                 </div>
             </ng-template>
         </p-overlayPanel>
