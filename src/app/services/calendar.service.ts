@@ -4,6 +4,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { CalendarModel, CalendarEvent, CalendarEventData, CalendarEventType, EventTypeOptions } from '../models/calendar.model';
 import { Observable } from 'rxjs';
 import { Options, RequestResponse, ResponseError } from '../models/paginate.model';
+import { CommercialRule } from '../models/commercial-rule.model';
 
 @Injectable({
   providedIn: 'root'
@@ -67,6 +68,26 @@ export class CalendarService extends MyHttp{
     return this.http.get<CalendarEventType[]|RequestResponse|ResponseError>(this.sys_config.backend_scm+'/event-type/',{
       headers: this.getHeader(),
       params: new HttpParams().set("page",options.page).set("pageSize",options.pageSize).set("query",options.query)
+    });
+  }
+
+  listFlimv():Observable<CommercialRule[]|ResponseError>{
+    return this.http.get<CommercialRule[]|ResponseError>(this.sys_config.backend_scm+'/calendar/flimv',{
+      headers: this.getHeader()
+    });
+  }
+
+  getFlimv(id:number):Observable<CommercialRule|ResponseError>{
+    return this.http.get<CommercialRule|ResponseError>(this.sys_config.backend_scm+'/calendar/flimv/'+id.toString(),{
+      headers: this.getHeader()
+    });
+  }
+
+  saveFlimv(data:CommercialRule[]):Observable<boolean|ResponseError>{
+    return this.http.post<boolean|ResponseError>(this.sys_config.backend_scm+'/calendar/flimv',{
+      "rules": data
+    },{
+      headers: this.getHeader(ContentType.json)
     });
   }
 
