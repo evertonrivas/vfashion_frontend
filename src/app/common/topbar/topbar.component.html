@@ -1,16 +1,22 @@
 <div class="layout-topbar">
-    <img src="assets/images/Bee2Bee.png" height="30" class="mr-4">
-    <button #menubutton class="p-link layout-menu-button layout-topbar-button" *ngIf="module==modules.ADM || module==modules.B2B" [pTooltip]="module==modules.ADM?'Exibir/Ocultar Menu':'Exibir/Ocultar Filtros'" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+    <img src="assets/images/Fast2Bee.png" height="30" class="mr-4">
+    <button #menubutton class="p-link layout-menu-button layout-topbar-button" *ngIf="module==modules.ADM || module==modules.B2B" [pTooltip]="module==modules.ADM?'Exibir/Ocultar Menu':'Exibir/Ocultar Filtros'" tooltipPosition="bottom" tooltipStyleClass="text-xs" (click)="onMenu()">
         <i class="material-symbols-outlined">
             menu
             </i>
     </button>
-    <button class="p-link layout-topbar-button" [routerLink]="[modulePath+'/dashboard']" pTooltip="Dashboard" tooltipPosition="bottom" tooltipStyleClass="text-xs" *ngIf="module!=modules.B2B">
+    <button class="p-link layout-topbar-button" [routerLink]="[modulePath+'/dashboard']" pTooltip="Dashboard" tooltipPosition="bottom" tooltipStyleClass="text-xs" *ngIf="module!=modules.B2B && module!=modules.ADM">
         <i class="material-symbols-outlined">dashboard</i>
     </button>
     <ng-container *ngIf="module==modules.SCM">
         <button class="p-link layout-topbar-button" [routerLink]="['/calendar/gantt']" pTooltip="Calendário" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">calendar_month</i>
+        </button>
+        <button class="p-link layout-topbar-button" [routerLink]="['/calendar/flimv']" pTooltip="FLIMV" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+            <i class="material-symbols-outlined">military_tech</i>
+        </button>
+        <button class="p-link layout-topbar-button" [routerLink]="['/calendar/reports']" pTooltip="Relatórios" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+            <i class="material-symbols-outlined">picture_as_pdf</i>
         </button>
     </ng-container>
     <ng-container *ngIf="module==modules.CRM">
@@ -22,7 +28,18 @@
         </button>
     </ng-container>
     <div #topbarmenu class="layout-topbar-menu">
-        <button class="p-link layout-topbar-button" *ngIf="userLevel=='A'" [routerLink]="['/selector']" pTooltip="Trocar módulo" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+        <p-overlayPanel #p_module>
+            <ng-template pTemplate="content">
+                <div class="flex flex-column w-full">
+                    <span *ngIf="module!=modules.ADM" class="p-2"><a href="javascript:void(0);" [routerLink]="['/admin']">Adminstrativo</a></span>
+                    <span *ngIf="module!=modules.B2B" class="p-2"><a href="javascript:void(0);" [routerLink]="['/salesforce']">B2B - Salesforce</a></span>
+                    <span *ngIf="module!=modules.CRM" class="p-2"><a href="javascript:void(0);" [routerLink]="['/crm']">CRM - Funis</a></span>
+                    <span *ngIf="module!=modules.FPR" class="p-2"><a href="javascript:void(0);" [routerLink]="['/return']">FPR - Devoluções</a></span>
+                    <span *ngIf="module!=modules.SCM" class="p-2"><a href="javascript:void(0);" [routerLink]="['/calendar']">SCM - Calendário</a></span>
+                </div>
+            </ng-template>
+        </p-overlayPanel>
+        <button class="p-link layout-topbar-button" *ngIf="userLevel=='A'" pTooltip="Trocar módulo" tooltipPosition="bottom" tooltipStyleClass="text-xs"  (click)="p_module.toggle($event)">
             <i class="material-symbols-outlined">
                 deployed_code
             </i>
