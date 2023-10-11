@@ -35,7 +35,6 @@ import { CustomerDataComponent } from './kanban/customer-data/customer-data.comp
 import { CustomerFileComponent } from './kanban/customer-file/customer-file.component';
 import { CustomerEmailComponent } from './kanban/customer-email/customer-email.component';
 import { CustomerHistoryComponent } from './kanban/customer-history/customer-history.component';
-import { ReportsComponent } from './reports/reports.component';
 import { NgxMaskPipe, NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { EditorModule } from 'primeng/editor';
 import { CalendarModule } from 'primeng/calendar';
@@ -47,8 +46,7 @@ import { CalendarModule } from 'primeng/calendar';
     CustomerDataComponent,
     CustomerFileComponent,
     CustomerEmailComponent,
-    CustomerHistoryComponent,
-    ReportsComponent
+    CustomerHistoryComponent
   ],
   imports: [
     CommonModule,
