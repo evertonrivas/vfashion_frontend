@@ -43,12 +43,4 @@ export class MyHttp {
         }
         return header;
     }
-
-    protected getListAll(defaultOrder:boolean = true,orderBy:string=''):HttpParams{
-        let param = new HttpParams().set('list_all',true);
-        if(!defaultOrder){
-            param = param.set('order_by',orderBy);
-        }
-        return param;
-    }
 }
