@@ -1,5 +1,6 @@
 <div class="layout-topbar">
-    <img src="assets/images/Fast2Bee.png" height="30" class="mr-4">
+    <img *ngIf="module!=modules.B2B" src="assets/images/Fast2Bee.png" height="30" class="mr-4">
+    <a *ngIf="module==modules.B2B" href="javascript:void(0)" [routerLink]="[modulePath+'/grid']"><img src="assets/images/Fast2Bee.png" height="30" class="mr-4"></a>
     <button #menubutton class="p-link layout-menu-button layout-topbar-button" *ngIf="module==modules.ADM || module==modules.B2B" [pTooltip]="module==modules.ADM?'Exibir/Ocultar Menu':'Exibir/Ocultar Filtros'" tooltipPosition="bottom" tooltipStyleClass="text-xs" (click)="onMenu()">
         <i class="material-symbols-outlined">
             menu
@@ -47,9 +48,20 @@
                 deployed_code
             </i>
         </button>
-        <button *ngIf="module==modules.B2B" class="p-link layout-topbar-button" pTooltip="Produtos do Pedido" tooltipPosition="bottom" tooltipStyleClass="text-xs">
-            <i class="material-symbols-outlined" pBadge value="1" severity="warning" styleClass="text-xs">shopping_cart</i>
-        </button>
+        <ng-container *ngIf="module==modules.B2B" >
+            <button class="p-link layout-topbar-button" pTooltip="Histórico" tooltipPosition="bottom" tooltipStyleClass="text-xs" [routerLink]="[modulePath+'/history']">
+                <i class="material-symbols-outlined">work_history</i>
+            </button>
+            <button class="p-link layout-topbar-button" pTooltip="Sugestão de pedido usando I.A" tooltipPosition="bottom" tooltipStyleClass="text-xs" [routerLink]="[modulePath+'/order']">
+                <i class="material-symbols-outlined">network_intelligence_update</i>
+            </button>
+            <button class="p-link layout-topbar-button" pTooltip="Devoluções" tooltipPosition="bottom" tooltipStyleClass="text-xs" [routerLink]="[modulePath+'/return']">
+                <i class="material-symbols-outlined">box</i>
+            </button>
+            <button class="p-link layout-topbar-button" pTooltip="Produtos do Pedido" tooltipPosition="bottom" tooltipStyleClass="text-xs" (click)="onCart()">
+                <i class="material-symbols-outlined" pBadge value="0" severity="warning" styleClass="text-xs">shopping_cart</i>
+            </button>
+        </ng-container>
         <p-overlayPanel #msgs>
             <ng-template pTemplate="content">
                 Teste de mensagem

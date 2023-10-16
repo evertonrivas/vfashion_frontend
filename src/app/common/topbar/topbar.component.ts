@@ -115,7 +115,11 @@ export class TopbarComponent extends Common implements AfterContentInit,OnDestro
     });
   }
 
-  onMenu(){
+  onMenu():void{
     this.laySvc.onMenuToggle();
+  }
+
+  onCart():void{
+    this.laySvc.onCartToggle();
   }
 }
