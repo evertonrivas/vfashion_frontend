@@ -81,25 +81,25 @@ export class DashboardComponent extends Common implements AfterViewInit,OnInit,O
       this.topCards[0].icon      = "finance_chip";
       this.topCards[0].iconColor = "green"
       this.topCards[0].title     = "Valor em Pedidos";
-      this.topCards[0].value     = valueOrder;
+      this.topCards[0].value     = valueOrder as number;
       this.topCards[0].dataType  = FormatType.MONEY;
 
       this.topCards[1].icon      = "order_approve";
       this.topCards[1].iconColor = "blue";
       this.topCards[1].title     = "Nº de Pedidos";
-      this.topCards[1].value     = countOrder;
+      this.topCards[1].value     = countOrder as number;
       this.topCards[1].dataType  = FormatType.NUMBER;
 
       this.topCards[2].icon      = "store";
       this.topCards[2].iconColor = "purple";
       this.topCards[2].title     = "Nº de Clientes";
-      this.topCards[2].value     = countCustomer;
+      this.topCards[2].value     = countCustomer as number;
       this.topCards[2].dataType  = FormatType.NUMBER;
 
       this.topCards[3].icon      = "apartment";
       this.topCards[3].iconColor = "orange";
       this.topCards[3].title     = "Nº de Representantes";
-      this.topCards[3].value     = countRep;
+      this.topCards[3].value     = countRep as number;
       this.topCards[3].dataType  = FormatType.NUMBER;
     });
     

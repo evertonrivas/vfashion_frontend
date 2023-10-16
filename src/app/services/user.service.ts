@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ContentType, MyHttp } from './my-http';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { User, UserResponse } from '../models/user.model';
+import { User } from '../models/user.model';
 import { Observable } from 'rxjs';
-import { Options, ResponseError } from '../models/paginate.model';
+import { Options, RequestResponse, ResponseError } from '../models/paginate.model';
 
 @Injectable({
   providedIn: 'root'
@@ -21,9 +21,9 @@ export class UserService extends MyHttp{
     });
   }
 
-  userList(options:Options):Observable<User[]|UserResponse|ResponseError>{
+  userList(options:Options):Observable<User[]|RequestResponse|ResponseError>{
     var url = this.sys_config.backend_cmm+"/users/";
-    return this.http.get<User[]|UserResponse|ResponseError>(url,{
+    return this.http.get<User[]|RequestResponse|ResponseError>(url,{
       headers: this.getHeader(),
       params: new HttpParams().set("page",options.page).set("pageSize",options.pageSize).set("query",options.query)
     });

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ContentType, MyHttp } from './my-http';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { CalendarModel, CalendarEvent, CalendarEventData, CalendarEventType, EventTypeOptions } from '../models/calendar.model';
+import { CalendarModel, CalendarEvent, CalendarEventData, CalendarEventType } from '../models/calendar.model';
 import { Observable } from 'rxjs';
 import { Options, RequestResponse, ResponseError } from '../models/paginate.model';
 import { CommercialRule } from '../models/commercial-rule.model';
@@ -15,21 +15,21 @@ export class CalendarService extends MyHttp{
     super(http);
   }
 
-  calendarLoad(options:Options):Observable<CalendarModel[]>{
-    return this.http.get<CalendarModel[]>(this.sys_config.backend_scm+'/calendar/',{
+  calendarLoad(options:Options):Observable<CalendarModel[]|RequestResponse|ResponseError>{
+    return this.http.get<CalendarModel[]|RequestResponse|ResponseError>(this.sys_config.backend_scm+'/calendar/',{
       headers: this.getHeader(),
       params: new HttpParams().set("page",options.page).set("pageSize",options.pageSize).set("query",options.query)
     });
   }
 
-  calendarEventLoad(options:Options):Observable<CalendarEvent[]>{
-    return this.http.get<CalendarEvent[]>(this.sys_config.backend_scm+'/calendar/events',{
+  calendarEventLoad(options:Options):Observable<CalendarEvent[]|RequestResponse|ResponseError>{
+    return this.http.get<CalendarEvent[]|RequestResponse|ResponseError>(this.sys_config.backend_scm+'/calendar/events',{
       headers: this.getHeader(),
       params: new HttpParams().set("page",options.page).set("pageSize",options.pageSize).set("query",options.query)
     })
   }
 
-  calendarEventSave(evt:CalendarEventData):Observable<any>{
+  calendarEventSave(evt:CalendarEventData):Observable<number|boolean|ResponseError>{
     let data = {
         name: evt.name,
         date_start: evt.date_start,
@@ -39,26 +39,26 @@ export class CalendarService extends MyHttp{
         budget_value: evt.budget_value,
         id_parent: evt.id_parent
       }
-    return this.http.post<any>(this.sys_config.backend_scm+'/calendar/'+(evt.id!=0?evt.id.toString():''),data,{
+    return this.http.post<number|boolean|ResponseError>(this.sys_config.backend_scm+'/calendar/'+(evt.id!=0?evt.id.toString():''),data,{
       headers: this.getHeader(ContentType.json)
     });
   }
 
-  calendarEventDelete(evts:number[]):Observable<boolean>{
-    return this.http.delete<boolean>(this.sys_config.backend_scm+'/calendar/',{
+  calendarEventDelete(evts:number[]):Observable<boolean|ResponseError>{
+    return this.http.delete<boolean|ResponseError>(this.sys_config.backend_scm+'/calendar/',{
       headers:this.getHeader(ContentType.form),
       body: evts
     });
   }
 
-  eventTypeSave(event:CalendarEventType):Observable<boolean>{
+  eventTypeSave(event:CalendarEventType):Observable<boolean|ResponseError>{
     let data = {
       name: event.name,
       hex_color: event.hex_color,
       has_budget: event.has_budget
     }
 
-    return this.http.post<boolean>(this.sys_config.backend_scm+'/event-type/'+(event.id!=0?event.id.toString():''),data,{
+    return this.http.post<boolean|ResponseError>(this.sys_config.backend_scm+'/event-type/'+(event.id!=0?event.id.toString():''),data,{
       headers: this.getHeader(ContentType.json)
     });
   }

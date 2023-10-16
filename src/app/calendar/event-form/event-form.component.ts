@@ -2,9 +2,10 @@ import { Component,Input,OnDestroy,Output,EventEmitter, ViewChild} from '@angula
 import { Router } from '@angular/router';
 import { Dropdown } from 'primeng/dropdown';
 import { Common } from 'src/app/classes/common';
-import { CalendarEvent, CalendarEventData, CalendarEventType, EventTypeOptions } from 'src/app/models/calendar.model';
+import { CalendarEvent, CalendarEventData, CalendarEventType } from 'src/app/models/calendar.model';
 import { CalendarService } from 'src/app/services/calendar.service';
 import { MessageService } from 'primeng/api';
+import { Calendar } from 'primeng/calendar';
 
 
 @Component({
@@ -204,7 +205,7 @@ export class EventFormComponent extends Common implements OnDestroy{
           pageSize: 1
         }).subscribe({
           next: (data) =>{
-            this.exsistentEvents = data;
+            this.exsistentEvents = data as CalendarEvent[];
           },
           complete: ()  => {
             this.eventParentEventId = parentEventType.id

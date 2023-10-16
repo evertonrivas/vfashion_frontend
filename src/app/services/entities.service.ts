@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { ContentType, MyHttp } from './my-http';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Entity, EntityContact, EntityWeb, HistoryResponse } from '../models/entity.model';
-import { Options, RequestResponse } from '../models/paginate.model';
+import { Entity, EntityContact, EntityWeb } from '../models/entity.model';
+import { Options, RequestResponse, ResponseError } from '../models/paginate.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,17 +14,17 @@ export class EntitiesService extends MyHttp {
     super(http);
   }
 
-  loadEntity(id:number|null):Observable<Entity>{
+  loadEntity(id:number|null):Observable<Entity|ResponseError>{
     var url = this.sys_config.backend_cmm+'/legal-entities/'+(id!=null?id:localStorage.getItem('id_user'));
-    return this.http.get<Entity>(url,{
+    return this.http.get<Entity|ResponseError>(url,{
       headers:this.getHeader()
     });
   }
 
   //realiza insert e update de um entity
-  saveEntity(entity:Entity):Observable<number>{
+  saveEntity(entity:Entity):Observable<number|boolean|ResponseError>{
     var url = this.sys_config.backend_cmm+'/legal-entities/'+(entity.id>0?entity.id.toString():'');
-    return this.http.post<number>(url,{
+    return this.http.post<number|boolean|ResponseError>(url,{
       "id": entity.id,
       "name": entity.name,
       "fantasy_name":entity.fantasy_name,
@@ -40,46 +40,46 @@ export class EntitiesService extends MyHttp {
     });
   }
 
-  saveContacts(contacts:EntityContact[]):Observable<boolean>{
+  saveContacts(contacts:EntityContact[]):Observable<boolean|ResponseError>{
     let url = this.sys_config.backend_cmm+'/legal-entities/save-contacts';
-    return this.http.post<boolean>(url,JSON.stringify(contacts),{
+    return this.http.post<boolean|ResponseError>(url,JSON.stringify(contacts),{
       headers:this.getHeader(ContentType.json)
     });
   }
 
-  deleteContacts(contacts:EntityContact[]):Observable<boolean>{
+  deleteContacts(contacts:EntityContact[]):Observable<boolean|ResponseError>{
     let url = this.sys_config.backend_cmm+'/legal-entities/save-contacts';
-    return this.http.delete<boolean>(url,{
+    return this.http.delete<boolean|ResponseError>(url,{
       headers: this.getHeader(ContentType.json),
       body:JSON.stringify(contacts)
     });
   }
 
-  saveWebs(webs:EntityWeb[]):Observable<boolean>{
+  saveWebs(webs:EntityWeb[]):Observable<boolean|ResponseError>{
     let url = this.sys_config.backend_cmm+'/legal-entities/save-webs';
-    return this.http.post<boolean>(url,JSON.stringify(webs),{
+    return this.http.post<boolean|ResponseError>(url,JSON.stringify(webs),{
       headers:this.getHeader(ContentType.json)
     });
   }
 
-  deleteWebs(webs:EntityWeb[]):Observable<boolean>{
+  deleteWebs(webs:EntityWeb[]):Observable<boolean|ResponseError>{
     let url = this.sys_config.backend_cmm+'/legal-entities/save-webs';
-    return this.http.delete<boolean>(url,{
+    return this.http.delete<boolean|ResponseError>(url,{
       headers: this.getHeader(ContentType.json),
       body: JSON.stringify(webs)
     });
   }
 
-  deleteFile(id:number):Observable<boolean>{
+  deleteFile(id:number):Observable<boolean|ResponseError>{
     let url = this.sys_config.backend_cmm+'/upload/'+id.toString();
     return this.http.delete<boolean>(url,{
       headers: this.getHeader(ContentType.json)
     });
   }
 
-  loadHistory(idCustomer:number,opt:Options):Observable<HistoryResponse>{
+  loadHistory(idCustomer:number,opt:Options):Observable<Entity[]|RequestResponse|ResponseError>{
     let url = this.sys_config.backend_cmm+'/legal-entities/load-history/'+idCustomer.toString();
-    return this.http.get<HistoryResponse>(url,{
+    return this.http.get<Entity[]|RequestResponse|ResponseError>(url,{
       headers: this.getHeader(),
       params: new HttpParams().set('page',opt.page).set("pageSize",opt.pageSize).set('query',opt.query)
     });

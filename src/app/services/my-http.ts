@@ -8,12 +8,6 @@ export enum ContentType {
     none = 3
 }
 
-export interface RequestOptions{
-    page:number,
-    pageSize:number,
-    query:string|null
-}
-
 export class MyHttp {
     sys_config:any = (configData as any).default;
     constructor(protected http:HttpClient){

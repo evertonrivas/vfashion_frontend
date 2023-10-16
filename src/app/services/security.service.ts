@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ContentType, MyHttp } from './my-http';
+import { ResponseError } from '../models/paginate.model';
 
 @Injectable({
   providedIn: 'root'
@@ -18,8 +19,8 @@ export class SecurityService extends MyHttp{
     return this.http.post<any>(this.sys_config.backend_cmm+"/users/auth",frmData);
   }
 
-  checkLogged():Observable<boolean>{
-    return this.http.put<boolean>(this.sys_config.backend_cmm+"/users/auth",{
+  checkLogged():Observable<boolean|ResponseError>{
+    return this.http.put<boolean|ResponseError>(this.sys_config.backend_cmm+"/users/auth",{
       "token": localStorage.getItem('token_access')
     },{
       headers: this.getHeader(ContentType.json)

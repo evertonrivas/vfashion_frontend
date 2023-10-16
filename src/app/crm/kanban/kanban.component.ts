@@ -3,17 +3,16 @@ import { Router } from '@angular/router';
 import { Common } from 'src/app/classes/common';
 import { CrmService } from 'src/app/services/crm.service';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
-import { Funnel, FunnelOptions, FunnelStage } from 'src/app/models/crm.model';
+import { Funnel, FunnelStage } from 'src/app/models/crm.model';
 import { DataOrder, DataSearch } from 'src/app/models/system.enum';
 import { Entity, EntityContact, EntityNotification, EntityWeb } from 'src/app/models/entity.model';
 import { Dropdown, DropdownChangeEvent } from 'primeng/dropdown';
 import { Checkbox } from 'src/app/models/checkbox.model';
 import { HttpHeaders } from '@angular/common/http';
 import { CustomerEmailComponent } from './customer-email/customer-email.component';
-import { RequestOptions } from 'src/app/services/my-http';
 import { EntitiesService } from 'src/app/services/entities.service';
 import * as sys_config from 'src/assets/config.json';
-import { RequestResponse, ResponseError } from 'src/app/models/paginate.model';
+import { Options, RequestResponse, ResponseError } from 'src/app/models/paginate.model';
 import { User } from 'src/app/models/user.model';
 import { AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 import { UserService } from 'src/app/services/user.service';
@@ -242,9 +241,9 @@ export class KanbanComponent extends Common implements AfterContentInit{
   loadCustomerState(evt:any,idStage:number,has_next:boolean=false,query:string|null = null){
     this.rows[idStage]  = evt.rows;
     this.first[idStage] = evt.first;
-    let opts:RequestOptions = {
+    let opts:Options = {
       page: (evt.page+1),
-      query: query,
+      query: query as string,
       pageSize: 0
     }
     this.customersOfStage[idStage] = {
@@ -259,7 +258,7 @@ export class KanbanComponent extends Common implements AfterContentInit{
     };
     this.svc.getCustomersOfStage(idStage,opts).subscribe({
       next: (data) =>{
-        this.customersOfStage[idStage] = data;
+        this.customersOfStage[idStage] = data as RequestResponse;
       }
     });
   }
@@ -417,7 +416,7 @@ export class KanbanComponent extends Common implements AfterContentInit{
     if(isEdit){
       this.entSvc.loadEntity(idCustomer).subscribe({
         next: (data) => {
-          this.infoCustomer = data;
+          this.infoCustomer = data as Entity;
           this.infoVisible = true;
         }
       });

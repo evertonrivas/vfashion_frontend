@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Table } from 'primeng/table';
 import { Calendar } from 'primeng/calendar';
 import { Common } from 'src/app/classes/common';
-import { CalendarModel, CalendarEvent, CalendarOptions } from 'src/app/models/calendar.model';
+import { CalendarModel, CalendarEvent } from 'src/app/models/calendar.model';
 import { CalendarService } from 'src/app/services/calendar.service';
 import { ConfirmationService, MessageService, ConfirmEventType } from 'primeng/api';
 import { PrimeNGConfig } from 'primeng/api';
@@ -89,7 +89,7 @@ export class GanttComponent extends Common implements OnDestroy,OnInit{
     //realiza carga dos eventos
     this.serviceSub[1] = this.svc.calendarEventLoad(this.options).subscribe({
       next: (data) =>{
-        this.calendarEvents = data;
+        this.calendarEvents = data as CalendarEvent[];
       }
     });
   }

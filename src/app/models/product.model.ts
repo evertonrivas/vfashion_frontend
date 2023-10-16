@@ -23,11 +23,6 @@ export interface Product {
     images: Image[]
 }
 
-export interface ResponseProduct{
-    pagination: Paginate,
-    data: Product[]
-}
-
 export interface B2bBrand{
     id: number,
     name: string|null,
@@ -70,21 +65,6 @@ export interface Color{
     hexcode:string,
     name:string,
     color:string
-}
-
-export interface GalleryOptions{
-    orderBy:string,
-    orderDir:'ASC' | 'DESC',
-    search:string,
-    brand: string,
-    collection: string,
-    category: string,
-    model: string,
-    type: string,
-    color: string,
-    size: string,
-    pagSize:number,
-    page:number
 }
 
 export interface ProductStockSizes{

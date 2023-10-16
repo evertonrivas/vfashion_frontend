@@ -34,19 +34,6 @@ export interface OrderHistory{
     date_created:string
 }
 
-export interface HistoryOptions{
-    orderBy:string | null,
-    orderDir:'ASC' | 'DESC',
-    pagSize:number | null,
-    page:number
-}
-
-
-export interface PaginativeHistory{
-    pagination: Paginate,
-    data: OrderHistory[]
-}
-
 export interface CartItem{
     id_customer: number,
     id_product: number,

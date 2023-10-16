@@ -1,7 +1,6 @@
 import { Component, Input,OnChanges, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { Common } from 'src/app/classes/common';
-import { HistoryResponse } from 'src/app/models/entity.model';
 import { RequestResponse } from 'src/app/models/paginate.model';
 import { CrmService } from 'src/app/services/crm.service';
 import { EntitiesService } from 'src/app/services/entities.service';
@@ -32,7 +31,7 @@ export class CustomerHistoryComponent extends Common implements OnChanges{
   listHistory():void{
     this.svc.loadHistory(this.idCustomer,this.options).subscribe({
       next: (data) =>{
-        this.response = data as HistoryResponse;
+        this.response = data as RequestResponse;
       }
     });
   }

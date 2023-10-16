@@ -6,12 +6,12 @@ import { City } from 'src/app/models/place.model';
 import { EntitiesService } from 'src/app/services/entities.service';
 import { ConfirmationService } from 'primeng/api';
 import { LocationService } from 'src/app/services/location.service';
-import { RequestOptions } from 'src/app/services/my-http';
 import { Dropdown, DropdownChangeEvent } from 'primeng/dropdown';
 import { Funnel, FunnelStage } from 'src/app/models/crm.model';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { Common } from 'src/app/classes/common';
 import { Router } from '@angular/router';
+import { Options } from 'src/app/models/paginate.model';
 
 @Component({
   selector: 'app-customer-data',
@@ -94,14 +94,14 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
       super(route);
   }
   ngAfterViewInit(): void {
-    let opt:RequestOptions = {
+    let opt:Options = {
       page:1,
       pageSize:0,
       query:"can:list_all true"
     };
     this.localService.listCities(opt).subscribe({
       next: (data) =>{
-        this.citySuggestions = data;
+        this.citySuggestions = data as City[];
       }
     });
   }
@@ -200,7 +200,7 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
       && this.editableCustomer.agent!=undefined){
         this.svc.saveEntity(this.editableCustomer as Entity).subscribe({
           next: (data) =>{
-            if(data > 0){
+            if(data as number > 0){
               this.messageToShow.emit({ key:'systemToast',severity:'success',summary:'Dados do cliente salvos com sucesso!'});
               this.hasSended = false;
               this.reloadData();
@@ -425,7 +425,7 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
   private reloadData():void{
     this.svc.loadEntity(this.editableCustomer.id).subscribe({
       next: (data) =>{
-        this.editableCustomer = data;
+        this.editableCustomer = data as Entity;
       }
     });
   }

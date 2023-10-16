@@ -1,7 +1,7 @@
 import { Component, OnDestroy, AfterContentInit,Input,Output,EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { Common } from 'src/app/classes/common';
-import { CalendarEvent, CalendarEventData, CalendarEventType, EventTypeOptions } from 'src/app/models/calendar.model';
+import { CalendarEvent, CalendarEventData, CalendarEventType } from 'src/app/models/calendar.model';
 import { CalendarService } from 'src/app/services/calendar.service';
 import { MessageService } from 'primeng/api';
 import { RequestResponse } from 'src/app/models/paginate.model';

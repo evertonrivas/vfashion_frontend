@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable,Subject } from 'rxjs';
 import { MyHttp, ContentType } from './my-http';
-import { CartContent, CartItem, HistoryOptions, PaginativeHistory, PaymentCondition } from 'src/app/models/order.model';
+import { CartContent, CartItem, OrderHistory, PaymentCondition } from 'src/app/models/order.model';
 import { Product } from 'src/app/models/product.model';
+import { Options, RequestResponse, ResponseError } from '../models/paginate.model';
 
 
 @Injectable({
@@ -23,9 +24,9 @@ export class OrderService extends MyHttp{
   }
 
   //adiciona os produtos ao carrinho de compras apenas
-  addToCart(cItens:CartItem[]):Observable<boolean>{
+  addToCart(cItens:CartItem[]):Observable<boolean|ResponseError>{
 
-    return this.http.post<boolean>(this.sys_config.backend_b2b+'/cart/',cItens,{
+    return this.http.post<boolean|ResponseError>(this.sys_config.backend_b2b+'/cart/',cItens,{
       headers: this.getHeader(ContentType.json)
     });
   }
@@ -35,9 +36,9 @@ export class OrderService extends MyHttp{
     total_value:number,
     installments:number,
     installment_value:number,
-    total_itens:number):Observable<number>{
+    total_itens:number):Observable<number|ResponseError>{
 
-    return this.http.post<number>(this.sys_config.backend_b2b+'/orders/',{
+    return this.http.post<number|ResponseError>(this.sys_config.backend_b2b+'/orders/',{
       "make_online": true,
       "id_payment_condition": id_payment,
       "id_customer": localStorage.getItem("id_profile"),
@@ -51,49 +52,40 @@ export class OrderService extends MyHttp{
     );
   }
 
-  countMyItens():Observable<number>{
-    return this.http.get<number>(this.sys_config.backend_b2b+'/cart/total/'+localStorage.getItem("id_profile"),{
+  countMyItens():Observable<number|ResponseError>{
+    return this.http.get<number|ResponseError>(this.sys_config.backend_b2b+'/cart/total/'+localStorage.getItem("id_profile"),{
       headers: this.getHeader()
     });
   }
 
-  getItemData(prod:Product):Observable<CartContent>{
-    return this.http.get<CartContent>(this.sys_config.backend_b2b+'/cart/'+prod.id.toString()+'?id_profile='+localStorage.getItem("id_profile"))
+  getItemData(prod:Product):Observable<CartContent|ResponseError>{
+    return this.http.get<CartContent|ResponseError>(this.sys_config.backend_b2b+'/cart/'+prod.id.toString()+'?id_profile='+localStorage.getItem("id_profile"))
   }
 
-  listMyItens():Observable<CartContent[]>{
-    return this.http.get<CartContent[]>(this.sys_config.backend_b2b+'/cart/?id_profile='+localStorage.getItem("id_profile"),{
+  listMyItens():Observable<CartContent[]|RequestResponse|ResponseError>{
+    return this.http.get<CartContent[]|RequestResponse|ResponseError>(this.sys_config.backend_b2b+'/cart/?id_profile='+localStorage.getItem("id_profile"),{
       headers: this.getHeader()
     });
   }
 
-  listPayment():Observable<PaymentCondition[]>{
-    return this.http.get<PaymentCondition[]>(this.sys_config.backend_b2b+'/payment-conditions/',{
+  listPayment(opt:Options):Observable<PaymentCondition[]|RequestResponse|ResponseError>{
+    return this.http.get<PaymentCondition[]|RequestResponse|ResponseError>(this.sys_config.backend_b2b+'/payment-conditions/',{
       headers: this.getHeader(),
-      params:this.getListAll(false,"name")
+      params: new HttpParams().set("page",opt.page).set("pageSize",opt.pageSize).set("query",opt.query)
     });
   }
 
-  delete(ids:number[]):Observable<boolean>{
-    return this.http.delete<boolean>(this.sys_config.backend_b2b+'/cart/',{
+  delete(ids:number[]):Observable<boolean|ResponseError>{
+    return this.http.delete<boolean|ResponseError>(this.sys_config.backend_b2b+'/cart/',{
       headers: this.getHeader(ContentType.json),
       body: JSON.stringify(ids)
     });
   }
 
-  listMyOrders(options:HistoryOptions):Observable<PaginativeHistory>{
-    let httpParams = new HttpParams();
-    if(options.orderBy!=null){
-      httpParams = httpParams.set("order_by",String(options.orderBy))
-      .set("order_dir",options.orderDir);
-    }
-    if(options.pagSize!=null){
-      httpParams = httpParams.set("pageSize",String(options.pagSize));
-    }
-    httpParams = httpParams.set("page",String(options.page));
-    return this.http.get<PaginativeHistory>(this.sys_config.backend_b2b+'/orders/history/'+localStorage.getItem("id_profile"),{
+  listMyOrders(options:Options):Observable<OrderHistory[]|RequestResponse|ResponseError>{
+    return this.http.get<OrderHistory[]|RequestResponse|ResponseError>(this.sys_config.backend_b2b+'/orders/history/'+localStorage.getItem("id_profile"),{
       headers: this.getHeader(),
-      params: httpParams
+      params: new HttpParams().set("page",options.page).set("pageSize",options.pageSize).set("query",options.query)
     });
   }
 }

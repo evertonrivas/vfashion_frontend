@@ -39,16 +39,6 @@ export interface Entity {
     date_updated: string | undefined
 }
 
-export interface EntityResponse{
-    pagination: Paginate
-    data: Entity[]
-}
-
-export interface HistoryResponse{
-    pagination: Paginate
-    data: EntityHistory[]
-}
-
 export interface EntityContact{
     id:number,
     id_legal_entity:number,

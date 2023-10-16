@@ -17,15 +17,3 @@ export interface FunnelStage{
     date_created:string,
     date_updated:string|null
 }
-
-export interface FunnelOptions{
-    page:number|null,
-    pageSize:number|null,
-    query:string|null
-}
-
-export interface FunnelStageOptions{
-    page:number|null,
-    pageSize:number|null,
-    query:string|null
-}
