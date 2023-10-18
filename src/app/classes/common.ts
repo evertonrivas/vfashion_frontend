@@ -4,15 +4,17 @@ import { Options, RequestResponse } from "../models/paginate.model";
 import { FileType, ModuleName } from "../models/system.enum";
 import { Router } from "@angular/router";
 import { MenuItem } from "primeng/api/menuitem";
+import * as sys_config from 'src/assets/config.json';
 
 export class Common{
+    sysconfig = ((sys_config as any).default);
     module:ModuleName = ModuleName.NONE;
     modulePath:string = "";
     modules = ModuleName;
     response:RequestResponse;
     options:Options = {
-        page:1,
-        pageSize: 25,
+        page: 1,
+        pageSize: this.sysconfig.system.pageSize,
         query:''
     };
     masterChecked:boolean = false;
