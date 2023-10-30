@@ -31,6 +31,7 @@ export class Common{
     message:string = "";
     searchTerm:string = "";
     loading:boolean = false;
+    showDialog:boolean = false;
 
     constructor(protected route:Router){
         this.response = {
