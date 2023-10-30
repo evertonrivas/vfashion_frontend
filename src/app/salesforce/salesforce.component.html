@@ -1,6 +1,48 @@
 <div class="layout-wrapper">
     <app-topbar></app-topbar>
     <div class="layout-main-container">
-        <router-outlet></router-outlet>
+        <div class="layout-main">
+            <router-outlet></router-outlet>
+        </div>        
     </div>
 </div>
+<p-sidebar [(visible)]="sidebarVisible" styleClass="w-25rem">
+    <div class="flex flex-column w-full">
+        <label class="mb-2">Marca(s):</label>
+        <p-multiSelect styleClass="w-full" emptyMessage="Nenhum registro encontrado!" [options]="all_brand" [(ngModel)]="filter.brands" optionLabel="name" placeholder="Selecione..."></p-multiSelect>
+    </div>
+    <div class="flex flex-column w-full mt-2">
+        <label class="mb-2">Coleção(ões):</label>
+        <p-multiSelect styleClass="w-full" emptyMessage="Nenhum registro encontrado!" [options]="all_collect" [(ngModel)]="filter.collections" optionLabel="name" placeholder="Selecione um ou mais itens..."></p-multiSelect>
+    </div>
+    <div class="flex flex-column w-full mt-2">
+        <label class="mb-2">Categoria(s)/Coordenado(s):</label>
+        <p-multiSelect styleClass="w-full" emptyMessage="Nenhum registro encontrado!" [options]="all_categ" [(ngModel)]="filter.categories" optionLabel="name" placeholder="Selecione um ou mais itens..."></p-multiSelect>
+    </div>
+    <div class="flex flex-column w-full mt-2">
+        <label class="mb-2">Modelo(s):</label>
+        <p-multiSelect styleClass="w-full" emptyMessage="Nenhum registro encontrado!" [options]="all_model" [(ngModel)]="filter.models" optionLabel="name" placeholder="Selecione um ou mais itens..."></p-multiSelect>
+    </div>
+    <div class="flex flex-column w-full mt-2">
+        <label class="mb-2">Tipo(s):</label>
+        <p-multiSelect styleClass="w-full" emptyMessage="Nenhum registro encontrado!" [options]="all_type" [(ngModel)]="filter.types" optionLabel="name" placeholder="Selecione um ou mais itens..."></p-multiSelect>
+    </div>
+    <div class="flex flex-column w-full mt-2">
+        <label class="mb-2">Tamanho(s):</label>
+        <p-multiSelect styleClass="w-full" emptyMessage="Nenhum registro encontrado!" [options]="all_size" [(ngModel)]="filter.sizes" optionLabel="name" placeholder="Selecione um ou mais itens..."></p-multiSelect>
+    </div>
+    <div class="flex flex-column w-full mt-2 mb-2">
+        <label class="mb-2">Cor(es):</label>
+        <p-multiSelect styleClass="w-full" emptyMessage="Nenhum registro encontrado!" [options]="all_color" [(ngModel)]="filter.colors" optionLabel="name" placeholder="Selecione um ou mais itens...">
+            <ng-template pTemplate="item" let-item>
+                <span class="border-round-sm pl-2 pr-2 mr-2" [ngStyle]="{'width': '15px', 'height':'10px', 'background-color': item.hexcode}"></span> {{item.name}}
+            </ng-template>
+        </p-multiSelect>
+    </div>
+    <p-button icon="pi pi-ffilter" label="Filtrar" styleClass="w-full" (onClick)="doFilter()"></p-button>
+</p-sidebar>
+
+
+<p-sidebar position="right" [(visible)]="sidebarCart" styleClass="w-25rem">
+
+</p-sidebar>
