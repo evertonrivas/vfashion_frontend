@@ -45,6 +45,24 @@ body{
       }
 }
 
+@mixin use-md-icon-normal($icon){
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 16px!important;  /* Preferred icon size */
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+
+    &::before{
+        content: $icon
+      }
+}
+
 .crm-icon-refresh{
     @include use-md-icon('refresh');
 }
@@ -149,4 +167,16 @@ body{
 
 .pi-fields{
     @include use-md-icon("edit_note")
+}
+
+.pi-grid-view{
+    @include use-md-icon("inventory_2")
+}
+
+.mt-05{
+    margin-top: 0.10rem!important;
+}
+
+.pi-checkall{
+    @include use-md-icon-normal('done_all')
 }
