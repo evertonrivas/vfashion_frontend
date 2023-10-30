@@ -21,5 +21,8 @@
     },
     "recaptcha": {
         "siteKey" : "6Le7VGUlAAAAAMUwZDKXC-lhfBV9l_dHEMvxCVdV"
+    },
+    "system":{
+        "pageSize": 50
     }
 }
