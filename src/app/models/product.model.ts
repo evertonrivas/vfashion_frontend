@@ -5,9 +5,14 @@ export interface Image{
     img_url:string
 }
 
+export interface Color{
+    id:number,
+    name:string,
+    color:string
+}
+
 export interface Product {
     id: number,
-    id_category: number,
     prodCode:string,
     barCode:string|null,
     refCode:string,
@@ -20,7 +25,9 @@ export interface Product {
     structure:string,
     date_created:string,
     date_updated:string|null,
-    images: Image[]
+    images: Image[],
+    colors:Color[],
+    checked:boolean
 }
 
 export interface B2bBrand{
@@ -56,8 +63,9 @@ export interface ProductModel{
 
 export interface Size{
     id: number,
-    size_name:string,
-    size:string
+    new_size:string,
+    old_size:string,
+    name:string
 }
 
 export interface Color{
@@ -67,18 +75,18 @@ export interface Color{
     color:string
 }
 
-export interface ProductStockSizes{
-    size_code: string,
-    size_name: string,
-    size_value: number
-}
+// export interface ProductStockSizes{
+//     size_code: string,
+//     size_name: string,
+//     size_value: number
+// }
 
-export interface ProductStock{
-    color_name: string,
-    color_hexa: string,
-    color_code:string,
-    sizes : ProductStockSizes[]
-}
+// export interface ProductStock{
+//     color_name: string,
+//     color_hexa: string,
+//     color_code:string,
+//     sizes : ProductStockSizes[]
+// }
 
 export interface Grid{
     [key:number]: {
