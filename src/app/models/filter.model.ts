@@ -1,10 +1,10 @@
 export interface Filter{
-    brand: string[],
-    model: string[],
-    categories: string[],
-    types: string[],
-    collections: string[],
-    colors: string[],
-    sizes: string[],
+    brands: number[],
+    models: number[],
+    categories: number[],
+    types: number[],
+    collections: number[],
+    colors: number[],
+    sizes: number[],
     query:string
   }
