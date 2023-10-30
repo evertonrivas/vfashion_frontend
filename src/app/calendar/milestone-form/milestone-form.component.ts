@@ -1,4 +1,4 @@
-import { Component, OnDestroy, AfterContentInit,Input,Output,EventEmitter } from '@angular/core';
+import { Component, OnDestroy, AfterViewInit,Input,Output,EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { Common } from 'src/app/classes/common';
 import { CalendarEvent, CalendarEventData, CalendarEventType } from 'src/app/models/calendar.model';
@@ -11,7 +11,7 @@ import { RequestResponse } from 'src/app/models/paginate.model';
   templateUrl: './milestone-form.component.html',
   styleUrls: ['./milestone-form.component.scss']
 })
-export class MilestoneFormComponent extends Common implements AfterContentInit, OnDestroy{
+export class MilestoneFormComponent extends Common implements AfterViewInit, OnDestroy{
   @Input() selectedEvent:CalendarEvent | null = null;
   @Input() periodStart:string | null = null;
   @Input() periodEnd:string | null = null;
@@ -104,7 +104,7 @@ export class MilestoneFormComponent extends Common implements AfterContentInit, 
     this.serviceSub[1].unsubscribe();
   }
   
-  ngAfterContentInit(): void {
+  ngAfterViewInit(): void {
     //realiza carga dos tipos de eventos
     this.serviceSub[0] = this.svc.eventTypeList(this.options).subscribe({
       next: (data) =>{
