@@ -61,6 +61,7 @@ export class EventFormComponent extends Common implements OnDestroy{
 
     //realiza carga dos tipos de eventos
     this.eventTypes = [];
+    this.options.query = "can:list-all 1";
     this.serviceSub[0] = this.svc.eventTypeList(this.options).subscribe({
       next: (data) =>{
         (data as CalendarEventType[]).forEach((evtt) =>{
@@ -98,29 +99,22 @@ export class EventFormComponent extends Common implements OnDestroy{
     //valida o basico do formulario
     if(this.eventName.trim().length == 0 || this.selectedEventType==null || this.eventStart==null || this.eventEnd==null){
       validated = false;
-      console.log("No comeco");
     }
 
     if (validated && (this.eventEnd as Date).getTime() < (this.eventStart as Date).getTime()){
       validated = false;
       this.validPeriod = false;
-      console.log("entrou nas porra das datas") 
     }
 
     //valida o evento pai
     if(validated && (this.showParentEvents && this.eventParentEventId == 0)){
       validated = false;
-      console.log("No evento pai");
     }
 
     //valida o budget se existe
     if(validated && ((this.selectedEventType as CalendarEventType).has_budget && this.eventBudget==0)  ){
       validated = false;
-      console.log("No budget");
     }
-
-    console.log(validated);
-    console.log(this.validPeriod);
 
     //colocar aqui a validacao
     if (validated){
@@ -161,7 +155,9 @@ export class EventFormComponent extends Common implements OnDestroy{
   }
 
   onChangeType():void{
+    //define que nao exibirah evento pai
     this.showParentEvents = false;
+    //define o evento pai como em branco
     let parentEventType:CalendarEventType = {
       id: 0,
       name: null,
@@ -176,6 +172,9 @@ export class EventFormComponent extends Common implements OnDestroy{
     let selected = this.eventTypes.find((v) =>{
       return (this.selectedEventType!=null)?v.id==this.selectedEventType.id:undefined
     });
+
+    console.log("Selected");
+    console.log(selected);
 
     //busca em tipos de eventos filhos
     if (selected==undefined){
@@ -192,9 +191,10 @@ export class EventFormComponent extends Common implements OnDestroy{
       });
     }
   
-    if ( selected!==undefined){
+    if ( selected!=undefined){
 
       if (parseInt(parentEventType.id.toString()) > 0){
+        console.log("Entrou para buscar evento pai");
         this.showParentEvents = true;
         //realizar aqui a carga de dados dos eventos conforme o tipo do evento pai
         let dt_start = '';
@@ -206,6 +206,7 @@ export class EventFormComponent extends Common implements OnDestroy{
         }).subscribe({
           next: (data) =>{
             this.exsistentEvents = data as CalendarEvent[];
+            console.log("entrou nos eventos existentes!");
           },
           complete: ()  => {
             this.eventParentEventId = parentEventType.id
@@ -213,6 +214,8 @@ export class EventFormComponent extends Common implements OnDestroy{
         });
       }
     }
+
+    //console.log(this.selectedEventType);
   }
 
   closeForm():void{
