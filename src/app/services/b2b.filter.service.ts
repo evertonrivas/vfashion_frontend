@@ -9,7 +9,7 @@ import { Options, RequestResponse, ResponseError } from '../models/paginate.mode
 @Injectable({
   providedIn: 'root'
 })
-export class FilterService extends MyHttp{
+export class B2bFilterService extends MyHttp{
   private filterAnnouced = new Subject<Filter>();
 
   filterAnnouced$ = this.filterAnnouced.asObservable();

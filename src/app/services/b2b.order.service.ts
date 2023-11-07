@@ -10,7 +10,7 @@ import { Options, RequestResponse, ResponseError } from '../models/paginate.mode
 @Injectable({
   providedIn: 'root'
 })
-export class OrderService extends MyHttp{
+export class B2bOrderService extends MyHttp{
   private productAnnouced = new Subject<any|null>();
 
   productAnnouced$ = this.productAnnouced.asObservable();
@@ -21,6 +21,19 @@ export class OrderService extends MyHttp{
 
   annouceProduct(){
     this.productAnnouced.next(null);
+  }
+
+  listGallery(options:Options):Observable<Product[]|RequestResponse|ResponseError>{
+    return this.http.get<Product[]|RequestResponse|ResponseError>(this.sys_config.backend_b2b+'/product-stock/gallery/',{
+      headers: this.getHeader(),
+      params: new HttpParams().set("page",options.page).set("pageSize",options.pageSize).set("query",options.query)
+    });
+  }
+
+  get_stock(id_product:number):Observable<Product[]>{
+    return this.http.get<Product[]>(this.sys_config.backend_b2b+'/product-stock/load-by-product/'+id_product,{
+      headers: this.getHeader()
+    });
   }
 
   //adiciona os produtos ao carrinho de compras apenas
