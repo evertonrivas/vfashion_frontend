@@ -12,7 +12,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
             <span class="layout-menuitem-text">{{item.label}}</span>
             <i class="pi pi-fw pi-angle-down layout-submenu-toggler" *ngIf="item.items"></i>
         </a>
-        <a *ngIf="(item.routerLink && !item.items) && item.visible !== false" (click)="itemClick($event)" [ngClass]="item.class" 
+        <a *ngIf="(item.routerLink && !item.items) && item.visible !== false &&item.separator==undefined" (click)="itemClick($event)" [ngClass]="item.class" 
         [routerLink]="item.routerLink" routerLinkActive="active-route" [routerLinkActiveOptions]="item.routerLinkActiveOptions||{ paths: 'exact', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored' }"
         [fragment]="item.fragment" [queryParamsHandling]="item.queryParamsHandling" [preserveFragment]="item.preserveFragment" 
         [skipLocationChange]="item.skipLocationChange" [replaceUrl]="item.replaceUrl" [state]="item.state" [queryParams]="item.queryParams"
@@ -24,7 +24,8 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 
         <ul *ngIf="item.items && item.visible !== false" [@children]="submenuAnimation">
             <ng-template ngFor let-child let-i="index" [ngForOf]="item.items">
-                <li app-menuitem [item]="child" [index]="i" [parentKey]="key" [class]="child.badgeClass"></li>
+                <li *ngIf="child.separator==undefined" app-menuitem [item]="child" [index]="i" [parentKey]="key" [class]="child.badgeClass"></li>
+                <li *ngIf="child.separator!=undefined"><hr size="1"></li>
             </ng-template>
         </ul>
     </ng-container>`,
