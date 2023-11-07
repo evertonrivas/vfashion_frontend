@@ -1,17 +1,32 @@
 import { Component,Input,AfterContentInit,OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SecurityService } from 'src/app/services/security.service';
 import { MessageService } from 'primeng/api';
 import { ChatService } from 'src/app/services/chat.service';
 import { Common } from 'src/app/classes/common';
 import { LayoutService } from 'src/app/services/layout.service';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { ToastModule } from 'primeng/toast';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-topbar',
   templateUrl: './topbar.component.html',
   styleUrls: ['./topbar.component.scss'],
-  providers: [MessageService,ChatService]
+  standalone:true,
+  providers: [MessageService,ChatService],
+  imports:[
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    OverlayPanelModule,
+    ToastModule,
+    RouterModule,
+    TooltipModule
+  ]
 })
 export class TopbarComponent extends Common implements AfterContentInit,OnDestroy{
   userLevel:string = "";
