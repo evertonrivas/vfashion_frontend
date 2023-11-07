@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
-import { SharedModule } from '../shared/shared.module';
+import { SharedModule } from '../common/shared.module';
 import { SidebarModule } from 'primeng/sidebar';
 import { AppMenuitemComponent } from './app.menuitem.component';
+import { TopbarComponent } from '../common/topbar/topbar.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { AppMenuitemComponent } from './app.menuitem.component';
     CommonModule,
     AdminRoutingModule,
     SharedModule,
-    SidebarModule
+    SidebarModule,
+    TopbarComponent
   ]
 })
 export class AdminModule { }

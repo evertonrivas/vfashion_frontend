@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 
 import { ReturnRoutingModule } from './return-routing.module';
 import { ReturnComponent } from './return.component';
-import { SharedModule } from '../shared/shared.module';
+import { SharedModule } from '../common/shared.module';
+import { TopbarComponent } from '../common/topbar/topbar.component';
 
 
 @NgModule({
@@ -13,7 +14,8 @@ import { SharedModule } from '../shared/shared.module';
   imports: [
     CommonModule,
     ReturnRoutingModule,
-    SharedModule
+    SharedModule,
+    TopbarComponent
   ]
 })
 export class ReturnModule { }
