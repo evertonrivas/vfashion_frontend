@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Common } from '../classes/common';
 import { Router } from '@angular/router';
 import { LayoutService } from '../services/layout.service';
@@ -14,6 +14,7 @@ import { Filter } from '../models/filter.model';
   styleUrls: ['./salesforce.component.scss']
 })
 export class SalesforceComponent extends Common implements OnInit{
+  @Output() filteredEvent = new EventEmitter<Filter>();
   sidebarVisible:boolean = false;
   sidebarCart:boolean = false;
   all_brand:B2bBrand[] = [];
@@ -91,8 +92,11 @@ export class SalesforceComponent extends Common implements OnInit{
   }
 
   doFilter():void{
-    this.sidebarVisible = false;
-    this.svcFil.announceFilter(this.filter);
+    this.route.navigate(["/salesforce/grid"]).finally(() =>{
+      this.filteredEvent.emit();
+      this.svcFil.announceFilter(this.filter);
+      this.sidebarVisible = false;
+    });
   }
   
 }
