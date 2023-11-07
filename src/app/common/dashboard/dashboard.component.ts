@@ -1,7 +1,6 @@
 import { Component,OnInit,OnDestroy, AfterViewInit } from '@angular/core';
 import { EChartsOption, MarkLineComponentOption } from 'echarts';
 import { Card } from 'src/app/models/card.model';
-import { DashboardService } from 'src/app/services/dashboard.service';
 import { CardComponent, FormatType } from './card/card.component';
 import { EntityType } from 'src/app/models/entity.model';
 import { Router } from '@angular/router';
@@ -14,6 +13,7 @@ import { NgxEchartsModule, NGX_ECHARTS_CONFIG } from 'ngx-echarts';
 import { CardModule } from 'primeng/card';
 
 import * as echarts from 'echarts';
+import { IndicatorsService } from 'src/app/services/indicators.service';
 
 
 @Component({
@@ -45,7 +45,7 @@ export class DashboardComponent extends Common implements AfterViewInit,OnInit,O
   //cards do topo
   topCards:Card[] = []
   
-  constructor(private svc:DashboardService,
+  constructor(private svc:IndicatorsService,
     route:Router){
       super(route)
   }
