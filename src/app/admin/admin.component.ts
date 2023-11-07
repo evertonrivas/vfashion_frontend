@@ -27,56 +27,63 @@ export class AdminComponent extends Common implements OnInit{
             {
                 label: 'Sistema',
                 items: [
-                    { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: [this.modulePath+'/dashboard'] },
-                    { label: 'Entidades', icon: 'pi pi-fw pi-entities icon-small', routerLink: [this.modulePath+'/dashboard'] },
-                    { label: 'Produtos', icon: 'pi pi-fw pi-products icon-small', routerLink: [this.modulePath+'/dashboard'] },
-                    { label: 'Usuários', icon: 'pi pi-fw pi-users icon-small', routerLink: [this.modulePath+'/dashboard'] }
+                    { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: [this.modulePath+'/configurations'] },
+                    { label: 'Entidades', icon: 'pi pi-fw pi-entities icon-small', routerLink: [this.modulePath+'/entities'] },
+                    { label: 'Produtos', icon: 'pi pi-fw pi-products icon-small', routerLink: [this.modulePath+'/products'] },
+                    { label: 'Usuários', icon: 'pi pi-fw pi-users icon-small', routerLink: [this.modulePath+'/users'] }
                 ]
             },
             {
                 label: 'B2B - Salesforce',
                 items: [
-                    { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: ['/uikit/formlayout'] },
-                    { label: 'Grupos de clientes', icon: 'pi pi-fw pi-user-group icon-small', routerLink: ['/uikit/input'] },
-                    { label: 'Marcas', icon: 'pi pi-fw pi-marks icon-small', routerLink: ['/uikit/button'] },
-                    { label: 'Categorias/Cordenados', icon: 'pi pi-fw pi-category icon-small', routerLink: ['/uikit/table'] },
-                    { label: 'Coleções', icon: 'pi pi-fw pi-collection icon-small', routerLink: ['/uikit/floatlabel'] },
-                    { label: 'Modelos', icon: 'pi pi-fw pi-models icon-small', routerLink: ['/uikit/list'] },
-                    { label: 'Tipos de Produtos', icon: 'pi pi-fw pi-prod-type icon-small', routerLink: ['/uikit/tree'] },
-                    { label: 'Tabelas de Preços', icon: 'pi pi-fw pi-price-table icon-small', routerLink: ['/uikit/invalidstate'] },
-                    { label: 'Tradução de Cores', icon: 'pi pi-fw pi-colors icon-small', routerLink: ['/uikit/panel'] },
-                    { label: 'Tradução de Tamanhos', icon: 'pi pi-fw pi-sizes icon-small', routerLink: ['/uikit/overlay'] },
-                    // { label: 'Media', icon: 'pi pi-fw pi-image', routerLink: ['/uikit/media'] },
+                    { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: ['/b2b/configurations'] },
+                    { label: 'Grupos de clientes', icon: 'pi pi-fw pi-user-group icon-small', routerLink: ['/b2b/customer-group'] },
+                    { label: 'Marcas', icon: 'pi pi-fw pi-marks icon-small', routerLink: ['/b2b/brands'] },
+                    { label: 'Categorias/Cordenados', icon: 'pi pi-fw pi-category icon-small', routerLink: ['/bwb/category'] },
+                    { label: 'Coleções', icon: 'pi pi-fw pi-collection icon-small', routerLink: ['/b2b/collection'] },
+                    { label: 'Modelos', icon: 'pi pi-fw pi-models icon-small', routerLink: ['/b2b/models'] },
+                    { label: 'Tipos de Produtos', icon: 'pi pi-fw pi-prod-type icon-small', routerLink: ['/b2b/product-type'] },
+                    { separator : 'separator' },
+                    { label: 'Grades de Produtos', icon: 'pi pi-fw pi-prod-grid icon-small', routerLink: ['/b2b/product-grid'] },
+                    { label: 'Tabelas de Preços', icon: 'pi pi-fw pi-price-table icon-small', routerLink: ['/b2b/table-price'] },
+                    { label: 'Tradução de Cores', icon: 'pi pi-fw pi-colors icon-small', routerLink: ['/b2b/colors'] },
+                    { label: 'Tradução de Tamanhos', icon: 'pi pi-fw pi-sizes icon-small', routerLink: ['/b2b/sizes'] },
                     // { label: 'Menu', icon: 'pi pi-fw pi-bars', routerLink: ['/uikit/menu'], routerLinkActiveOptions: { paths: 'subset', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored' } },
-                    // { label: 'Message', icon: 'pi pi-fw pi-comment', routerLink: ['/uikit/message'] },
-                    // { label: 'File', icon: 'pi pi-fw pi-file', routerLink: ['/uikit/file'] },
-                    // { label: 'Chart', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/uikit/charts'] },
-                    // { label: 'Misc', icon: 'pi pi-fw pi-circle', routerLink: ['/uikit/misc'] }
                 ]
             },
             {
                 label: 'CRM - Funis',
                 items: [
-                    { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: ['/uikit/formlayout'] },
-                    { label: 'Cadastro de Funis', icon: 'pi pi-fw pi-funnel icon-small', routerLink: ['/blocks'], badge: 'NEW' },
-                    { label: 'Cadastro de Estágios', icon: 'pi pi-fw pi-stages icon-small', url: ['https://www.primefaces.org/primeblocks-ng'], target: '_blank' },
+                    { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: ['/crm/configurations'] },
+                    { label: 'Cadastro de Funis', icon: 'pi pi-fw pi-funnel icon-small', routerLink: ['/crm/funnels'] },
+                    { label: 'Cadastro de Estágios', icon: 'pi pi-fw pi-stages icon-small', routerLik: ['crm/funnel-stages']},
                     // { label: 'Campos dinâmicos', icon: 'pi pi-fw pi-fields', routerLink: ['/uikit/misc'] }
                 ]
             },
             {
                 label: 'FPR - Devoluções',
                 items: [
-                    { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: ['/uikit/formlayout'] },
-                    { label: 'Etapas', icon: 'pi pi-fw pi-steps icon-small', routerLink: ['/utilities/icons'] }
+                    { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: ['/fpr/configurations'] },
+                    { label: 'Etapas', icon: 'pi pi-fw pi-steps icon-small', routerLink: ['/fpr/steps'] }
                 ]
             },
             { 
                 label: 'SCM - Calendário',
                 items:[
-                    { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small' },
-                    { label: 'Tipos de Eventos', icon: 'pi pi-fw pi-events icon-small' }
+                    { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink:['/scm/configurations'] },
+                    { label: 'Tipos de Eventos', icon: 'pi pi-fw pi-events icon-small', routerLink:['/scm/event-types'] }
                 ]
             },
+            // NÃO APAGAR, ISSO SERAH UTILIZADO NO FUTURO
+            // {
+            //     label: 'MPG - Marketing',
+            //     items:[
+            //         { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink:['/mpg/configurations'] },
+            //         { label: 'Fornecedores', icon: 'pi pi-fw pi-supplier icon-small', routerLink:['/mpg/suppliers'] }
+            //     ]
+            // }
+
+
             // {
             //     label: 'SCM - Calendário',
             //     icon: 'pi pi-fw pi-briefcase',
