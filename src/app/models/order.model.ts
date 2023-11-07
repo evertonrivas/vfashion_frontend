@@ -2,8 +2,8 @@ import { Paginate } from "./paginate.model"
 
 export interface OrderProduct{
     id_product:number,
-    color:string,
-    size:string,
+    id_color:string,
+    id_size:string,
     quantity:string,
     price:number,
     discount:number,
@@ -37,8 +37,8 @@ export interface OrderHistory{
 export interface CartItem{
     id_customer: number,
     id_product: number,
-    color: string,
-    size: string,
+    id_color: string,
+    id_size: string,
     quantity: number,
     price:string
 }
