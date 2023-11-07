@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Common } from '../classes/common';
 import { Router } from '@angular/router';
 import { LayoutService } from '../services/layout.service';
-import { FilterService as SysFilter } from '../services/filter.service';
+import { B2bFilterService as SysFilter } from '../services/b2b.filter.service';
 import { forkJoin } from 'rxjs';
 import { B2bBrand, Color, ProductCategory, ProductCollection, ProductModel, ProductType, Size } from '../models/product.model';
 import { Options } from '../models/paginate.model';
@@ -52,12 +52,14 @@ export class SalesforceComponent extends Common implements OnInit{
   }
 
   ngOnInit(): void {
+    //exibe ou oculta o menu de filtros
     this.svcLay.menuOpen$.subscribe({
       next: () =>{
           this.sidebarVisible = !this.sidebarVisible;
       }
     });
 
+    //exibe ou oculta os itens do carrinho
     this.svcLay.cartOpen$.subscribe({
       next: () =>{
         this.sidebarCart = !this.sidebarCart;
