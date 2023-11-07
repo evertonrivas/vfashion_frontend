@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component,Input,OnChanges } from '@angular/core';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { SharedModule } from 'src/app/common/shared.module';
 import { CardModule } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
 import { Card, SubtitleCard } from 'src/app/models/card.model';
