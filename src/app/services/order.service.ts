@@ -25,8 +25,19 @@ export class OrderService extends MyHttp{
 
   //adiciona os produtos ao carrinho de compras apenas
   addToCart(cItens:CartItem[]):Observable<boolean|ResponseError>{
-
     return this.http.post<boolean|ResponseError>(this.sys_config.backend_b2b+'/cart/',cItens,{
+      headers: this.getHeader(ContentType.json)
+    });
+  }
+
+  //adiciona produtos usando a grade padrao, para isso soh utiliza o codigo do produto, codigo da cor e codigo do cliente
+  addGridToCart(p_products:number[],p_idColor:number,p_idCustomer:number):Observable<boolean|ResponseError>{
+    return this.http.put<boolean|ResponseError>(this.sys_config.backend_b2b+'/cart/',
+    {
+      customer: p_idCustomer,
+      color: p_idColor,
+      products: p_products
+    },{
       headers: this.getHeader(ContentType.json)
     });
   }
@@ -50,12 +61,6 @@ export class OrderService extends MyHttp{
         headers: this.getHeader(ContentType.json)
       }
     );
-  }
-
-  countMyItens():Observable<number|ResponseError>{
-    return this.http.get<number|ResponseError>(this.sys_config.backend_b2b+'/cart/total/'+localStorage.getItem("id_profile"),{
-      headers: this.getHeader()
-    });
   }
 
   getItemData(prod:Product):Observable<CartContent|ResponseError>{
