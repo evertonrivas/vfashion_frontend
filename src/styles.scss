@@ -180,3 +180,11 @@ body{
 .pi-checkall{
     @include use-md-icon-normal('done_all')
 }
+
+.pi-supplier{
+    @include use-md-icon('local_shipping')
+}
+
+.pi-prod-grid{
+    @include use-md-icon('view_module')
+}
