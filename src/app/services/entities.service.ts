@@ -84,4 +84,12 @@ export class EntitiesService extends MyHttp {
       params: new HttpParams().set('page',opt.page).set("pageSize",opt.pageSize).set('query',opt.query)
     });
   }
+
+  listEntity(opt:Options):Observable<Entity[]|RequestResponse|ResponseError>{
+    let url = this.sys_config.backend_cmm+'/legal-entities/';
+    return this.http.get<Entity[]|RequestResponse|ResponseError>(url,{
+      headers: this.getHeader(),
+      params: new HttpParams().set('page',opt.page).set('pageSize',opt.pageSize).set('query',opt.query)
+    });
+  }
 }
