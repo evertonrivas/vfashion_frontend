@@ -20,9 +20,10 @@ export class IndicatorsService extends MyHttp{
     this.counterAnnounced.next(null);  
   }
 
-  b2bTotalCart():Observable<number|ResponseError>{
-    return this.http.get<number|ResponseError>(this.sys_config.backend_b2b+'/cart/total/'+localStorage.getItem("id_profile"),{
-      headers: this.getHeader()
+  b2bTotalCart(idProfile:number,userType:string):Observable<number|ResponseError>{
+    return this.http.get<number|ResponseError>(this.sys_config.backend_b2b+'/cart/total/'+idProfile.toString(),{
+      headers: this.getHeader(),
+      params: new HttpParams().set('userType',userType)
     });
   }
 
