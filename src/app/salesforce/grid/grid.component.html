@@ -27,7 +27,7 @@
                         </div>
                     </ng-template>
                 </p-dropdown>
-                <p-button [disabled]="!freeGridButton" styleClass="p-button-sm mr-1 mt-05" label="Adicionar Grade (marcados)" (onClick)="addCheckedToCart()"></p-button>
+                <p-button [disabled]="!freeGridButton" styleClass="p-button-sm mr-1 mt-05" label="Adicionar Grade (marcados)" (onClick)="addCheckedToGrid()"></p-button>
                 <!-- <p-dataViewLayoutOptions></p-dataViewLayoutOptions> -->
             </div>
         </div>
@@ -92,11 +92,23 @@
         [showFirstLastIcon]="false">
     </p-paginator>
 </div>
-<p-dialog [visible]="showDialog" [closable]="false" [modal]="true" [draggable]="false" header="Seleção necessária!">
+<p-dialog [visible]="showDialog" [closable]="false" [modal]="true" [draggable]="false" header="Cor necessária!">
     <p>Por favor selecione a cor do produto para adicionar por grade</p>
     <div class="flex w-full justify-content-center">
         <p-button icon="pi pi-check" label="OK" (onClick)="showDialog = false;"></p-button>
     </div>
 </p-dialog>
 
+<p-toast></p-toast>
 <p-confirmDialog></p-confirmDialog>
+
+<p-dialog [visible]="showNoCustomerDialog" [closable]="false" [modal]="true" [draggable]="true" header="Cliente necessário!">
+    <p class="mb-2">Por favor, selecione o cliente abaixo para realizar a inclusão do produto no pedido!</p>
+    <div class="flex flex-column w-full justify-content-center">
+        <p-dropdown [options]="all_customers" optionLabel="fantasy_name" [(ngModel)]="selectedCustomer" optionValue="id" [filter]="true" [filterBy]="'fantasy_name,name,cnpj'" placeholder="Selecione o cliente" filterPlaceholder="CNPJ, Fantasia ou Razão Social" appendTo="body" styleClass="w-full mb-2"></p-dropdown>
+        <div class="flex flex-row justify-content-center w-full">
+            <p-button icon="pi pi-ban" label="Cancelar" (onClick)="showNoCustomerDialog = false;" styleClass="p-button-danger mr-1"></p-button>
+            <p-button icon="pi pi-check" label="OK" (onClick)="closeAndSaveGrid()"></p-button>
+        </div>
+    </div>
+</p-dialog>
