@@ -11,6 +11,10 @@ import { ToastModule } from 'primeng/toast';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TooltipModule } from 'primeng/tooltip';
+import { ButtonModule } from 'primeng/button';
+import { RippleModule } from 'primeng/ripple';
+import { BadgeModule } from 'primeng/badge';
+import { IndicatorsService } from 'src/app/services/indicators.service';
 
 @Component({
   selector: 'app-topbar',
@@ -25,7 +29,10 @@ import { TooltipModule } from 'primeng/tooltip';
     OverlayPanelModule,
     ToastModule,
     RouterModule,
-    TooltipModule
+    TooltipModule,
+    ButtonModule,
+    RippleModule,
+    BadgeModule
   ]
 })
 export class TopbarComponent extends Common implements AfterContentInit,OnDestroy{
@@ -35,14 +42,28 @@ export class TopbarComponent extends Common implements AfterContentInit,OnDestro
   idTimerLogged:any = 0;
   idTimerMessage:any = 0;
   totalMessages:number = 1;
+  totalInCart:string = '0';
 
   constructor(private svc:SecurityService,
     private msgSvc:MessageService,
     private chatSvc:ChatService,
     private laySvc:LayoutService,
+    private IndSvc:IndicatorsService,
     route:Router
     ){
-      super(route)
+      super(route);
+      this.IndSvc.counterAnnounced$.subscribe(() =>{
+        this.IndSvc.b2bTotalCart(
+          parseInt((localStorage.getItem("id_profile") as string)),
+          localStorage.getItem("level_access") as string
+        ).subscribe({
+          next: (data) =>{
+            if(typeof data ==='number'){
+              this.totalInCart = (data as number).toString();
+            }
+          }
+        });
+      });
   }
 
   ngOnDestroy(): void {
@@ -55,6 +76,18 @@ export class TopbarComponent extends Common implements AfterContentInit,OnDestro
     this.idTimerLogged = <any>setInterval(() =>{
       this.checkLogged();
     },30000);//verifica a cada 30 segundos
+
+    //busca o total de produtos do carrinho
+    this.IndSvc.b2bTotalCart(
+      parseInt((localStorage.getItem("id_profile") as string)),
+      localStorage.getItem("level_access") as string
+    ).subscribe({
+      next: (data) =>{
+        if(typeof data === 'number'){
+          this.totalInCart = (data as number).toString();
+        }
+      }
+    });
 
     this.chatSub = this.chatSvc.chatAnnounced$.subscribe({
       next(value) {

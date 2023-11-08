@@ -59,7 +59,7 @@
                 <i class="material-symbols-outlined">box</i>
             </button>
             <button class="p-link layout-topbar-button" pTooltip="Produtos do Pedido" tooltipPosition="bottom" tooltipStyleClass="text-xs" (click)="onCart()">
-                <i class="material-symbols-outlined" pBadge value="0" severity="warning" styleClass="text-xs">shopping_cart</i>
+                <i class="material-symbols-outlined" pBadge [value]="totalInCart" severity="warning" styleClass="text-xs">shopping_cart</i>
             </button>
         </ng-container>
         <p-overlayPanel #msgs>
