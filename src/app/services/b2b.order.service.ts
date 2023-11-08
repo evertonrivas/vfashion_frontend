@@ -76,13 +76,17 @@ export class B2bOrderService extends MyHttp{
     );
   }
 
-  getItemData(prod:Product):Observable<CartContent|ResponseError>{
-    return this.http.get<CartContent|ResponseError>(this.sys_config.backend_b2b+'/cart/'+prod.id.toString()+'?id_profile='+localStorage.getItem("id_profile"))
+  getItemData(prod:Product,idProfile:number,userType:string):Observable<CartContent|ResponseError>{
+    return this.http.get<CartContent|ResponseError>(this.sys_config.backend_b2b+'/cart/'+prod.id.toString()+'?id_profile='+idProfile.toString(),{
+      headers: this.getHeader(),
+      params: new HttpParams().set('userType',userType)
+    });
   }
 
-  listMyItens():Observable<CartContent[]|RequestResponse|ResponseError>{
-    return this.http.get<CartContent[]|RequestResponse|ResponseError>(this.sys_config.backend_b2b+'/cart/?id_profile='+localStorage.getItem("id_profile"),{
-      headers: this.getHeader()
+  listMyItens(idProfile:number,userType:string):Observable<CartContent[]|RequestResponse|ResponseError>{
+    return this.http.get<CartContent[]|RequestResponse|ResponseError>(this.sys_config.backend_b2b+'/cart/?id_profile='+idProfile.toString(),{
+      headers: this.getHeader(),
+      params: new HttpParams().set('userType',userType)
     });
   }
 
