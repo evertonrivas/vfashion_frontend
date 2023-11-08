@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { PaginatorState } from 'primeng/paginator';
 import { Common } from 'src/app/classes/common';
 import { RequestResponse } from 'src/app/models/paginate.model';
-import { OrderService } from 'src/app/services/order.service';
+import { B2bOrderService } from 'src/app/services/b2b.order.service';
 
 @Component({
   selector: 'app-history',
@@ -13,7 +13,7 @@ import { OrderService } from 'src/app/services/order.service';
 export class HistoryComponent extends Common{
 
   constructor(route:Router,
-    private svc:OrderService){
+    private svc:B2bOrderService){
     super(route);
   }
 
