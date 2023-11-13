@@ -188,3 +188,11 @@ body{
 .pi-prod-grid{
     @include use-md-icon('view_module')
 }
+
+.pi-order-finish{
+    @include use-md-icon('order_approve')
+}
+
+.pi-order-cancel{
+    @include use-md-icon('contract_delete')
+}
