@@ -6,6 +6,7 @@ import { GridComponent } from './grid/grid.component';
 import { HistoryComponent } from './history/history.component';
 import { OrderComponent } from './order/order.component';
 import { ReturnComponent } from './return/return.component';
+import { CheckoutComponent } from './checkout/checkout.component';
 
 const routes: Routes = [{ 
   path: '', 
@@ -14,7 +15,8 @@ const routes: Routes = [{
   { path: 'grid', component: GridComponent },
   { path: 'history', component: HistoryComponent },
   { path: 'order', component: OrderComponent },
-  { path: 'return', component: ReturnComponent }]
+  { path: 'return', component: ReturnComponent },
+  { path: 'checkout', component: CheckoutComponent}]
 }];
 
 @NgModule({
