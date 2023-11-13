@@ -7,6 +7,8 @@ import { forkJoin } from 'rxjs';
 import { B2bBrand, Color, ProductCategory, ProductCollection, ProductModel, ProductType, Size } from '../models/product.model';
 import { Options } from '../models/paginate.model';
 import { Filter } from '../models/filter.model';
+import { B2bOrderService } from '../services/b2b.order.service';
+import { CartContent } from '../models/order.model';
 
 @Component({
   selector: 'app-salesforce',
@@ -24,6 +26,9 @@ export class SalesforceComponent extends Common implements OnInit{
   all_model:ProductModel[] = [];
   all_size:Size[] = [];
   all_color:Color[] = [];
+  cart_itens!:CartContent[];
+  totalMyItens:number = 0;
+  myTotal:number = 0;
 
   optBrand:Options = {page:1, pageSize:1, query:'can:list-all 1||is:order-by name||is:order asc' }
   optCollect:Options = {page:1, pageSize:1, query:'can:list-all 1||is:order-by name||is:order asc' }
@@ -47,6 +52,7 @@ export class SalesforceComponent extends Common implements OnInit{
   constructor(router:Router,
     private svcLay:LayoutService,
     private svcFil:SysFilter,
+    private svcOrd:B2bOrderService
     ){
     super(router);
   }
@@ -62,7 +68,23 @@ export class SalesforceComponent extends Common implements OnInit{
     //exibe ou oculta os itens do carrinho
     this.svcLay.cartOpen$.subscribe({
       next: () =>{
+        this.loading = true;
         this.sidebarCart = !this.sidebarCart;
+        if(this.sidebarCart==true){
+          this.svcOrd.listMyItens(
+            parseInt(localStorage.getItem("id_profile") as string),
+            this.level_access
+          ).subscribe({
+            next:(data) =>{
+              this.loading = false;
+              this.cart_itens = data as CartContent[];
+              this.cart_itens.forEach((c) =>{
+                this.totalMyItens += c.itens;
+                this.myTotal += c.total_price;
+              });
+            }
+          });
+        }
       }
     });
 
@@ -99,6 +121,11 @@ export class SalesforceComponent extends Common implements OnInit{
       this.svcFil.announceFilter(this.filter);
       this.sidebarVisible = false;
     });
+  }
+
+  gotoCheckout():void{
+    this.sidebarCart = false;
+    this.route.navigate([this.modulePath+'/checkout']);
   }
   
 }

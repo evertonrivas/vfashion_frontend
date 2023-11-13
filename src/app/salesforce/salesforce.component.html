@@ -43,6 +43,34 @@
 </p-sidebar>
 
 
-<p-sidebar position="right" [(visible)]="sidebarCart" styleClass="w-25rem">
-
+<p-sidebar position="right" [(visible)]="sidebarCart" styleClass="w-25rem" styleClass="w-30rem" appendTo="body">
+    <div class="flex flex-row justify-content-center mb-2">
+        <h3>Itens do Pedido</h3>
+    </div>
+    <div class="flex flex-row w-full">
+        <p-dataView [value]="cart_itens" layout="list" styleClass="mb-4" [loading]="loading">
+            <ng-template pTemplate="listItem" *ngIf="level_access=='C'" let-product>
+                <div class="flex flex-column w-full">
+                    <h6>{{product.name}}</h6>
+                    <div class="flex flex-row justify-content-between w-full">
+                        <small class="text-bluegray-300"><strong>{{product.itens}} itens</strong> X UN {{product.price_un |currency}}</small>
+                        <span class="text-bluegray-300">{{product.total_price | currency}}</span>
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="listItem" *ngIf="level_access=='A' || level_access=='R'" let-product>
+                <div class="flex flex-column w-full">
+                    <label class="font-bold text-base">{{product.name}}</label>
+                    <div style="max-width: 250px!important;" class="white-space-nowrap overflow-hidden text-overflow-ellipsis">{{product.fantasy_name}}</div>
+                    <div class="flex flex-row justify-content-between w-full mb-1">
+                        <small class="text-bluegray-300"><strong>{{product.itens}} itens</strong> X UN {{product.price_un |currency}}</small>
+                        <span class="text-bluegray-300">{{product.total_price | currency}}</span>
+                    </div>
+                </div>
+            </ng-template>
+        </p-dataView>
+    </div>
+    <div style="bottom: 0px!important;">
+        <p-button [class]="totalMyItens==0?'disabled':''" styleClass="w-full p-button-danger" icon="pi pi-supplier" label="Revisar e Finalizar Pedido" iconPos="right" (onClick)="gotoCheckout()"></p-button>
+    </div>
 </p-sidebar>
