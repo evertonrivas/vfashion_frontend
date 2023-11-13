@@ -32,6 +32,7 @@ export class Common{
     searchTerm:string = "";
     loading:boolean = false;
     showDialog:boolean = false;
+    level_access:string = "";
 
     constructor(protected route:Router){
         this.response = {
@@ -51,6 +52,7 @@ export class Common{
         }
 
         this.getModule();
+        this.level_access = localStorage.getItem("level_access") as string;
     }
 
     getModule():void{
