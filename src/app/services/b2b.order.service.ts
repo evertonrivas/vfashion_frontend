@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable,Subject } from 'rxjs';
 import { MyHttp, ContentType } from './my-http';
 import { CartContent, CartItem, OrderHistory, PaymentCondition } from 'src/app/models/order.model';
-import { Product } from 'src/app/models/product.model';
+import { Product, ProductStock } from 'src/app/models/product.model';
 import { Options, RequestResponse, ResponseError } from '../models/paginate.model';
 
 
@@ -30,8 +30,8 @@ export class B2bOrderService extends MyHttp{
     });
   }
 
-  get_stock(id_product:number):Observable<Product[]>{
-    return this.http.get<Product[]>(this.sys_config.backend_b2b+'/product-stock/load-by-product/'+id_product,{
+  get_stock(id_product:number):Observable<ProductStock[]|ResponseError>{
+    return this.http.get<ProductStock[]|ResponseError>(this.sys_config.backend_b2b+'/product-stock/load-by-product/'+id_product,{
       headers: this.getHeader()
     });
   }
@@ -97,10 +97,13 @@ export class B2bOrderService extends MyHttp{
     });
   }
 
-  delete(ids:number[]):Observable<boolean|ResponseError>{
+  delete(ids:number[],idCustomer:number):Observable<boolean|ResponseError>{
     return this.http.delete<boolean|ResponseError>(this.sys_config.backend_b2b+'/cart/',{
       headers: this.getHeader(ContentType.json),
-      body: JSON.stringify(ids)
+      body: {
+        products: ids,
+        customer: idCustomer
+      }
     });
   }
 
