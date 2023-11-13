@@ -2,7 +2,8 @@ import { Paginate } from "./paginate.model"
 
 export interface Image{
     id:number,
-    img_url:string
+    img_url:string,
+    default:boolean
 }
 
 export interface Color{
@@ -20,7 +21,7 @@ export interface Product {
     description:string|null,
     observation:string|null,
     ncm:string|null,
-    price: string,
+    price: number,
     measure_unit:string,
     structure:string,
     date_created:string,
@@ -75,26 +76,27 @@ export interface Color{
     color:string
 }
 
-// export interface ProductStockSizes{
-//     size_code: string,
-//     size_name: string,
-//     size_value: number
-// }
-
-// export interface ProductStock{
-//     color_name: string,
-//     color_hexa: string,
-//     color_code:string,
-//     sizes : ProductStockSizes[]
-// }
-
-export interface Grid{
-    [key:number]: {
-        [key:string]:{
-            [key:string]: number
-        }
-    }
+export interface ProductStockSizes{
+    size_code: string,
+    size_name: string,
+    size_value: number,
+    size_saved: number
 }
+
+export interface ProductStock{
+    color_name: string,
+    color_hexa: string,
+    color_code:string,
+    sizes : ProductStockSizes[]
+}
+
+// export interface Grid{
+//     [key:number]: {
+//         [key:string]:{
+//             [key:string]: number
+//         }
+//     }
+// }
 
 export interface SubTotal{
     [key:number]: {

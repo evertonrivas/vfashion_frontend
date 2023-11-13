@@ -57,11 +57,13 @@ export interface CartColor{
 
 export interface CartContent{
     id_product: number,
+    id_customer: number,
+    fantasy_name:string,
     ref: string,
     name: string,
     img_url: string,
-    price_un:string,
-    total_price:string,
+    price_un:number,
+    total_price:number,
     itens:number,
     colors:CartColor[]
 }
