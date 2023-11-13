@@ -1,0 +1,73 @@
+<div class="grid mr-3 ml-1 ">
+    <div class="col-12 lg:col-8 p-4">
+        <div class="surface-card grid formgrid p-fluid border-round shadow-2 p-5 h-full">
+            <p-dataView [value]="cart_itens" layout="list" styleClass="w-full">
+                <ng-template pTemplate="listItem" let-product>
+                    <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 w-full">
+                        <img class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" [src]="product.img_url" [alt]="product.name" />
+                        <div class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
+                            <div class="flex flex-column align-items-center sm:align-items-start gap-3 w-full">
+                                <div class="text-2xl font-bold text-900">{{ product.name }}</div>
+                                <p-table styleClass="w-full p-datatable-striped" tableStyleClass="w-full" [value]="product.colors">
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th>Cor</th>
+                                            <th class="text-center" *ngFor="let szk of sizeKeys">{{szk}}</th>
+                                            <th class="text-center">Total</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-color>
+                                        <tr>
+                                            <td><span class="px-2 border-round" [ngStyle]="{'background-color': color.hexa}"></span>{{color.name}}</td>
+                                            <td class="w-auto" *ngFor="let size of color.sizes;" style="padding:0.5rem 0.5rem!important;">{{size.quantity}}</td>
+                                            <td>{{ sumByColor(color.sizes) }}</td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                            <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
+                                <span class="text-2xl font-semibold">{{ product.total_price | currency }}</span>
+                                <p-button icon="pi pi-trash" styleClass="md:align-self-end mb-2 p-button-rounded p-button-outlined p-button-danger" (onClick)="tryDelete(product.id_product,product.id_customer)"></p-button>
+                                <p-button icon="pi pi-pencil" styleClass="md:align-self-end mb-2 p-button-rounded p-button-outlined"></p-button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-dataView>
+        </div>
+    </div>
+    <div class="col-12 lg:col-4 p-4">
+        <div class="surface-card border-round shadow-2 p-5 w-full">
+            <div class="flex justify-content-between align-items-center border-bottom-1 pb-3 surface-border">
+                <span class="text-900 font-medium text-2xl lg:text-2xl">
+                    <i class="pi pi-shopping-cart text-xl mr-2"></i>
+                    Resumo
+                </span>
+            </div>
+            <div class="py-2 mt-3 border-bottom-1 surface-border w-full">
+                <div class="flex justify-content-between align-items-center mb-3">
+                    <span class="text-900 text-lg">Peças</span>
+                    <span class="text-900 text-xl">{{myTotalItens}}</span>
+                </div>
+                <div class="flex justify-content-between align-items-center mb-3">
+                    <span class="text-900 text-lg">Total</span>
+                    <span class="text-900 text-xl">{{myTotalPayment | currency}}</span>
+                </div>
+                <div class="flex flex-column mb-3">
+                    <label class="mb-1">Condição de Pagamento</label>
+                    <p-dropdown styleClass="w-full" placeholder="Selecione..." emptyMessage="Nenhum registro encontrado!"></p-dropdown>
+                </div>
+                <div class="flex flex-row mb-3 align-items-center w-full justify-content-center">
+                    <div class="flex flex-column mr-1 w-full">
+                        <p-button styleClass="p-button-warning w-full" label="Cancelar" icon="pi pi-order-cancel" iconPos="right" (onClick)="tryCancel()"></p-button>
+                    </div>
+                    <div class="flex flex-column w-full">
+                        <p-button styleClass="p-button-help w-full" label="Finalizar" icon="pi pi-order-finish" iconPos="right"></p-button>
+                    </div>
+                </div>
+            </div>
+        </div>  
+    </div>
+</div>
+<p-confirmDialog></p-confirmDialog>
+<p-toast></p-toast>
