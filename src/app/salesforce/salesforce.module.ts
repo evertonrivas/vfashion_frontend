@@ -13,6 +13,8 @@ import { ReturnComponent } from './return/return.component';
 import { ImageModule } from 'primeng/image';
 import { CheckboxModule } from 'primeng/checkbox';
 import { TopbarComponent } from '../common/topbar/topbar.component';
+import { CheckoutComponent } from './checkout/checkout.component';
+import { DataViewModule } from 'primeng/dataview';
 
 
 @NgModule({
@@ -21,7 +23,8 @@ import { TopbarComponent } from '../common/topbar/topbar.component';
     GridComponent,
     HistoryComponent,
     OrderComponent,
-    ReturnComponent
+    ReturnComponent,
+    CheckoutComponent
   ],
   imports: [
     CommonModule,
@@ -31,7 +34,8 @@ import { TopbarComponent } from '../common/topbar/topbar.component';
     MultiSelectModule,
     ImageModule,
     CheckboxModule,
-    TopbarComponent
+    TopbarComponent,
+    DataViewModule
   ]
 })
 export class SalesforceModule { }
