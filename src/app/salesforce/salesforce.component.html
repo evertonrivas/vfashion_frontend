@@ -7,6 +7,7 @@
     </div>
 </div>
 <p-sidebar [(visible)]="sidebarVisible" styleClass="w-25rem">
+    <ng-template pTemplate="header"><div class="text-xl font-bold text-gray-500"><i class="pi pi-filter mr-1"></i> Filtros</div></ng-template>
     <div class="flex flex-column w-full">
         <label class="mb-2">Marca(s):</label>
         <p-multiSelect styleClass="w-full" emptyMessage="Nenhum registro encontrado!" [options]="all_brand" [(ngModel)]="filter.brands" optionLabel="name" optionValue="id" placeholder="Selecione..."></p-multiSelect>
@@ -44,9 +45,7 @@
 
 
 <p-sidebar position="right" [(visible)]="sidebarCart" styleClass="w-25rem" styleClass="w-30rem" appendTo="body">
-    <div class="flex flex-row justify-content-center mb-2">
-        <h3>Itens do Pedido</h3>
-    </div>
+    <ng-template pTemplate="header"><div class="text-xl font-bold text-gray-500"><i class="pi pi-shopping-cart mr-1"></i>Itens do Pedido</div></ng-template>
     <div class="flex flex-row w-full">
         <p-dataView [value]="cart_itens" layout="list" styleClass="mb-4" [loading]="loading">
             <ng-template pTemplate="listItem" *ngIf="level_access=='C'" let-product>
