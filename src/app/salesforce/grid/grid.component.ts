@@ -5,7 +5,7 @@ import { PaginatorState } from 'primeng/paginator';
 import { Common } from 'src/app/classes/common';
 import { RequestResponse, ResponseError } from 'src/app/models/paginate.model';
 import { B2bFilterService as SysFilter } from 'src/app/services/b2b.filter.service';
-import { Product } from 'src/app/models/product.model';
+import { Product,Image, ProductStock, SubTotal } from 'src/app/models/product.model';
 import { CheckboxChangeEvent } from 'primeng/checkbox';
 import { Color as B2bColor } from 'src/app/models/product.model';
 import { Dropdown, DropdownChangeEvent } from 'primeng/dropdown';
@@ -14,6 +14,7 @@ import { EntitiesService } from 'src/app/services/entities.service';
 import { Entity } from 'src/app/models/entity.model';
 import { Dialog } from 'primeng/dialog';
 import { IndicatorsService } from 'src/app/services/indicators.service';
+import { CartItem } from 'src/app/models/order.model';
 
 export interface SelectedImg{
   [index:number]:string
@@ -32,6 +33,7 @@ export interface SelectedColor{
 export class GridComponent extends Common implements AfterViewInit, OnChanges{
   @ViewChild('dlSelectCustomer') dlSelectCustomer!:Dialog
   @ViewChild('ddColors') ddColors:Dropdown|null = null;
+  isAddGrid:boolean = false;
   layout: any = 'grid';
   sortOptions!: SelectItemGroup[];
   all_colors:B2bColor[] = [];
@@ -42,10 +44,16 @@ export class GridComponent extends Common implements AfterViewInit, OnChanges{
   sendAddGrid:boolean = false;
   filtered:boolean = false;
   showNoCustomerDialog:boolean = false;
+  showAddToCartDialog:boolean  = false;
+  sizeKeys:string[] = []; //chaves para montar os tamanhos de forma dinamica
   
   selectedProduct!:number;
   selectedCustomer:number = 0;
   all_customers:Entity[]  = [];
+  productToCart!:Product;
+  productToCartImage!:Image;
+  productToCartStock!:ProductStock[];
+  productToCartSubtotal:SubTotal = {};
 
   constructor(route:Router,
     private svcFil:SysFilter,
@@ -159,6 +167,7 @@ export class GridComponent extends Common implements AfterViewInit, OnChanges{
 
   //adiciona apenas um item pela grade
   addGrid(id:number):void{
+    this.isAddGrid = true;
     if(this.selectedItemColor[id]==undefined){
       this.showDialog = true;
     }
@@ -179,6 +188,7 @@ export class GridComponent extends Common implements AfterViewInit, OnChanges{
   }
 
   addCheckedToGrid():void{
+    this.isAddGrid = true;
     this.sendAddGrid = true;
     if(this.selectedGridColor==null){
       return;
@@ -204,7 +214,6 @@ export class GridComponent extends Common implements AfterViewInit, OnChanges{
             this.loadCustomers(localStorage.getItem("level_access")=='R'?true:false);
             this.showNoCustomerDialog = true;
             this.selectedProduct = 0;
-            //this.saveGrid(all_products,cor.id,this.selectedCustomer);
           }else{
             //adiconar metodo de adicionar produtos ao grid
             let cst:number = parseInt(localStorage.getItem("id_profile") as string);
@@ -218,28 +227,31 @@ export class GridComponent extends Common implements AfterViewInit, OnChanges{
     }
   }
 
-  closeAndSaveGrid():void{
+  closeAndSave():void{
     this.showNoCustomerDialog = false;
-    if(this.selectedProduct > 0 ){
-      let ids:number[] = [];
-      ids.push(this.selectedProduct);
-      this.saveGrid(ids,this.selectedItemColor[this.selectedProduct],this.selectedCustomer);
+    if(this.isAddGrid){
+      if(this.selectedProduct > 0 ){
+        let ids:number[] = [];
+        ids.push(this.selectedProduct);
+        this.saveGrid(ids,this.selectedItemColor[this.selectedProduct],this.selectedCustomer);
+      }else{
+        let all_products:number[] = [];
+        (this.response.data as Product[]).forEach((p) =>{
+          if(p.checked){
+            all_products.push(p.id);
+          }
+        });
+          
+        let cor:B2bColor = this.selectedGridColor as B2bColor;
+  
+        this.saveGrid(all_products,cor.id,this.selectedCustomer);
+      }
     }else{
-      let all_products:number[] = [];
-      (this.response.data as Product[]).forEach((p) =>{
-        if(p.checked){
-          all_products.push(p.id);
-        }
-      });
-        
-      let cor:B2bColor = this.selectedGridColor as B2bColor;
-
-      this.saveGrid(all_products,cor.id,this.selectedCustomer);
+      this.getStockAndShowDialog();
     }
   }
 
   saveGrid(ids:number[],color:number,customer:number):void{
-    //this.svcOrd.addGridToCart(ids,this.selectedItemColor[id],customer).subscribe({
     this.svcOrd.addGridToCart(ids,color,customer).subscribe({
       next:(data) => {
         if(typeof data === 'boolean'){
@@ -262,14 +274,107 @@ export class GridComponent extends Common implements AfterViewInit, OnChanges{
             severity:'error',
             summary:'Erro de Programação!',
             detail: (data as ResponseError).error_details
-          })
+          });
         }
       }
     });
   }
 
-  addToCart(id:number):void{
+  prepareToAddToCart(id:number):void{
+    this.isAddGrid = false;
+    //verifica se existe o cliente
+    if(localStorage.getItem("level_access")=='A' || localStorage.getItem("level_access")=='R'){
+      //carrega os clientes 
+      this.loadCustomers(localStorage.getItem("level_access")=='R'?true:false);
+      this.showNoCustomerDialog = true;
+      this.selectedProduct = id;
+    }else{
+      this.getStockAndShowDialog();
+    }
+  }
 
+  getStockAndShowDialog():void{
+    (this.response.data as Product[]).forEach((p) =>{
+      if(p.id==this.selectedProduct){
+        this.productToCart = p;
+        this.productToCart.images.forEach((img) =>{
+          if(img.default==true){
+            this.productToCartImage = img;
+          }
+        });
+        this.svcOrd.get_stock(this.selectedProduct).subscribe({
+          next: (data) =>{
+            this.productToCartStock = data as ProductStock[];
+            this.showAddToCartDialog = true;
+
+            this.productToCartStock.forEach((pstk) =>{
+              pstk.sizes.forEach((sz) =>{
+                if (this.productToCartSubtotal[this.productToCart.id]==undefined){
+                  this.productToCartSubtotal[this.productToCart.id] = {};
+                  if(this.productToCartSubtotal[this.productToCart.id][pstk.color_code]==undefined){
+                    this.productToCartSubtotal[this.productToCart.id][pstk.color_code] = 0;
+                  }else{
+                    this.productToCartSubtotal[this.productToCart.id][pstk.color_code] += sz.size_value;
+                  }
+                }
+
+                //obtem apenas os tamanhos do produto para configurar
+                if (this.sizeKeys.find(function(valor){
+                  return sz.size_code===valor;
+                })===undefined){
+                  this.sizeKeys.push(sz.size_code);
+                }
+              });
+            });
+          }
+        });
+      }
+    });
+  }
+
+  addToCart():void{
+    let cart:CartItem[] = [];
+    this.productToCartStock.forEach((ps) =>{
+      ps.sizes.forEach((sz) =>{
+        let item:CartItem = {
+          id_customer: this.selectedCustomer,
+          id_product: this.productToCart.id,
+          id_color: ps.color_id,
+          id_size: sz.size_id,
+          quantity: sz.size_saved,
+          price: this.productToCart.price
+        }
+        cart.push(item);
+      });
+    })
+    this.svcOrd.addToCart(cart).subscribe({
+      next: (data) =>{
+        this.msg.clear();
+        this.showAddToCartDialog = false;
+        if(typeof data==='boolean'){
+          if(data==true){
+            this.msg.add({
+              severity: 'success',
+              summary: 'Sucesso!',
+              detail: 'Produto adicionado com sucesso ao pedido.'
+            });
+            this.svcInd.annunceCounter();
+          }else{
+            this.msg.add({
+              severity:'error',
+              summary:'Falha!',
+              detail: 'Ocorreu um problema ao tentar adicionar o produto'
+            });
+          }
+        }else{
+          this.msg.add({
+            severity:'error',
+            summary:'Problema!',
+            detail: (data as ResponseError).error_details
+          });
+        }
+      }
+    });
   }
 
   verifyAndFreeButton():void{
@@ -321,5 +426,16 @@ export class GridComponent extends Common implements AfterViewInit, OnChanges{
     }
 
     this.listProducts();
+  }
+
+  changeAndSum(codColor:string):void{
+    this.productToCartSubtotal[this.productToCart.id][codColor] = 0;
+    this.productToCartStock.forEach((stk) =>{
+       stk.sizes.forEach((sz) =>{
+        if(codColor==stk.color_code){
+          this.productToCartSubtotal[this.productToCart.id][stk.color_code] += sz.size_saved;
+        }
+       });
+    });
   }
 }
