@@ -37,10 +37,10 @@ export interface OrderHistory{
 export interface CartItem{
     id_customer: number,
     id_product: number,
-    id_color: string,
-    id_size: string,
+    id_color: number,
+    id_size: number,
     quantity: number,
-    price:string
+    price:number
 }
 
 export interface CartSize{
