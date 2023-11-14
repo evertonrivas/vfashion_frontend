@@ -77,13 +77,15 @@ export interface Color{
 }
 
 export interface ProductStockSizes{
-    size_code: string,
-    size_name: string,
+    size_id   : number,
+    size_code : string,
+    size_name : string,
     size_value: number,
     size_saved: number
 }
 
 export interface ProductStock{
+    color_id  : number,
     color_name: string,
     color_hexa: string,
     color_code:string,
