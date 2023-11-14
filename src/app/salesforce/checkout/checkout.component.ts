@@ -5,6 +5,7 @@ import { Common } from 'src/app/classes/common';
 import { CartContent, CartSize } from 'src/app/models/order.model';
 import { ResponseError } from 'src/app/models/paginate.model';
 import { B2bOrderService } from 'src/app/services/b2b.order.service';
+import { IndicatorsService } from 'src/app/services/indicators.service';
 
 @Component({
   selector: 'app-checkout',
@@ -24,6 +25,7 @@ export class CheckoutComponent extends Common implements AfterViewInit{
 
   constructor(private svcOrd:B2bOrderService,
     private cnf:ConfirmationService,
+    private svcInd:IndicatorsService,
     private msg:MessageService,
     route:Router){
       super(route);
@@ -34,7 +36,7 @@ export class CheckoutComponent extends Common implements AfterViewInit{
   }
 
   getItens():void{
-    let priceByProduct:number = 0;
+    this.myTotalPayment = 0;
     this.svcOrd.listMyItens(
       parseInt(localStorage.getItem('id_profile') as string),
       localStorage.getItem("level_access") as string
@@ -69,6 +71,7 @@ export class CheckoutComponent extends Common implements AfterViewInit{
 
   tryDelete(id:number,idCustomer:number):void{
     this.idToDelete = id;
+    this.idCustomerToDelete = idCustomer;
     this.cnf.confirm({
       header:'Confirma exclusão?',
       message:'Deseja realmente prosseguir com a exclusão deste item?',
@@ -95,6 +98,7 @@ export class CheckoutComponent extends Common implements AfterViewInit{
             detail:'Produto excluído com sucesso!'
           });
           this.getItens();
+          this.svcInd.annunceCounter();
         }else{          
           this.msg.add({
             severity:'error',
