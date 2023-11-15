@@ -44,12 +44,13 @@ export class B2bOrderService extends MyHttp{
   }
 
   //adiciona produtos usando a grade padrao, para isso soh utiliza o codigo do produto, codigo da cor e codigo do cliente
-  addGridToCart(p_products:number[],p_idColor:number,p_idCustomer:number):Observable<boolean|ResponseError>{
+  addGridToCart(p_products:number[],p_idColor:number,p_idCustomer:number,p_idUser:number):Observable<boolean|ResponseError>{
     return this.http.put<boolean|ResponseError>(this.sys_config.backend_b2b+'/cart/',
     {
       customer: p_idCustomer,
       color: p_idColor,
-      products: p_products
+      products: p_products,
+      user:p_idUser
     },{
       headers: this.getHeader(ContentType.json)
     });
@@ -76,12 +77,12 @@ export class B2bOrderService extends MyHttp{
     );
   }
 
-  getItemData(prod:Product,idProfile:number,userType:string):Observable<CartContent|ResponseError>{
-    return this.http.get<CartContent|ResponseError>(this.sys_config.backend_b2b+'/cart/'+prod.id.toString()+'?id_profile='+idProfile.toString(),{
-      headers: this.getHeader(),
-      params: new HttpParams().set('userType',userType)
-    });
-  }
+  // getItemData(prod:Product,idProfile:number,userType:string):Observable<CartContent|ResponseError>{
+  //   return this.http.get<CartContent|ResponseError>(this.sys_config.backend_b2b+'/cart/'+prod.id.toString()+'?id_profile='+idProfile.toString(),{
+  //     headers: this.getHeader(),
+  //     params: new HttpParams().set('userType',userType)
+  //   });
+  // }
 
   listMyItens(idProfile:number,userType:string):Observable<CartContent[]|RequestResponse|ResponseError>{
     return this.http.get<CartContent[]|RequestResponse|ResponseError>(this.sys_config.backend_b2b+'/cart/?id_profile='+idProfile.toString(),{
@@ -97,13 +98,20 @@ export class B2bOrderService extends MyHttp{
     });
   }
 
-  delete(ids:number[],idCustomer:number):Observable<boolean|ResponseError>{
+  removeCartItens(ids:number[],idCustomer:number):Observable<boolean|ResponseError>{
     return this.http.delete<boolean|ResponseError>(this.sys_config.backend_b2b+'/cart/',{
       headers: this.getHeader(ContentType.json),
       body: {
         products: ids,
         customer: idCustomer
       }
+    });
+  }
+
+  cancelCart(idProfile:number,userType:string):Observable<boolean|ResponseError>{
+    return this.http.delete<boolean|ResponseError>(this.sys_config.backend_b2b+'/cart/'+idProfile.toString(),{
+      headers: this.getHeader(),
+      params: new HttpParams().set("userType",userType)
     });
   }
 
