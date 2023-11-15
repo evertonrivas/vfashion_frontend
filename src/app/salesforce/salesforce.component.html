@@ -47,7 +47,7 @@
 <p-sidebar position="right" [(visible)]="sidebarCart" styleClass="w-25rem" styleClass="w-30rem" appendTo="body">
     <ng-template pTemplate="header"><div class="text-xl font-bold text-gray-500"><i class="pi pi-shopping-cart mr-1"></i>Itens do Pedido</div></ng-template>
     <div class="flex flex-row w-full">
-        <p-dataView [value]="cart_itens" layout="list" styleClass="mb-4" [loading]="loading">
+        <p-dataView [value]="cart_itens" layout="list" styleClass="mb-4" [loading]="loading" emptyMessage="Nenhum registro encontrado.">
             <ng-template pTemplate="listItem" *ngIf="level_access=='C'" let-product>
                 <div class="flex flex-column w-full">
                     <h6>{{product.name}}</h6>
@@ -70,6 +70,6 @@
         </p-dataView>
     </div>
     <div style="bottom: 0px!important;">
-        <p-button [class]="totalMyItens==0?'disabled':''" styleClass="w-full p-button-danger" icon="pi pi-supplier" label="Revisar e Finalizar Pedido" iconPos="right" (onClick)="gotoCheckout()"></p-button>
+        <p-button [disabled]="totalMyItens==0?true:false" styleClass="w-full p-button-danger" icon="pi pi-supplier" label="Revisar e Finalizar Pedido" iconPos="right" (onClick)="gotoCheckout()"></p-button>
     </div>
 </p-sidebar>
