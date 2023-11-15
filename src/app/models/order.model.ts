@@ -40,7 +40,11 @@ export interface CartItem{
     id_color: number,
     id_size: number,
     quantity: number,
-    price:number
+    price:number,
+    user_create: number,
+    date_create: Date,
+    user_update: number|null,
+    date_update: Date|null
 }
 
 export interface CartSize{
