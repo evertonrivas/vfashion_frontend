@@ -252,7 +252,7 @@ export class GridComponent extends Common implements AfterViewInit, OnChanges{
   }
 
   saveGrid(ids:number[],color:number,customer:number):void{
-    this.svcOrd.addGridToCart(ids,color,customer).subscribe({
+    this.svcOrd.addGridToCart(ids,color,customer,parseInt(localStorage.getItem("id_user") as string)).subscribe({
       next:(data) => {
         if(typeof data === 'boolean'){
           if(data==true){
@@ -342,7 +342,11 @@ export class GridComponent extends Common implements AfterViewInit, OnChanges{
           id_color: ps.color_id,
           id_size: sz.size_id,
           quantity: sz.size_saved,
-          price: this.productToCart.price
+          price: this.productToCart.price,
+          user_create: parseInt(localStorage.getItem("id_user") as string),
+          date_create: new Date(),
+          user_update: null,
+          date_update: null
         }
         cart.push(item);
       });
