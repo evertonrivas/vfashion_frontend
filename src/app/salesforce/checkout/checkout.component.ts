@@ -19,6 +19,7 @@ export class CheckoutComponent extends Common implements AfterViewInit{
   cart_itens!:CartContent[];
   idToDelete:number = 0;
   idCustomerToDelete:number = 0;
+  isCancel:boolean = false;
 
   //monta na tela os tamanhos dos produtos
   sizeKeys:string[] = [];
@@ -87,8 +88,8 @@ export class CheckoutComponent extends Common implements AfterViewInit{
   }
 
   executeDelete():void{
-    console.log(this.idToDelete);
-    this.svcOrd.delete([this.idToDelete],this.idCustomerToDelete).subscribe({
+    this.isCancel = false;
+    this.svcOrd.removeCartItens([this.idToDelete],this.idCustomerToDelete).subscribe({
       next: (data) =>{
         this.msg.clear();
         if(typeof data ==='boolean'){
@@ -111,11 +112,43 @@ export class CheckoutComponent extends Common implements AfterViewInit{
   }
 
   tryCancel():void{
+    this.isCancel = true;
     this.cnf.confirm({
-      header:'Confirma cancelamento?',
+      header:'Confirmação de cancelamento',
       message: 'Atenção, essa ação irá realizar o cancelamento total do pedido. Deseja realmente continuar?',
       accept:() =>{
+        let profile:number = parseInt(localStorage.getItem("id_profile") as string);
 
+        //nao havendo um profile associado significa que eh administrador
+        this.svcOrd.cancelCart(
+          profile==0?parseInt(localStorage.getItem("id_user") as string):profile,
+          this.level_access
+        ).subscribe({
+          next: (data) =>{
+            this.msg.clear();
+            if(typeof data ==='boolean'){
+              if(data==true){
+                this.msg.add({
+                  severity:'success',
+                  summary:'Sucesso!',
+                  detail:'Pedido cancelado com sucesso.',
+                });
+              }else{
+                this.msg.add({
+                  severity:'error',
+                  summary: 'Erro!',
+                  detail:'Ocorreu um erro ao tentar cancelar o pedido.'
+                });
+              }
+            }else{
+              this.msg.add({
+                severity:"error",
+                summary:'Problema!',
+                detail: (data as ResponseError).error_details
+              })
+            }
+          }
+        })
       },
       acceptLabel:'Sim',
       acceptIcon:'pi pi-check mr-1',
@@ -123,5 +156,12 @@ export class CheckoutComponent extends Common implements AfterViewInit{
       rejectIcon:'pi pi-ban mr-1',
       rejectButtonStyleClass:'p-button-danger'
     });
+  }
+
+  checkCancel():void{
+    if(this.isCancel){
+      this.svcInd.annunceCounter();
+      this.route.navigate([this.modulePath+'/grid']);
+    }
   }
 }
