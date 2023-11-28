@@ -15,6 +15,8 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { TopbarComponent } from '../common/topbar/topbar.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { DataViewModule } from 'primeng/dataview';
+import { TagModule } from 'primeng/tag';
+import { TimelineModule } from 'primeng/timeline';
 
 
 @NgModule({
@@ -35,7 +37,9 @@ import { DataViewModule } from 'primeng/dataview';
     ImageModule,
     CheckboxModule,
     TopbarComponent,
-    DataViewModule
+    DataViewModule,
+    TagModule,
+    TimelineModule
   ]
 })
 export class SalesforceModule { }
