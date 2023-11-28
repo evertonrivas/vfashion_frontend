@@ -54,3 +54,12 @@ export enum CustomerCurve{
     TWO_STARS   = 2,
     ONE_STAR    = 1
 }
+
+export enum AccessLevel{
+    ADMIN = 'A', //administrador
+    STORE = 'L', //lojista
+    REPR  = 'R', //representante
+    SALES = 'V', //vendedor
+    USER  = 'C', //company user
+}
+//A = Administrador, L = Lojista, R = Representante, V = Vendedor, C = Company User

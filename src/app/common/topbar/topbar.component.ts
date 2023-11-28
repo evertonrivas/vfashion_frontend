@@ -55,7 +55,7 @@ export class TopbarComponent extends Common implements AfterContentInit,OnDestro
       this.IndSvc.counterAnnounced$.subscribe(() =>{
         this.IndSvc.b2bTotalCart(
           parseInt((localStorage.getItem("id_profile") as string)),
-          localStorage.getItem("level_access") as string
+          this.level_access as string
         ).subscribe({
           next: (data) =>{
             if(typeof data ==='number'){
@@ -71,7 +71,6 @@ export class TopbarComponent extends Common implements AfterContentInit,OnDestro
   }
 
   ngAfterContentInit(): void {
-    this.userLevel = localStorage.getItem("level_access") as string;
     this.checkLogged();
     this.idTimerLogged = <any>setInterval(() =>{
       this.checkLogged();
@@ -80,7 +79,7 @@ export class TopbarComponent extends Common implements AfterContentInit,OnDestro
     //busca o total de produtos do carrinho
     this.IndSvc.b2bTotalCart(
       parseInt((localStorage.getItem("id_profile") as string)),
-      localStorage.getItem("level_access") as string
+      this.level_access as string
     ).subscribe({
       next: (data) =>{
         if(typeof data === 'number'){

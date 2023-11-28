@@ -43,7 +43,7 @@
                 </div>
             </ng-template>
         </p-overlayPanel>
-        <button class="p-link layout-topbar-button" *ngIf="userLevel=='A'" pTooltip="Trocar módulo" tooltipPosition="bottom" tooltipStyleClass="text-xs"  (click)="p_module.toggle($event)">
+        <button class="p-link layout-topbar-button" *ngIf="level_access==levels.ADMIN" pTooltip="Trocar módulo" tooltipPosition="bottom" tooltipStyleClass="text-xs"  (click)="p_module.toggle($event)">
             <i class="material-symbols-outlined">
                 deployed_code
             </i>

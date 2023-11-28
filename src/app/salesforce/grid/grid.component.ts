@@ -173,9 +173,9 @@ export class GridComponent extends Common implements AfterViewInit, OnChanges{
     }
     else{
       //verifica se existe o cliente
-      if(localStorage.getItem("level_access")=='A' || localStorage.getItem("level_access")=='R'){
+      if(this.level_access==this.levels.ADMIN || this.level_access==this.levels.REPR){
         //carrega os clientes 
-        this.loadCustomers(localStorage.getItem("level_access")=='R'?true:false);
+        this.loadCustomers(this.level_access==this.levels.REPR?true:false);
         this.showNoCustomerDialog = true;
         this.selectedProduct = id;
       }else{
@@ -209,9 +209,9 @@ export class GridComponent extends Common implements AfterViewInit, OnChanges{
           let cor:B2bColor = this.selectedGridColor as B2bColor;
 
           //verifica se existe o cliente pelo tipo de acesso
-          if(localStorage.getItem("level_access")=='A' || localStorage.getItem("level_access")=='R'){
+          if(this.level_access==this.levels.ADMIN || this.level_access==this.levels.REPR){
             //carrega os clientes 
-            this.loadCustomers(localStorage.getItem("level_access")=='R'?true:false);
+            this.loadCustomers(this.level_access==this.levels.REPR?true:false);
             this.showNoCustomerDialog = true;
             this.selectedProduct = 0;
           }else{
@@ -283,9 +283,9 @@ export class GridComponent extends Common implements AfterViewInit, OnChanges{
   prepareToAddToCart(id:number):void{
     this.isAddGrid = false;
     //verifica se existe o cliente
-    if(localStorage.getItem("level_access")=='A' || localStorage.getItem("level_access")=='R'){
+    if(this.level_access==this.levels.ADMIN || this.level_access==this.levels.REPR){
       //carrega os clientes 
-      this.loadCustomers(localStorage.getItem("level_access")=='R'?true:false);
+      this.loadCustomers(this.level_access==this.levels.REPR?true:false);
       this.showNoCustomerDialog = true;
       this.selectedProduct = id;
     }else{

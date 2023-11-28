@@ -73,7 +73,7 @@ export class SalesforceComponent extends Common implements OnInit{
         if(this.sidebarCart==true){
           this.svcOrd.listMyItens(
             parseInt(localStorage.getItem("id_profile") as string),
-            this.level_access
+            this.level_access as string
           ).subscribe({
             next:(data) =>{
               this.loading = false;

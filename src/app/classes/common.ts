@@ -1,7 +1,7 @@
 import { Subscription } from "rxjs";
 import { Checkbox } from "../models/checkbox.model";
 import { Options, RequestResponse } from "../models/paginate.model";
-import { FileType, ModuleName } from "../models/system.enum";
+import { AccessLevel, FileType, ModuleName } from "../models/system.enum";
 import { Router } from "@angular/router";
 import { MenuItem } from "primeng/api/menuitem";
 import * as sys_config from 'src/assets/config.json';
@@ -32,7 +32,8 @@ export class Common{
     searchTerm:string = "";
     loading:boolean = false;
     showDialog:boolean = false;
-    level_access:string = "";
+    level_access!:AccessLevel;
+    levels = AccessLevel;
 
     constructor(protected route:Router){
         this.response = {
@@ -52,7 +53,13 @@ export class Common{
         }
 
         this.getModule();
-        this.level_access = localStorage.getItem("level_access") as string;
+        switch(localStorage.getItem("level_access") as string){
+            case 'A': this.level_access = AccessLevel.ADMIN; break;
+            case 'L': this.level_access = AccessLevel.STORE; break;
+            case 'R': this.level_access = AccessLevel.REPR; break;
+            case 'V': this.level_access = AccessLevel.SALES; break;
+            case 'C': this.level_access = AccessLevel.USER; break; 
+        }
     }
 
     getModule():void{
