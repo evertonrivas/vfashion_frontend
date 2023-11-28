@@ -58,6 +58,7 @@ export class B2bOrderService extends MyHttp{
 
   //finaliza a ordem juntando a condicao de pagamento
   finishOrder(id_payment:number,
+    customers:number[],
     total_value:number,
     installments:number,
     installment_value:number,
@@ -66,7 +67,7 @@ export class B2bOrderService extends MyHttp{
     return this.http.post<number|ResponseError>(this.sys_config.backend_b2b+'/orders/',{
       "make_online": true,
       "id_payment_condition": id_payment,
-      "id_customer": localStorage.getItem("id_profile"),
+      "customers": customers,
       "total_value": total_value,
       "total_itens": total_itens,
       "installments": installments,
