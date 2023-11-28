@@ -17,6 +17,17 @@ export interface Order{
     products: OrderProduct[]
 }
 
+export interface TrackStatus{
+    date:string,
+    status:string
+}
+
+export interface TrackOrder{
+    shipping:string,
+    forecast:string,
+    timeline: TrackStatus[]
+}
+
 export interface OrderHistory{
     id_order:number,
     id_customer:number,
@@ -30,7 +41,7 @@ export interface OrderHistory{
     integrated:boolean,
     integration_number:number|null,
     invoice_number:number|null,
-    track_code:string|null
+    track:TrackOrder|null,
     date_created:string
 }
 
@@ -48,11 +59,13 @@ export interface CartItem{
 }
 
 export interface CartSize{
+    id:number,
     name:string,
     quantity:number
 }
 
 export interface CartColor{
+    id: number,
     name: string,
     hexa: string,
     code:string,
