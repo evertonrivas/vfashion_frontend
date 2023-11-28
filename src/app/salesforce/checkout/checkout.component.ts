@@ -2,8 +2,9 @@ import { AfterViewInit, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Common } from 'src/app/classes/common';
-import { CartContent, CartSize } from 'src/app/models/order.model';
+import { CartContent, CartItem, CartSize, PaymentCondition } from 'src/app/models/order.model';
 import { ResponseError } from 'src/app/models/paginate.model';
+import { Product,Image, ProductStock, SubTotal, ProductStockSizes, Color } from 'src/app/models/product.model';
 import { B2bOrderService } from 'src/app/services/b2b.order.service';
 import { IndicatorsService } from 'src/app/services/indicators.service';
 
@@ -21,6 +22,18 @@ export class CheckoutComponent extends Common implements AfterViewInit{
   idCustomerToDelete:number = 0;
   isCancel:boolean = false;
 
+  //edicao de produto
+  productToCart!:Product;
+  showEditCartDialog:boolean = false;
+  productToCartImage!:Image;
+  productToCartStock!:ProductStock[];
+  productToCartSubtotal:SubTotal = {};
+
+  paymentCondition:PaymentCondition[] = [];
+  selectedPaymentCondition!:PaymentCondition;
+
+  STK!:ProductStock[]; //necessario para obter o estoque do produto
+
   //monta na tela os tamanhos dos produtos
   sizeKeys:string[] = [];
 
@@ -34,13 +47,23 @@ export class CheckoutComponent extends Common implements AfterViewInit{
 
   ngAfterViewInit(): void {
     this.getItens();
+    this.getPaymentConditions();
+  }
+
+  getPaymentConditions():void{
+    this.svcOrd.listPayment({page:1,pageSize:1,query:'can:list-all 1||is:order-by name'}).subscribe({
+      next: (data) =>{
+        this.paymentCondition = data as PaymentCondition[];
+      }
+    });
   }
 
   getItens():void{
     this.myTotalPayment = 0;
+    this.myTotalItens   = 0;
     this.svcOrd.listMyItens(
       parseInt(localStorage.getItem('id_profile') as string),
-      localStorage.getItem("level_access") as string
+      this.level_access as string
     ).subscribe({
       next: (data) =>{
         this.cart_itens = data as CartContent[];       
@@ -122,7 +145,7 @@ export class CheckoutComponent extends Common implements AfterViewInit{
         //nao havendo um profile associado significa que eh administrador
         this.svcOrd.cancelCart(
           profile==0?parseInt(localStorage.getItem("id_user") as string):profile,
-          this.level_access
+          this.level_access as string
         ).subscribe({
           next: (data) =>{
             this.msg.clear();
@@ -163,5 +186,203 @@ export class CheckoutComponent extends Common implements AfterViewInit{
       this.svcInd.annunceCounter();
       this.route.navigate([this.modulePath+'/grid']);
     }
+  }
+
+  changeAndSum(codColor:number):void{
+    this.productToCartSubtotal[this.productToCart.id][codColor] = 0;
+    this.productToCartStock.forEach((stk) =>{
+       stk.sizes.forEach((sz) =>{
+        if(codColor==stk.color_id){
+          this.productToCartSubtotal[this.productToCart.id][stk.color_id] += sz.size_saved;
+        }
+       });
+    });
+  }
+
+  editCart(p_idProduct:number,p_idCustomer:number):void{
+    this.STK = [];
+    this.productToCartStock = [];
+    this.productToCartSubtotal = [];
+    this.showEditCartDialog = true;
+
+    if(this.productToCartSubtotal[p_idProduct]==undefined){
+      this.productToCartSubtotal[p_idProduct] = {}
+    }
+
+    //busca o estoque original do produto
+    this.svcOrd.get_stock(p_idProduct).subscribe({
+      next: (data) =>{
+        this.STK = data as ProductStock[];
+        this.cart_itens.forEach((ct) =>{
+          if(ct.id_product==p_idProduct && ct.id_customer==p_idCustomer){
+    
+            //apenas informacoes minimas
+            this.productToCart = {
+              id: p_idProduct,
+              prodCode:ct.ref,
+              barCode:null,
+              refCode: ct.ref,
+              name: ct.name,
+              description:null,
+              observation:null,
+              ncm:null,
+              price: ct.price_un,
+              measure_unit:'UN',
+              structure:'S',
+              date_created: new Date().toISOString().substring(0,10),
+              date_updated:null,
+              images: [],
+              colors:[],
+              checked:false          
+            }
+    
+            //serve apenas para exibir a imagem
+            this.productToCartImage = {
+              id:0,
+              img_url:ct.img_url,
+              default:true
+            }
+    
+            ct.colors.forEach((cl) =>{
+              if(this.productToCartSubtotal[ct.id_product][cl.id]==undefined){
+                this.productToCartSubtotal[ct.id_product][cl.id] = 0;
+              }
+              let ps:ProductStock = {
+                color_id: cl.id,
+                color_name: cl.name,
+                color_hexa: cl.hexa,
+                color_code: cl.code,
+                sizes: [],
+              }
+    
+              //busca os tamanhos da cor do estoque
+              let stkCor:ProductStock = this.STK.find((p) => p.color_id==cl.id) as ProductStock;
+    
+              cl.sizes.forEach((sz) =>{
+                let size:ProductStockSizes = {
+                  size_id: sz.id,
+                  size_name: sz.name,
+                  size_saved: sz.quantity,
+                  size_code:'',
+                  size_value: stkCor.sizes.find((psz) => psz.size_id == sz.id)?.size_value as number
+                }
+                this.productToCartSubtotal[ct.id_product][cl.id] += sz.quantity;
+                ps.sizes.push(size);
+              });
+              this.productToCartStock.push(ps);
+            });
+          }
+        });
+      }
+    });
+  }
+
+  saveCart():void{
+    let cart:CartItem[] = [];
+    this.productToCartStock.forEach((ps) =>{
+      ps.sizes.forEach((sz) =>{
+        let item:CartItem = {
+          id_customer: (this.cart_itens.find((cc) => cc.id_product == this.productToCart.id) as CartContent).id_customer,
+          id_product: this.productToCart.id,
+          id_color: ps.color_id,
+          id_size: sz.size_id,
+          quantity: sz.size_saved,
+          price: this.productToCart.price,
+          user_create: parseInt(localStorage.getItem("id_user") as string),
+          date_create: new Date(),
+          user_update: null,
+          date_update: null
+        }
+        cart.push(item);
+      });
+    })
+    this.svcOrd.addToCart(cart).subscribe({
+      next: (data) =>{
+        this.msg.clear();
+        this.showEditCartDialog = false;
+        if(typeof data==='boolean'){
+          if(data==true){
+            this.msg.add({
+              severity: 'success',
+              summary: 'Sucesso!',
+              detail: 'Produto atualizado com sucesso ao pedido.'
+            });
+            this.svcInd.annunceCounter();
+            this.getItens();
+          }else{
+            this.msg.add({
+              severity:'error',
+              summary:'Falha!',
+              detail: 'Ocorreu um problema ao tentar adicionar o produto'
+            });
+          }
+        }else{
+          this.msg.add({
+            severity:'error',
+            summary:'Problema!',
+            detail: (data as ResponseError).error_details
+          });
+        }
+      }
+    });
+  }
+
+  testFinishOrder(){
+    this.hasSended = true;
+    if(this.selectedPaymentCondition==undefined){
+      return;
+    }
+
+    this.cnf.confirm({
+      header:'Confirmar',
+      message:'Atenção, todo(s) o(s) cliente(s) irá(ão) ter a mesma condição de pagamento, deseja realmente continuar?',
+      accept:() =>{
+        this.finishOrder();
+      },
+      acceptLabel:'Sim',
+      acceptIcon:'pi pi-check mr-1',
+      rejectLabel:'Não',
+      rejectIcon:'pi pi-ban mr-1',
+      rejectButtonStyleClass:'p-button-danger'
+    });
+  }
+
+  finishOrder(){
+    this.isCancel = true; //flag apenas para voltar a pagina inicial
+    this.hasSended = true;
+    if(this.selectedPaymentCondition==undefined){
+      return;
+    }
+
+    let customers:number[] = [];
+    this.cart_itens.forEach((cc) =>{
+      if (customers.indexOf(cc.id_customer)==-1){
+        customers.push(cc.id_customer); 
+      }
+    });
+
+    let pay:PaymentCondition = (this.selectedPaymentCondition as PaymentCondition);
+
+    this.svcOrd.finishOrder(
+      pay.id,
+      customers,
+      this.myTotalPayment,
+      pay.installments,
+      (this.myTotalItens/pay.installments),
+      this.myTotalItens
+    ).subscribe({
+      next: (data) =>{
+        if(typeof data ==='boolean'){
+          this.msg.clear();
+          this.msg.add({
+            severity:'success',
+            summary:'Sucesso!',
+            detail:'Pedido realizado com sucesso!'
+          });
+        }else{
+
+        }
+      }
+    })
   }
 }
