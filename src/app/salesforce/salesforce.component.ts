@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Common } from '../classes/common';
 import { Router } from '@angular/router';
 import { LayoutService } from '../services/layout.service';
@@ -15,7 +15,7 @@ import { CartContent } from '../models/order.model';
   templateUrl: './salesforce.component.html',
   styleUrls: ['./salesforce.component.scss']
 })
-export class SalesforceComponent extends Common implements OnInit{
+export class SalesforceComponent extends Common implements AfterViewInit{
   @Output() filteredEvent = new EventEmitter<Filter>();
   sidebarVisible:boolean = false;
   sidebarCart:boolean = false;
@@ -26,7 +26,7 @@ export class SalesforceComponent extends Common implements OnInit{
   all_model:ProductModel[] = [];
   all_size:Size[] = [];
   all_color:Color[] = [];
-  cart_itens!:CartContent[];
+  cart_itens:CartContent[] = [];
   totalMyItens:number = 0;
   myTotal:number = 0;
 
@@ -57,7 +57,7 @@ export class SalesforceComponent extends Common implements OnInit{
     super(router);
   }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     //exibe ou oculta o menu de filtros
     this.svcLay.menuOpen$.subscribe({
       next: () =>{

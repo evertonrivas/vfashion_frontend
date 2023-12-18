@@ -4,11 +4,18 @@
                 <label class="p-panel-title">Devoluções</label>
         </div>
         <div class="flex flex-row w-full justify-content-end">
-            <p-button icon="pi pi-plus" styleClass="p-button-sm p-button-success" label="Nova"></p-button>
+            <p-button icon="pi pi-plus" styleClass="p-button-sm p-button-success" label="Nova" (onClick)="showDialog = true"></p-button>
         </div>
     </ng-template>
 </p-panel>
 
-<p-dialog>
-    
+<p-dialog [visible]="showDialog" header="Nova devolução" [closable]="false" [draggable]="false" [modal]="true">
+    <div class="flex flex-column w-full">
+        <label>Pedido</label>
+        <p-dropdown></p-dropdown>
+    </div>
+    <div class="flex flex-row w-full justify-content-end">
+        <p-button icon="pi pi-ban" styleClass="p-button-danger mr-1" label="Cancelar" (onClick)="showDialog = false"></p-button>
+        <p-button icon="pi pi-check" label="OK" (onClick)="showDialog = false"></p-button>
+    </div>
 </p-dialog>

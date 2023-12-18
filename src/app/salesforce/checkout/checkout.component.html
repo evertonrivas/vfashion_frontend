@@ -2,8 +2,8 @@
     <div class="col-12 lg:col-8 p-4">
         <div class="surface-card grid formgrid p-fluid border-round shadow-2 p-5 h-full">
             <p-dataView [value]="cart_itens" layout="list" styleClass="w-full">
-                <ng-template pTemplate="listItem" let-product>
-                    <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 w-full">
+                <ng-template pTemplate="listItem" let-products>
+                    <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 w-full" *ngFor="let product of products">
                         <img class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" [src]="product.img_url" [alt]="product.name" />
                         <div class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
                             <div class="flex flex-column align-items-center sm:align-items-start gap-3 w-full">

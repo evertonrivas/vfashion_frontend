@@ -10,8 +10,8 @@ import { Dropdown, DropdownChangeEvent } from 'primeng/dropdown';
 import { Funnel, FunnelStage } from 'src/app/models/crm.model';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { Common } from 'src/app/classes/common';
-import { Router } from '@angular/router';
 import { Options } from 'src/app/models/paginate.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-customer-data',

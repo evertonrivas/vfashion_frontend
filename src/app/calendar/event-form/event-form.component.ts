@@ -74,7 +74,8 @@ export class EventFormComponent extends Common implements OnDestroy{
             //tratamento para tipo de evento
             if(this.ddet!=null){
               this.selectedEventType = this.selectedEvent.type;
-              this.ddet.selectItem(new Event(''),this.selectedEventType);
+              this.ddet.selectedOption = this.selectedEventType;
+              //this.ddet.selectItem(new Event(''),this.selectedEventType);
               this.ddet.onChange.emit();
             }
 

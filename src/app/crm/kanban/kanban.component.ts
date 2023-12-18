@@ -170,7 +170,8 @@ export class KanbanComponent extends Common implements AfterContentInit{
         });
       },complete: () =>{
         //forca o dropdown a escolher o item selecionado, o ngModel eh bugado nesse componente
-       (this.funSel as Dropdown).selectItem(new Event(''),this.selectedFunnel);
+       //(this.funSel as Dropdown).selectItem(new Event(''),this.selectedFunnel);
+       (this.funSel as Dropdown).selectedOption = this.selectedFunnel;
       },
       error: (err) =>{
         if (err.status==401){

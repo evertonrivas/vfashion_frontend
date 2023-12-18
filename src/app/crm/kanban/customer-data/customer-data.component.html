@@ -85,9 +85,9 @@
                                 </p-dropdown>
                             </div>
                             <div>
-                                <div class="flex flex-column mt-1" *ngIf="dptpc.value=='P'">
+                                <div class="flex flex-column mt-1" *ngIf="dptpc.selectedOption=='P'">
                                     <label>Telefone</label>
-                                    <p-inputMask [mask]="dptpc.label=='Telefone Convencional'?'(99) 9999-9999':'(99) 99999-9999'" class="p-inputtext-sm" [(ngModel)]="newContact.value" [ngClass]="{'ng-invalid ng-dirty' : sendContact && !newContact.value}"></p-inputMask>
+                                    <p-inputMask [mask]="dptpc.selectedOption=='Telefone Convencional'?'(99) 9999-9999':'(99) 99999-9999'" class="p-inputtext-sm" [(ngModel)]="newContact.value" [ngClass]="{'ng-invalid ng-dirty' : sendContact && !newContact.value}"></p-inputMask>
                                 </div>
                             </div>
                             <div>
@@ -302,7 +302,7 @@
                 <label for="slReprsentative">Representante</label>
                 <p-dropdown #ddRep [options]="representatives" optionLabel="name" optionValue="id" [(ngModel)]="selectedRepresentativeId" placeholder="Selecione..." styleClass="p-inputtext-sm">
                     <ng-template let-selectedItem pTemplate="selectedItem">
-                        <span [ngClass]="selectedItem.id==0?'text-red-500':''">{{selectedItem.name}}</span>
+                        <span [ngClass]="selectedItem?.id==0?'text-red-500':''">{{selectedItem?.name}}</span>
                     </ng-template>
                     <ng-template let-item pTemplate="item">
                         <span [ngClass]="item.id==0?'text-red-500':''">{{item.name}}</span>
@@ -360,10 +360,10 @@
                             <label>Tipo</label>
                             <p-dropdown #dptpc [options]="[{label:'E-mail',value:'E'},{label:'Telefone Convencional',value:'P'},{label:'Telefone Celular/Móvel',value:'P'}]" [(ngModel)]="newContact.contact_type" styleClass="p-inputtext-sm w-full">
                                 <ng-template let-selected pTemplate="selectedItem">
-                                    <i class="material-symbols-outlined icon-small" *ngIf="selected.label=='E-mail'">alternate_email</i>
-                                    <i class="material-symbols-outlined icon-small" *ngIf="selected.label=='Telefone Convencional'">phone_in_talk</i>
-                                    <i class="material-symbols-outlined icon-small" *ngIf="selected.label=='Telefone Celular/Móvel'">phonelink_ring</i>
-                                    {{selected.label}}
+                                    <i class="material-symbols-outlined icon-small" *ngIf="selected?.label=='E-mail'">alternate_email</i>
+                                    <i class="material-symbols-outlined icon-small" *ngIf="selected?.label=='Telefone Convencional'">phone_in_talk</i>
+                                    <i class="material-symbols-outlined icon-small" *ngIf="selected?.label=='Telefone Celular/Móvel'">phonelink_ring</i>
+                                    {{selected?.label}}
                                 </ng-template>
                                 <ng-template let-item pTemplate="item">
                                     <i class="material-symbols-outlined icon-small" *ngIf="item.label=='E-mail'">alternate_email</i>
@@ -376,7 +376,7 @@
                         <div>
                             <div class="flex flex-column mt-1" *ngIf="dptpc.value=='P'">
                                 <label>Telefone</label>
-                                <p-inputMask [mask]="dptpc.label=='Telefone Convencional'?'(99) 9999-9999':'(99) 99999-9999'" class="p-inputtext-sm" [(ngModel)]="newContact.value" [ngClass]="{'ng-invalid ng-dirty' : sendContact && !newContact.value}"></p-inputMask>
+                                <p-inputMask [mask]="dptpc.selectedOption=='Telefone Convencional'?'(99) 9999-9999':'(99) 99999-9999'" class="p-inputtext-sm" [(ngModel)]="newContact.value" [ngClass]="{'ng-invalid ng-dirty' : sendContact && !newContact.value}"></p-inputMask>
                             </div>
                         </div>
                         <div>
@@ -386,7 +386,7 @@
                             </div>
                             <div class="flex flex-row mt-1">
                                 <p-checkbox label="Padrão" [(ngModel)]="newContact.is_default" [binary]="true"></p-checkbox>
-                                <p-checkbox label="Whatsapp" [(ngModel)]="newContact.is_whatsapp" [binary]="true" *ngIf="dptpc.value=='P' && dptpc.label!='Telefone Convencional'"></p-checkbox>
+                                <p-checkbox label="Whatsapp" [(ngModel)]="newContact.is_whatsapp" [binary]="true" *ngIf="dptpc.value=='P' && dptpc.selectedOption!='Telefone Convencional'"></p-checkbox>
                             </div>
                         </div>
                         <div class="flex flex-row justify-content-end mt-1">
@@ -403,10 +403,10 @@
                             <label>Tipo</label>
                             <p-dropdown #dptpc [options]="[{label:'Blog',value:'B'},{label:'Social Media',value:'S'},{label:'Website',value:'W'}]" [(ngModel)]="newWeb.web_type" styleClass="p-inputtext-sm w-full">
                                 <ng-template let-selected pTemplate="selectedItem">
-                                    <i class="material-symbols-outlined icon-small" *ngIf="selected.value=='S'">diversity_3</i>
-                                    <i class="material-symbols-outlined icon-small" *ngIf="selected.value=='B'">rss_feed</i>
-                                    <i class="material-symbols-outlined icon-small" *ngIf="selected.value=='W'">web</i>
-                                    {{selected.label}}
+                                    <i class="material-symbols-outlined icon-small" *ngIf="selected?.value=='S'">diversity_3</i>
+                                    <i class="material-symbols-outlined icon-small" *ngIf="selected?.value=='B'">rss_feed</i>
+                                    <i class="material-symbols-outlined icon-small" *ngIf="selected?.value=='W'">web</i>
+                                    {{selected?.label}}
                                 </ng-template>
                                 <ng-template let-item pTemplate="item">
                                     <i class="material-symbols-outlined icon-small" *ngIf="item.value=='S'">diversity_3</i>

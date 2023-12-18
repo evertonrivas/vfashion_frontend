@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfirmationService, MessageService, PrimeNGConfig, SelectItem, SelectItemGroup } from 'primeng/api';
 import { PaginatorState } from 'primeng/paginator';
@@ -30,7 +30,7 @@ export interface SelectedColor{
   styleUrls: ['./grid.component.scss'],
   providers:[MessageService,ConfirmationService]
 })
-export class GridComponent extends Common implements AfterViewInit, OnChanges{
+export class GridComponent extends Common implements AfterViewInit{
   @ViewChild('dlSelectCustomer') dlSelectCustomer!:Dialog
   @ViewChild('ddColors') ddColors:Dropdown|null = null;
   isAddGrid:boolean = false;
@@ -97,44 +97,20 @@ export class GridComponent extends Common implements AfterViewInit, OnChanges{
         if(data.brands.length==0 && data.models.length==0 && data.categories.length==0 && data.collections.length==0 && data.colors.length==0 && data.sizes.length==0){
           this.options.query = "is:order-by price||is:order asc";
         }
-        this.listProducts();
       }
     });
   }
 
   ngAfterViewInit(): void {
-    this.svcFil.listColor({page:1,pageSize:1,query:'can:list-all 1||is:order-by name'}).subscribe({
-      next:(data) =>{
-        this.all_colors = data as B2bColor[];
-      }
-    });
-
-    this.sortOptions = [
-      { label: 'Ordem Crescente', value:'asc', items: [
-        { label: 'Menor Preço', value: '1' },
-        { label: 'Categoria/Coordenado A-Z', value: '2'},
-        { label: 'Coleção A-Z', value: '3' },
-        { label: 'Marca A-Z', value: '4' },
-        { label: 'Modelo A-Z', value: '5' },
-        { label: 'Tipo A-Z', value: '6' }
-      ]},
-      { label: 'Ordem Descrescente', value: 'desc', items:[
-        { label: 'Maior Preço', value: '-1' },
-        { label: 'Categoria/Coordenado Z-A', value: '-2'},
-        { label: 'Coleção Z-A', value: '-3' },
-        { label: 'Marca Z-A', value: '-4' },
-        { label: 'Modelo Z-A', value: '-5' },
-        { label: 'Tipo Z-A', value: '-6' },
-      ]}
-    ];
     this.listProducts();
     this.cdr.detectChanges();
+    //throw new Error('ngAfterViewInit Method not implemented.');
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    this.listProducts();
-    this.cdr.detectChanges();
-  }
+  // ngOnChanges(changes: SimpleChanges): void {
+  //   this.listProducts();
+  //   this.cdr.detectChanges();
+  // }
 
   listProducts(){
     this.loading = true;
@@ -143,6 +119,7 @@ export class GridComponent extends Common implements AfterViewInit, OnChanges{
     this.svcOrd.listGallery(this.options).subscribe({
       next: (data) =>{
         this.response = data as RequestResponse;
+        this.cdr.detectChanges();
         this.loading  = false;
       }
     });
@@ -395,7 +372,7 @@ export class GridComponent extends Common implements AfterViewInit, OnChanges{
       p.checked = evt.checked;
       if(!evt.checked){
         if(this.ddColors!=null){
-          this.ddColors.selectItem(new Event(''),null);
+          //this.ddColors.selectItem(new Event(''),null);
           this.ddColors.filterValue = '';
           this.ddColors.onChange.emit();
           this.sendAddGrid = false;

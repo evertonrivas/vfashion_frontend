@@ -57,13 +57,13 @@
                     </div>
                 </div>
             </ng-template>
-            <ng-template pTemplate="listItem" *ngIf="level_access==levels.ADMIN || level_access==levels.REPR" let-product>
-                <div class="flex flex-column w-full">
-                    <label class="font-bold text-base">{{product.name}}</label>
-                    <div style="max-width: 250px!important;" class="white-space-nowrap overflow-hidden text-overflow-ellipsis">{{product.fantasy_name}}</div>
+            <ng-template pTemplate="listItem" *ngIf="level_access==levels.ADMIN || level_access==levels.REPR" let-product_cart>
+                <div class="flex flex-column w-full" *ngFor="let item of product_cart">
+                    <label class="font-bold text-base">Nome do produto {{item.name}}</label>
+                    <div style="max-width: 250px!important;" class="white-space-nowrap overflow-hidden text-overflow-ellipsis">{{item.fantasy_name}}</div>
                     <div class="flex flex-row justify-content-between w-full mb-1">
-                        <small class="text-bluegray-300"><strong>{{product.itens}} itens</strong> X UN {{product.price_un |currency}}</small>
-                        <span class="text-bluegray-300">{{product.total_price | currency}}</span>
+                        <small class="text-bluegray-300"><strong>{{item.itens}} itens</strong> X UN {{item.price_un |currency}}</small>
+                        <span class="text-bluegray-300">{{item.total_price | currency}}</span>
                     </div>
                 </div>
             </ng-template>

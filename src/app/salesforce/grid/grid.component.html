@@ -31,46 +31,46 @@
             </div>
         </div>
     </ng-template>
-    <ng-template let-product pTemplate="gridItem">
-        <div class="col-12 md:col-6 lg:col-3 p-2">
-            <!-- imagens do produto-->
-            <div class="mb-3 relative">                
-                <ng-container *ngFor="let img of product.images">
-                    <p-image *ngIf="img.default==true" [src]="selectedImg[product.id]==undefined?img.img_url:selectedImg[product.id]" imageClass="w-full border-round" [preview]="true"></p-image>
-                </ng-container>
-                <div class="absolute flex flex-column top-0 left-0">
+    <ng-template let-product_grid pTemplate="gridItem">
+        <div class="grid grid-nogutter">
+            <div class="col-12 md:col-6 lg:col-3 p-2" *ngFor="let product of product_grid">
+                <div class="mb-3 relative">                
                     <ng-container *ngFor="let img of product.images">
-                        <img [src]="img.img_url" class="border-1 border-white-alpha-20 border-round cursor-pointer mt-2 ml-2 shadow-4" style="max-width: 50px;" (click)="setImage(product.id,img.img_url)">
+                        <p-image *ngIf="img.default==true" [src]="selectedImg[product.id]==undefined?img.img_url:selectedImg[product.id]" imageClass="w-full border-round" [preview]="true"></p-image>
                     </ng-container>
+                    <div class="absolute flex flex-column top-0 left-0">
+                        <ng-container *ngFor="let img of product.images">
+                            <img [src]="img.img_url" class="border-1 border-white-alpha-20 border-round cursor-pointer mt-2 ml-2 shadow-4" style="max-width: 50px;" (click)="setImage(product.id,img.img_url)">
+                        </ng-container>
+                    </div>
+                    <button type="button" pRipple class="p-ripple p-element border-1 border-white-alpha-20 border-round py-3 px-3 absolute bg-black-alpha-30 text-white inline-flex align-items-center justify-content-center hover:bg-black-alpha-40 transition-colors transition-duration-300 cursor-pointer font-semibold shadow-4"
+                        [style]="{'bottom':'1rem','right':'1rem','backdrop-filter':'blur(4px)','width':'calc(50% - 2rem)'}" (click)="prepareToAddToCart(product.id)"><i class="pi pi-shopping-cart mr-2"></i> <span class="text-sm">Adicionar ao Pedido</span>
+                    </button>
+                    <button type="button" pRipple class="p-ripple p-element border-1 border-white-alpha-20 border-round py-3 px-3 absolute bg-black-alpha-30 text-white inline-flex align-items-center justify-content-center hover:bg-black-alpha-40 transition-colors transition-duration-300 cursor-pointer font-semibold shadow-4"
+                        [style]="{'bottom':'1rem','left':'1rem','backdrop-filter':'blur(4px)','width':'calc(50% - 2rem)'}" (click)="addGrid(product.id)"><i class="pi pi-grid-view mr-2 text-base"></i> <span class="text-sm">Adicionar Grade</span>
+                    </button>
                 </div>
-                <button type="button" pRipple class="p-ripple p-element border-1 border-white-alpha-20 border-round py-3 px-3 absolute bg-black-alpha-30 text-white inline-flex align-items-center justify-content-center hover:bg-black-alpha-40 transition-colors transition-duration-300 cursor-pointer font-semibold shadow-4"
-                    [style]="{'bottom':'1rem','right':'1rem','backdrop-filter':'blur(4px)','width':'calc(50% - 2rem)'}" (click)="prepareToAddToCart(product.id)"><i class="pi pi-shopping-cart mr-2"></i> <span class="text-sm">Adicionar ao Pedido</span>
-                </button>
-                <button type="button" pRipple class="p-ripple p-element border-1 border-white-alpha-20 border-round py-3 px-3 absolute bg-black-alpha-30 text-white inline-flex align-items-center justify-content-center hover:bg-black-alpha-40 transition-colors transition-duration-300 cursor-pointer font-semibold shadow-4"
-                    [style]="{'bottom':'1rem','left':'1rem','backdrop-filter':'blur(4px)','width':'calc(50% - 2rem)'}" (click)="addGrid(product.id)"><i class="pi pi-grid-view mr-2 text-base"></i> <span class="text-sm">Adicionar Grade</span>
-                </button>
-            </div>
-            <!-- fim das imagens -->
-            <div class="flex flex-column align-items-center w-full">
-                <label class="font-semibold mb-3 vertical-align-middle">
-                    <p-checkbox [value]="true" [(ngModel)]="product.checked" (onChange)="verifyAndFreeButton()" [binary]="true"></p-checkbox> 
-                    {{product.name}}
-                </label>
-                <label class="text-2xl mb-3">{{product.price | currency}}</label>
-                <p-dropdown *ngIf="product.colors.length > 0" [showClear]="true" 
-                    [options]="product.colors" 
-                    [(ngModel)]="selectedItemColor[product.id]" 
-                    optionValue="id" 
-                    optionLabel="name" 
-                    styleClass="w-full"
-                    placeholder="Selecione...">
-                    <ng-template pTemplate="selectedItem" let-selected>
-                        <span class="border-round-sm pl-2 pr-2 mr-2" [ngStyle]="{'width': '15px', 'height':'10px', 'background-color': selected.color}"></span>{{selected.name}}
-                    </ng-template>
-                    <ng-template pTemplate="item" let-item>
-                        <span class="border-round-sm pl-2 pr-2 mr-2" [ngStyle]="{'width': '15px', 'height':'10px', 'background-color': item.color}"></span>{{item.name}}
-                    </ng-template>
-                </p-dropdown>
+                <div class="flex flex-column align-items-center w-full">
+                    <label class="font-semibold mb-3 vertical-align-middle">
+                        <p-checkbox [value]="true" [(ngModel)]="product.checked" (onChange)="verifyAndFreeButton()" [binary]="true"></p-checkbox> 
+                        {{product.name}}
+                    </label>
+                    <label class="text-2xl mb-3">{{product.price | currency}}</label>
+                    <p-dropdown *ngIf="product.colors.length > 0" [showClear]="true" 
+                        [options]="product.colors" 
+                        [(ngModel)]="selectedItemColor[product.id]" 
+                        optionValue="id" 
+                        optionLabel="name" 
+                        styleClass="w-full"
+                        placeholder="Selecione...">
+                        <ng-template pTemplate="selectedItem" let-selected>
+                            <span class="border-round-sm pl-2 pr-2 mr-2" [ngStyle]="{'width': '15px', 'height':'10px', 'background-color': selected?.color}"></span>{{selected?.name}}
+                        </ng-template>
+                        <ng-template pTemplate="item" let-item>
+                            <span class="border-round-sm pl-2 pr-2 mr-2" [ngStyle]="{'width': '15px', 'height':'10px', 'background-color': item.color}"></span>{{item.name}}
+                        </ng-template>
+                    </p-dropdown>
+                </div>
             </div>
         </div>
     </ng-template>
@@ -86,7 +86,7 @@
         [totalRecords]="response.pagination.registers"
         styleClass="text-xs mt-2 mb-2 w-full"
         [showCurrentPageReport]="true"
-        currentPageReportTemplate="{first} - {last} de {totalRecords}"
+        currentPageReportTemplate="{first} - {last} de {totalRecords} produto(s)"
         [showPageLinks]="false"
         [showFirstLastIcon]="false">
     </p-paginator>
