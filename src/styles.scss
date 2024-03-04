@@ -27,6 +27,10 @@ body{
     font-size: 20px!important;
 }
 
+.icon-xsmall{
+    font-size: 16px!important;
+}
+
 @mixin use-md-icon($icon){
     font-family: 'Material Symbols Outlined';
     font-weight: normal;
@@ -165,6 +169,10 @@ body{
     @include use-md-icon("footprint")
 }
 
+.pi-reasons{
+    @include use-md-icon("record_voice_over")
+}
+
 .pi-fields{
     @include use-md-icon("edit_note")
 }
@@ -195,4 +203,16 @@ body{
 
 .pi-order-cancel{
     @include use-md-icon('contract_delete')
+}
+
+.pi-photo{
+    @include use-md-icon-normal('photo_camera')
+}
+
+.pi-add-photo{
+    @include use-md-icon-normal('add_a_photo')
+}
+
+.pi-retify{
+    @include use-md-icon-normal('edit_note')
 }
