@@ -15,7 +15,7 @@ export class HistoryComponent extends Common implements AfterViewInit{
   showIntegration:boolean = false;
   showIntegrationTrack:boolean = false;
   selectedOrder:OrderHistory = {
-    id_order: 0,
+    id_order: '',
     id_customer: 0,
     customer_name: '',
     id_payment_condition: 0,
@@ -56,7 +56,7 @@ export class HistoryComponent extends Common implements AfterViewInit{
     });
   }
 
-  showTrack(p_idOrder:number):void{
+  showTrack(p_idOrder:string):void{
     this.selectedOrder = (this.response.data as OrderHistory[]).find((oh) => oh.id_order==p_idOrder) as OrderHistory;
     this.showDialog = true;
   }

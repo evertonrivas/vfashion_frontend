@@ -142,6 +142,7 @@
     </ng-container>
 </div>
 
+<!--painel de exibicao do historico-->
 <p-sidebar [(visible)]="historyVisible" position="right" styleClass="w-5">
     <h3 class="w-full text-center">Histórico do Cliente</h3>
     <p class="w-full text-center">{{infoCustomer.fantasy_name}}</p>
@@ -149,6 +150,7 @@
     <app-customer-history [loadHistory]="historyVisible" [idCustomer]="infoCustomer.id"></app-customer-history>
 </p-sidebar>
 
+<!--painel de envio de arquivo-->
 <p-sidebar [(visible)]="uploadVisible" position="bottom" styleClass="h-20rem">
     <h4 class="w-full text-center">Envio de arquivo</h4>
     <p class="text-center">{{infoCustomer.name}}</p>

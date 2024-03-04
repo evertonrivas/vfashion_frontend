@@ -17,6 +17,7 @@ import { CheckoutComponent } from './checkout/checkout.component';
 import { DataViewModule } from 'primeng/dataview';
 import { TagModule } from 'primeng/tag';
 import { TimelineModule } from 'primeng/timeline';
+import { FileUploadModule } from 'primeng/fileupload';
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import { TimelineModule } from 'primeng/timeline';
     TopbarComponent,
     DataViewModule,
     TagModule,
-    TimelineModule
+    TimelineModule,
+    FileUploadModule
   ]
 })
 export class SalesforceModule { }

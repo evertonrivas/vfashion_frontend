@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { LayoutService } from '../services/layout.service';
 import { Common } from '../classes/common';
 import { Router } from '@angular/router';
@@ -8,12 +8,16 @@ import { Router } from '@angular/router';
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
-export class AdminComponent extends Common implements OnInit{
+export class AdminComponent extends Common implements OnInit, AfterViewInit{
     sidebarVisible:boolean = false;
     model: any[] = [];
 
     constructor(private svc:LayoutService,route:Router){
         super(route)
+    }
+
+    ngAfterViewInit(): void {
+        this.route.navigate([this.modulePath+'/dashboard']);
     }
 
     ngOnInit() {
@@ -36,42 +40,43 @@ export class AdminComponent extends Common implements OnInit{
             {
                 label: 'B2B - Salesforce',
                 items: [
-                    { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: ['/b2b/configurations'] },
-                    { label: 'Grupos de clientes', icon: 'pi pi-fw pi-user-group icon-small', routerLink: ['/b2b/customer-group'] },
-                    { label: 'Marcas', icon: 'pi pi-fw pi-marks icon-small', routerLink: ['/b2b/brands'] },
-                    { label: 'Categorias/Cordenados', icon: 'pi pi-fw pi-category icon-small', routerLink: ['/bwb/category'] },
-                    { label: 'Coleções', icon: 'pi pi-fw pi-collection icon-small', routerLink: ['/b2b/collection'] },
-                    { label: 'Modelos', icon: 'pi pi-fw pi-models icon-small', routerLink: ['/b2b/models'] },
-                    { label: 'Tipos de Produtos', icon: 'pi pi-fw pi-prod-type icon-small', routerLink: ['/b2b/product-type'] },
+                    { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: [this.modulePath+'/b2b/configurations'] },
+                    { label: 'Grupos de clientes', icon: 'pi pi-fw pi-user-group icon-small', routerLink: [this.modulePath+'/b2b/customer-groups'] },
+                    { label: 'Marcas', icon: 'pi pi-fw pi-marks icon-small', routerLink: [this.modulePath+'/b2b/brands'] },
+                    { label: 'Categorias/Cordenados', icon: 'pi pi-fw pi-category icon-small', routerLink: [this.modulePath+'/b2b/categories'] },
+                    { label: 'Coleções', icon: 'pi pi-fw pi-collection icon-small', routerLink: [this.modulePath+'/b2b/collections'] },
+                    { label: 'Modelos', icon: 'pi pi-fw pi-models icon-small', routerLink: [this.modulePath+'/b2b/models'] },
+                    { label: 'Tipos de Produtos', icon: 'pi pi-fw pi-prod-type icon-small', routerLink: [this.modulePath+'/b2b/product-types'] },
                     { separator : 'separator' },
-                    { label: 'Grades de Produtos', icon: 'pi pi-fw pi-prod-grid icon-small', routerLink: ['/b2b/product-grid'] },
-                    { label: 'Tabelas de Preços', icon: 'pi pi-fw pi-price-table icon-small', routerLink: ['/b2b/table-price'] },
-                    { label: 'Tradução de Cores', icon: 'pi pi-fw pi-colors icon-small', routerLink: ['/b2b/colors'] },
-                    { label: 'Tradução de Tamanhos', icon: 'pi pi-fw pi-sizes icon-small', routerLink: ['/b2b/sizes'] },
+                    { label: 'Grades de Produtos', icon: 'pi pi-fw pi-prod-grid icon-small', routerLink: [this.modulePath+'/b2b/product-grids'] },
+                    { label: 'Tabelas de Preços', icon: 'pi pi-fw pi-price-table icon-small', routerLink: [this.modulePath+'/b2b/table-prices'] },
+                    { label: 'Tradução de Cores', icon: 'pi pi-fw pi-colors icon-small', routerLink: [this.modulePath+'/b2b/colors'] },
+                    { label: 'Tradução de Tamanhos', icon: 'pi pi-fw pi-sizes icon-small', routerLink: [this.modulePath+'/b2b/sizes'] },
                     // { label: 'Menu', icon: 'pi pi-fw pi-bars', routerLink: ['/uikit/menu'], routerLinkActiveOptions: { paths: 'subset', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored' } },
                 ]
             },
             {
                 label: 'CRM - Funis',
                 items: [
-                    { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: ['/crm/configurations'] },
-                    { label: 'Cadastro de Funis', icon: 'pi pi-fw pi-funnel icon-small', routerLink: ['/crm/funnels'] },
-                    { label: 'Cadastro de Estágios', icon: 'pi pi-fw pi-stages icon-small', routerLik: ['crm/funnel-stages']},
+                    { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: [this.modulePath+'/crm/configurations'] },
+                    { label: 'Cadastro de Funis', icon: 'pi pi-fw pi-funnel icon-small', routerLink: [this.modulePath+'/crm/funnels'] },
+                    { label: 'Cadastro de Estágios', icon: 'pi pi-fw pi-stages icon-small', routerLink: [this.modulePath+'/crm/funnel-stages']},
                     // { label: 'Campos dinâmicos', icon: 'pi pi-fw pi-fields', routerLink: ['/uikit/misc'] }
                 ]
             },
             {
                 label: 'FPR - Devoluções',
                 items: [
-                    { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: ['/fpr/configurations'] },
-                    { label: 'Etapas', icon: 'pi pi-fw pi-steps icon-small', routerLink: ['/fpr/steps'] }
+                    { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: [this.modulePath+'/fpr/configurations'] },
+                    { label: 'Etapas', icon: 'pi pi-fw pi-steps icon-small', routerLink: [this.modulePath+'/fpr/steps'] },
+                    { label: 'Motivos', icon: 'pi pi-fw pi-reasons icon-small', routerLink:[this.modulePath+'/fpr/reasons']}
                 ]
             },
             { 
                 label: 'SCM - Calendário',
                 items:[
-                    { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink:['/scm/configurations'] },
-                    { label: 'Tipos de Eventos', icon: 'pi pi-fw pi-events icon-small', routerLink:['/scm/event-types'] }
+                    { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink:[this.modulePath+'/scm/configurations'] },
+                    { label: 'Tipos de Eventos', icon: 'pi pi-fw pi-events icon-small', routerLink:[this.modulePath+'/scm/event-types'] }
                 ]
             },
             // NÃO APAGAR, ISSO SERAH UTILIZADO NO FUTURO

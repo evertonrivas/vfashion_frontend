@@ -11,10 +11,7 @@ import { Checkbox } from 'src/app/models/checkbox.model';
 import { HttpHeaders } from '@angular/common/http';
 import { CustomerEmailComponent } from './customer-email/customer-email.component';
 import { EntitiesService } from 'src/app/services/entities.service';
-import * as sys_config from 'src/assets/config.json';
 import { Options, RequestResponse, ResponseError } from 'src/app/models/paginate.model';
-import { User } from 'src/app/models/user.model';
-import { AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -45,7 +42,7 @@ export class KanbanComponent extends Common implements AfterContentInit{
   first:number[] = [];
   globalSearchInput:string|null = null;
   url_upload:string = '';
-  upload_max:number = ((sys_config as any).default).company.max_upload_files as number;
+  upload_max:number = this.sysconfig.company.max_upload_files as number;
   uploadHeaders:HttpHeaders = new HttpHeaders()
     .set("Authorization",localStorage.getItem('token_type')+" "+localStorage.getItem('token_access'));
 
@@ -364,7 +361,7 @@ export class KanbanComponent extends Common implements AfterContentInit{
 
   showUpload(customer:Entity){
     this.infoCustomer = customer;
-    this.url_upload = ((sys_config as any).default).backend_cmm+'/upload/'+customer.id;
+    this.url_upload = this.sysconfig.backend_cmm+'/upload/'+customer.id;
     this.uploadVisible = true;
   }
 

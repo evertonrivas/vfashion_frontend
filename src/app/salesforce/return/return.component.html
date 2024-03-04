@@ -9,13 +9,78 @@
     </ng-template>
 </p-panel>
 
-<p-dialog [visible]="showDialog" header="Nova devolução" [closable]="false" [draggable]="false" [modal]="true">
-    <div class="flex flex-column w-full">
-        <label>Pedido</label>
-        <p-dropdown></p-dropdown>
+<p-dialog [visible]="showDialog" header="Nova devolução" [closable]="false" [draggable]="false" [modal]="true" [style]="{ width: '90vw'}">
+    <div class="flex flex-column w-full mb-2">
+        <label class="mb-2">Pedido</label>
+        <p-dropdown appendTo="body" emptyMessage="Nenhum pedido encontrado" [filter]="true" [options]="response.data" [(ngModel)]="selectedOrder" styleClass="w-full" panelStyleClass="w-full" placeholder="Selecione o pedido desejado..." (ngModelChange)="loadOrder()">
+            <ng-template pTemplate="selectedItem">
+                <div class="flex flex-row" *ngIf="selectedOrder">
+                    {{selectedOrder.id_order}} - {{selectedOrder.date_created}}
+                </div>
+            </ng-template>
+            <ng-template let-order pTemplate="item">
+                <div class="flex flex-row">
+                    {{order.id_order}} - {{order.date_created}}
+                </div>
+            </ng-template>
+        </p-dropdown>
+    </div>
+    <div class="flex flex-column w-full mb-2" *ngIf="localOrder">
+        <p-table styleClass="p-datatable-striped" [value]="localOrder.products" scrollHeight="300px" [scrollable]="true" [selection]="selectedOrderProducts" (selectionChange)="setToUpload($event)">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+                    <th>Produto</th>
+                    <th>Cor</th>
+                    <th>Tamanho</th>
+                    <th>Quantidade</th>
+                    <th>Preço</th>
+                    <th>Desconto</th>
+                    <th>Motivo</th>
+                    <th>Fato</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+                <tr>
+                    <td><p-tableCheckbox [value]="item"></p-tableCheckbox></td>
+                    <td style="min-width: 300px!important;">{{item.name}}</td>
+                    <td>{{item.color}}</td>
+                    <td>{{item.size}}</td>
+                    <td>{{item.quantity}}</td>
+                    <td>{{item.price}}</td>
+                    <td>{{item.discount}}</td>
+                    <td><p-dropdown 
+                        placeholder="Selecione..." 
+                        [options]="allReasons" 
+                        optionValue="id" 
+                        optionLabel="description" 
+                        [disabled]="selectedProduct[item.id_product+item.id_color+item.id_size]"
+                        [(ngModel)]="selectedReason[item.id_product+item.id_color+item.id_size]"
+                        styleClass="w-full"
+                        ></p-dropdown></td>
+                    <td><p-fileUpload
+                        chooseIcon="pi pi-add-photo" 
+                        chooseLabel="" 
+                        uploadIcon="pi pi-photo" 
+                        uploadLabel="" 
+                        mode="basic" 
+                        accept="image/*" 
+                        [maxFileSize]="1000000" 
+                        chooseStyleClass="p-button-sm" 
+                        styleClass="p-button-sm" 
+                        [headers]="uploadHeaders" 
+                        [fileLimit]="upload_max" 
+                        [withCredentials]="true" 
+                        [url]="url_upload" 
+                        [disabled]="selectedProduct[item.id_product+item.id_color+item.id_size]"
+                        ></p-fileUpload></td>
+                </tr>
+            </ng-template>
+        </p-table>
     </div>
     <div class="flex flex-row w-full justify-content-end">
-        <p-button icon="pi pi-ban" styleClass="p-button-danger mr-1" label="Cancelar" (onClick)="showDialog = false"></p-button>
-        <p-button icon="pi pi-check" label="OK" (onClick)="showDialog = false"></p-button>
+        <p-button icon="pi pi-ban" styleClass="p-button-danger mr-1" label="Cancelar" (onClick)="cancelReturn()"></p-button>
+        <p-button icon="pi pi-save" styleClass="mr-1" label="Salvar devolução" (onClick)="saveReturn()"></p-button>
+        <p-button icon="pi pi-check-circle" styleClass="p-button-help" label="Efetivar devolução" (onClick)="effectiveReturn()"></p-button>
     </div>
 </p-dialog>

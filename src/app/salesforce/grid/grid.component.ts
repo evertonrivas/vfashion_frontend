@@ -103,7 +103,7 @@ export class GridComponent extends Common implements AfterViewInit{
 
   ngAfterViewInit(): void {
     this.listProducts();
-    this.cdr.detectChanges();
+    this.listColors();
     //throw new Error('ngAfterViewInit Method not implemented.');
   }
 
@@ -123,6 +123,19 @@ export class GridComponent extends Common implements AfterViewInit{
         this.loading  = false;
       }
     });
+  }
+
+  listColors(){
+    this.loading = true;
+    this.svcFil.listColor({
+      page:1,
+      pageSize: parseInt(this.sysconfig.system.pageSize),
+      query:'can:list-all 1'
+    }).subscribe({
+      next: (data) =>{
+        this.all_colors = data as B2bColor[];
+      }
+    })
   }
 
   loadProducts(evt:PaginatorState = { page:0, pageCount:1}){

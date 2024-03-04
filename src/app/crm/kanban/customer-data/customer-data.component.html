@@ -10,7 +10,7 @@
                         <label for="slReprsentative">Representante</label>
                         <p-dropdown #ddRep [options]="representatives" optionLabel="name" optionValue="id" [(ngModel)]="selectedRepresentativeId" placeholder="Selecione..." [ngClass]="{'ng-invalid ng-dirty' : hasSended && !editableCustomer.agent}" styleClass="p-inputtext-sm">
                             <ng-template let-selectedItem pTemplate="selectedItem">
-                                <span [ngClass]="selectedItem.id==0?'text-red-500':''">{{selectedItem.name}}</span>
+                                <span *ngIf="selectedItem!=undefined" [ngClass]="selectedItem.id==0?'text-red-500':''">{{selectedItem.name}}</span>
                             </ng-template>
                             <ng-template let-item pTemplate="item">
                                 <span [ngClass]="item.id==0?'text-red-500':''">{{item.name}}</span>
@@ -71,10 +71,12 @@
                                 <label>Tipo</label>
                                 <p-dropdown #dptpc [options]="[{label:'E-mail',value:'E'},{label:'Telefone Convencional',value:'P'},{label:'Telefone Celular/Móvel',value:'P'}]" [(ngModel)]="newContact.contact_type" styleClass="p-inputtext-sm w-full">
                                     <ng-template let-selected pTemplate="selectedItem">
-                                        <i class="material-symbols-outlined icon-small" *ngIf="selected.label=='E-mail'">alternate_email</i>
-                                        <i class="material-symbols-outlined icon-small" *ngIf="selected.label=='Telefone Convencional'">phone_in_talk</i>
-                                        <i class="material-symbols-outlined icon-small" *ngIf="selected.label=='Telefone Celular/Móvel'">phonelink_ring</i>
-                                        {{selected.label}}
+                                        <ng-container *ngIf="selected!=undefined">
+                                            <i class="material-symbols-outlined icon-small" *ngIf="selected.label=='E-mail'">alternate_email</i>
+                                            <i class="material-symbols-outlined icon-small" *ngIf="selected.label=='Telefone Convencional'">phone_in_talk</i>
+                                            <i class="material-symbols-outlined icon-small" *ngIf="selected.label=='Telefone Celular/Móvel'">phonelink_ring</i>
+                                            {{selected.label}}
+                                        </ng-container>
                                     </ng-template>
                                     <ng-template let-item pTemplate="item">
                                         <i class="material-symbols-outlined icon-small" *ngIf="item.label=='E-mail'">alternate_email</i>
@@ -106,12 +108,12 @@
                         </p-overlayPanel>
                         <p-button icon="pi pi-plus-circle" styleClass="p-button-sm" pTooltip="Novo Contato" tooltipPosition="top" (onClick)="pnlContact.toggle($event)"></p-button>
                         <!--fim do novo contato-->
-                        <p-button [disabled]="editableCustomer.contacts.length>0?false:true" styleClass="p-button-sm p-button-success" pTooltip="Salvar Todos" tooltipPosition="top" (onClick)="saveCustomerContacts()"><span class="material-symbols-outlined icon-small">done_all</span></p-button>
+                        <p-button [disabled]="editableCustomer.contacts.length>0?false:true" styleClass="p-button-sm" severity="success" pTooltip="Salvar Todos" tooltipPosition="top" (onClick)="saveCustomerContacts()"><span class="material-symbols-outlined icon-xsmall">done_all</span></p-button>
                         <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
                     </div>
                 </ng-template>
-                <ng-template let-contact pTemplate="listItem">
-                    <div class="col-12 gap-4 p-4">
+                <ng-template let-contacts pTemplate="listItem">
+                    <div class="col-12 gap-4 p-4" *ngFor="let contact of contacts">
                         <div class="flex flex-column mt-1">
                             <label class="mb-1">Nome</label>
                             <input pInputText [(ngModel)]="contact.name" class="p-inputtext-sm">
@@ -132,13 +134,13 @@
                             <p-checkbox [(ngModel)]="contact.is_whatsapp" *ngIf="contact.contact_type=='P'" [binary]="true" label="Whatsapp"></p-checkbox>
                         </div>
                         <div class="flex justify-content-end mb-2 gap-1 mt-1">
-                            <p-button styleClass="p-button-sm p-button-danger" icon="pi pi-trash" (onClick)="verifyDeleteContact(contact)"></p-button>
+                            <p-button styleClass="p-button-sm" severity="danger" icon="pi pi-trash" (onClick)="verifyDeleteContact(contact)"></p-button>
                             <p-button styleClass="p-button-sm" icon="pi pi-save" (onClick)="saveCustomerContact(contact.id)"></p-button>
                         </div>
                     </div>
                 </ng-template>
-                <ng-template let-contact pTemplate="gridItem">
-                    <div class="col-12 sm:col-6 lg:col-12 xl:col-4 p-2">
+                <ng-template let-contacts pTemplate="gridItem">
+                    <div class="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" *ngFor="let contact of contacts">
                         <div class="p-4 border-1 surface-border surface-card border-round">
                             <div class="mt-1 flex flex-column">
                                 <label class="mb-1">Nome</label>
@@ -184,10 +186,12 @@
                                 <label>Tipo</label>
                                 <p-dropdown #dptpc [options]="[{label:'Blog',value:'B'},{label:'Social Media',value:'S'},{label:'Website',value:'W'}]" [(ngModel)]="newWeb.web_type" styleClass="p-inputtext-sm w-full">
                                     <ng-template let-selected pTemplate="selectedItem">
-                                        <i class="material-symbols-outlined icon-small" *ngIf="selected.value=='S'">diversity_3</i>
-                                        <i class="material-symbols-outlined icon-small" *ngIf="selected.value=='B'">rss_feed</i>
-                                        <i class="material-symbols-outlined icon-small" *ngIf="selected.value=='W'">web</i>
-                                        {{selected.label}}
+                                        <ng-container *ngIf="selected!=undefined">
+                                            <i class="material-symbols-outlined icon-small" *ngIf="selected.value=='S'">diversity_3</i>
+                                            <i class="material-symbols-outlined icon-small" *ngIf="selected.value=='B'">rss_feed</i>
+                                            <i class="material-symbols-outlined icon-small" *ngIf="selected.value=='W'">web</i>
+                                            {{selected.label}}
+                                        </ng-container>
                                     </ng-template>
                                     <ng-template let-item pTemplate="item">
                                         <i class="material-symbols-outlined icon-small" *ngIf="item.value=='S'">diversity_3</i>
@@ -206,12 +210,12 @@
                             </div>
                         </p-overlayPanel>
                         <p-button icon="pi pi-plus-circle" styleClass="p-button-sm" pTooltip="Novo endereço web" tooltipPosition="top" (onClick)="pnlWeb.toggle($event)"></p-button>
-                        <p-button [disabled]="editableCustomer.web.length>0?false:true" styleClass="p-button-sm p-button-success" pTooltip="Salvar Todos" tooltipPosition="top" (onClick)="saveCustomerWebs()"><span class="material-symbols-outlined icon-small">done_all</span></p-button>
+                        <p-button [disabled]="editableCustomer.web.length>0?false:true" styleClass="p-button-sm p-button-success" pTooltip="Salvar Todos" tooltipPosition="top" (onClick)="saveCustomerWebs()"><span class="material-symbols-outlined icon-xsmall">done_all</span></p-button>
                         <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
                     </div>
                 </ng-template>
-                <ng-template let-web pTemplate="listItem">
-                    <div class="col-12 gap-4 p-4">
+                <ng-template let-webs pTemplate="listItem">
+                    <div class="col-12 gap-4 p-4" *ngFor="let web of webs">
                         <div class="flex flex-column mt-1">
                             <label class="mb-1">Nome</label>
                             <input pInputText [(ngModel)]="web.name" class="w-full">
@@ -231,8 +235,8 @@
                         </div>
                     </div>
                 </ng-template>
-                <ng-template let-web pTemplate="gridItem">
-                    <div class="col-12 sm:col-6 lg:col-12 xl:col-4 p-2">
+                <ng-template let-webs pTemplate="gridItem">
+                    <div class="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" *ngFor="let web of webs">
                         <div class="p-4 border-1 surface-border surface-card border-round">
                             <div class="mt-1 flex flex-column">
                                 <label class="mb-1">Nome</label>
@@ -269,8 +273,8 @@
                         <th>Ações</th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-file>
-                    <tr>
+                <ng-template pTemplate="body" let-files>
+                    <tr  *ngFor="let file of files">
                         <td>{{ file.id }}</td>
                         <td>{{ file.name }}</td>
                         <td>{{ file.content_type }}</td>
@@ -302,7 +306,7 @@
                 <label for="slReprsentative">Representante</label>
                 <p-dropdown #ddRep [options]="representatives" optionLabel="name" optionValue="id" [(ngModel)]="selectedRepresentativeId" placeholder="Selecione..." styleClass="p-inputtext-sm">
                     <ng-template let-selectedItem pTemplate="selectedItem">
-                        <span [ngClass]="selectedItem?.id==0?'text-red-500':''">{{selectedItem?.name}}</span>
+                        <span *ngIf="selectedItem!=undefined" [ngClass]="selectedItem.id==0?'text-red-500':''">{{selectedItem.name}}</span>
                     </ng-template>
                     <ng-template let-item pTemplate="item">
                         <span [ngClass]="item.id==0?'text-red-500':''">{{item.name}}</span>
