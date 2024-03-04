@@ -2,8 +2,11 @@ import { Paginate } from "./paginate.model"
 
 export interface OrderProduct{
     id_product:number,
-    id_color:string,
-    id_size:string,
+    name:string,
+    id_color:number,
+    color:string,
+    id_size:number,
+    size:string,
     quantity:string,
     price:number,
     discount:number,
@@ -11,9 +14,27 @@ export interface OrderProduct{
 }
 
 export interface Order{
-    id_customer:number,
-    make_online:boolean,
-    id_payment_condition:number,
+    id:number,
+    customer:{
+        id:number,
+        name:string
+    }|undefined,
+    payment_condition:{
+        id:number,
+        name:string
+    }|undefined,
+    total_value:number,
+    total_itens:number,
+    installments: number,
+    installments_value: number,
+    integrated: boolean,
+    integration_number: number|undefined,
+    track_code: string|undefined,
+    track_company: string|undefined,
+    invoice_number: number|undefined,
+    invoice_serie:number|undefined,
+    date_created: string,
+    date_updated: string,
     products: OrderProduct[]
 }
 
@@ -29,7 +50,7 @@ export interface TrackOrder{
 }
 
 export interface OrderHistory{
-    id_order:number,
+    id_order:string,
     id_customer:number,
     customer_name:string,
     id_payment_condition: number,
