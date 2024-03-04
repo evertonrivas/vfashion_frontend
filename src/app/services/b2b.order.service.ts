@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable,Subject } from 'rxjs';
 import { MyHttp, ContentType } from './my-http';
-import { CartContent, CartItem, OrderHistory, PaymentCondition } from 'src/app/models/order.model';
+import { CartContent, CartItem, Order, OrderHistory, PaymentCondition } from 'src/app/models/order.model';
 import { Product, ProductStock } from 'src/app/models/product.model';
 import { Options, RequestResponse, ResponseError } from '../models/paginate.model';
 
@@ -120,6 +120,12 @@ export class B2bOrderService extends MyHttp{
     return this.http.get<OrderHistory[]|RequestResponse|ResponseError>(this.sys_config.backend_b2b+'/orders/history/'+localStorage.getItem("id_profile"),{
       headers: this.getHeader(),
       params: new HttpParams().set("page",options.page).set("pageSize",options.pageSize).set("query",options.query)
+    });
+  }
+
+  loadOrder(id:number):Observable<Order|ResponseError>{
+    return this.http.get<Order|ResponseError>(this.sys_config.backend_b2b+'/orders/'+id.toString(),{
+      headers: this.getHeader()
     });
   }
 }
