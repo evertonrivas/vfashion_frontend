@@ -1,15 +1,18 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { ButtonModule } from 'primeng/button';
-import { PanelModule } from 'primeng/panel';
-import { TooltipModule } from 'primeng/tooltip';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { SharedModule } from 'src/app/common/shared.module';
 
 @Component({
   selector: 'app-config',
   standalone: true,
   imports: [
-    PanelModule,
-    ButtonModule,
-    TooltipModule
+    CommonModule,
+    SharedModule
+  ],
+  providers: [
+    MessageService,
+    ConfirmationService
   ],
   templateUrl: './config.component.html',
   styleUrl: './config.component.scss'

@@ -194,7 +194,7 @@ body{
 }
 
 .pi-prod-grid{
-    @include use-md-icon('view_module')
+    @include use-md-icon('grid_view')
 }
 
 .pi-order-finish{
@@ -215,4 +215,16 @@ body{
 
 .pi-retify{
     @include use-md-icon-normal('edit_note')
+}
+
+.pi-deleted{
+    @include use-md-icon('delete_sweep')
+}
+
+.pi-massive-actions{
+    @include use-md-icon('auto_awesome_motion')
+}
+
+.pi-search{
+    @include use-md-icon('search')
 }

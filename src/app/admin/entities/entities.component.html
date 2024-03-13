@@ -4,9 +4,64 @@
             <div class="align-items-baseline">
                 <label class="p-panel-title">Manutenção de Entidades</label>
             </div>
-            <div>
-                <p-button icon="pi pi-trash" [severity]="'danger'" styleClass="p-button-sm" pTooltip="Excluir selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button>
+            <div class="flex flex-row gap-1">
+                <p-overlayPanel #pnlFilter [style]="{ width: '450px' }">
+                    <ng-template pTemplate="content">
+                        <h5>Filtros</h5>
+                        <app-filter [fields]="filters" [pnlFilter]="pnlFilter"></app-filter>
+                    </ng-template>
+                </p-overlayPanel>
+                <p-overlayPanel #pnlMassive>
+                    <ng-template pTemplate="content">
+                        <h5>Alteração em Massa</h5>
+                    </ng-template>
+                </p-overlayPanel>
+                <p-button icon="pi pi-plus" [severity]="'success'" styleClass="p-button-sm" pTooltip="Novo registro" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button>
+                <p-button [disabled]="tableSelected.length>0?false:true" icon="pi pi-trash" [severity]="'danger'" styleClass="p-button-sm" pTooltip="Excluir selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button>
+                <p-button [disabled]="tableSelected.length>0?false:true" icon="pi pi-massive-actions icon-xsmall" [severity]="'help'" styleClass="p-button-sm" pTooltip="Ações Massivas" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="pnlMassive.toggle($event)"></p-button>
+                <p-button icon="pi pi-deleted icon-xsmall" [severity]="'secondary'" styleClass="p-button-sm" pTooltip="Listar excluído(s)" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button>
+                <p-button icon="pi pi-filter" [severity]="'primary'" styleClass="p-button-sm" pTooltip="Filtro(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="pnlFilter.toggle($event)"></p-button>
             </div>
         </div>
+    </ng-template>
+    <ng-template pTemplate="content">
+        <p-table [value]="this.response.data"
+            styleClass="p-datatable-striped"
+            dataKey="id"
+            [loading]="loading"
+            scrollHeight="calc(100vh - 300px)"
+            [scrollable]="true" 
+            [(selection)]="tableSelected">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 50px!important;" class="text-center" pFrozenColumn><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+                    <th style="width: 100px!important;" pFrozenColumn>Ações</th>
+                    <th pSortableColumn="fantasy_name" pFrozenColumn>Nome Fantasia <p-sortIcon field="fantasy_name"></p-sortIcon></th>
+                    <th pSortableColumn="taxvat">CNPJ/CPF <p-sortIcon field="taxvat"></p-sortIcon></th>
+                    <th pSortableColumn="type">Tipo de Cadastro <p-sortIcon field="type"></p-sortIcon></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+                <tr>
+                    <td class="text-center"><p-tableCheckbox [value]="item"></p-tableCheckbox></td>
+                    <td><p-button [text]="true" icon="pi pi-pencil" pTooltip="Editar" tooltipPosition="top" tooltipStyleClass="text-sm" (onClick)="editData(item.id)"></p-button></td>
+                    <td>{{item.fantasy_name}}</td>
+                    <td>{{item.taxvat | cnpjCpf }}</td>
+                    <td>{{item.type | entityType }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <p-paginator *ngIf="response.pagination.registers > 0"
+            (onPageChange)="loadingData($event)"
+            [first]="0"
+            [rows]="response.pagination.per_page"
+            [totalRecords]="response.pagination.registers"
+            styleClass="text-xs mt-2 mb-2"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="{first} - {last} de {totalRecords}"
+            [showPageLinks]="false"
+            [showFirstLastIcon]="false"
+            >
+        </p-paginator>
     </ng-template>
 </p-panel>

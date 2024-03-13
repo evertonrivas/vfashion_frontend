@@ -4,7 +4,6 @@ import { ConfirmationService, MessageService, PrimeNGConfig, SelectItem, SelectI
 import { PaginatorState } from 'primeng/paginator';
 import { Common } from 'src/app/classes/common';
 import { RequestResponse, ResponseError } from 'src/app/models/paginate.model';
-import { B2bFilterService as SysFilter } from 'src/app/services/b2b.filter.service';
 import { Product,Image, ProductStock, SubTotal } from 'src/app/models/product.model';
 import { CheckboxChangeEvent } from 'primeng/checkbox';
 import { Color as B2bColor } from 'src/app/models/product.model';
@@ -15,6 +14,7 @@ import { Entity } from 'src/app/models/entity.model';
 import { Dialog } from 'primeng/dialog';
 import { IndicatorsService } from 'src/app/services/indicators.service';
 import { CartItem } from 'src/app/models/order.model';
+import { SysFilterService } from 'src/app/services/sys.filter.service';
 
 export interface SelectedImg{
   [index:number]:string
@@ -34,7 +34,6 @@ export class GridComponent extends Common implements AfterViewInit{
   @ViewChild('dlSelectCustomer') dlSelectCustomer!:Dialog
   @ViewChild('ddColors') ddColors:Dropdown|null = null;
   isAddGrid:boolean = false;
-  layout: any = 'grid';
   sortOptions!: SelectItemGroup[];
   all_colors:B2bColor[] = [];
   selectedImg:SelectedImg = {};
@@ -56,7 +55,7 @@ export class GridComponent extends Common implements AfterViewInit{
   productToCartSubtotal:SubTotal = {};
 
   constructor(route:Router,
-    private svcFil:SysFilter,
+    private svcFil:SysFilterService,
     private cdr:ChangeDetectorRef,
     private config:PrimeNGConfig,
     private cfg:ConfirmationService,
@@ -70,7 +69,7 @@ export class GridComponent extends Common implements AfterViewInit{
     //busca padrao do sistema em caso refresh ou inicio da tela
     this.options.query    = "is:order_by price||is:order asc";
 
-    this.svcFil.filterAnnouced$.subscribe({
+    this.svcFil.filterAnnounced$.subscribe({
       next:(data) =>{
         this.options.query = '';
         this.filtered = true;
@@ -97,13 +96,18 @@ export class GridComponent extends Common implements AfterViewInit{
         if(data.brands.length==0 && data.models.length==0 && data.categories.length==0 && data.collections.length==0 && data.colors.length==0 && data.sizes.length==0){
           this.options.query = "is:order-by price||is:order asc";
         }
+
+        //realiza a busca
+        this.listProducts();
       }
     });
   }
 
   ngAfterViewInit(): void {
     this.listProducts();
+    this.cdr.detectChanges();
     this.listColors();
+    this.cdr.detectChanges();
     //throw new Error('ngAfterViewInit Method not implemented.');
   }
 

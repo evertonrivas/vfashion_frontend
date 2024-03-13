@@ -5,8 +5,10 @@ import { AccessLevel, FileType, ModuleName } from "../models/system.enum";
 import { Router } from "@angular/router";
 import { MenuItem } from "primeng/api/menuitem";
 import * as sys_config from 'src/assets/config.json';
+import { Field } from "../models/field.model";
 
 export class Common{
+    filters:Field[] = [];
     sysconfig = ((sys_config as any).default);
     module:ModuleName = ModuleName.NONE;
     modulePath:string = "";
@@ -34,6 +36,7 @@ export class Common{
     showDialog:boolean = false;
     level_access!:AccessLevel;
     levels = AccessLevel;
+    tableSelected:any[] = [];
 
     constructor(protected route:Router){
         this.response = {

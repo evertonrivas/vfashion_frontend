@@ -30,7 +30,8 @@ import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 import { PanelModule } from 'primeng/panel';
 import { PaginatorModule } from 'primeng/paginator';
 import { SidebarModule } from 'primeng/sidebar';
-
+import { MultiSelectModule } from 'primeng/multiselect';
+import { RadioButtonModule } from 'primeng/radiobutton';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { SidebarModule } from 'primeng/sidebar';
     ButtonModule,
     CalendarModule,
     CheckboxModule,
+    RadioButtonModule,
     ConfirmDialogModule,
     DataViewModule,
     DialogModule,
@@ -66,7 +68,8 @@ import { SidebarModule } from 'primeng/sidebar';
     SkeletonModule,
     TableModule,
     ToastModule,
-    TooltipModule
+    TooltipModule,
+    MultiSelectModule
   ],
   exports:[
     CnpjCpfPipe,
@@ -81,6 +84,7 @@ import { SidebarModule } from 'primeng/sidebar';
     ButtonModule,
     CalendarModule,
     CheckboxModule,
+    RadioButtonModule,
     ConfirmDialogModule,
     DataViewModule,
     DialogModule,
@@ -98,7 +102,8 @@ import { SidebarModule } from 'primeng/sidebar';
     SkeletonModule,
     TableModule,
     ToastModule,
-    TooltipModule
+    TooltipModule,
+    MultiSelectModule
   ]
 })
 export class SharedModule { }

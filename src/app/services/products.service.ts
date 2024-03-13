@@ -19,4 +19,11 @@ export class ProductsService extends MyHttp{
       headers:this.getHeader()
     });
   }
+
+  listProducts(opt:Options):Observable<Product[]|RequestResponse|ResponseError>{
+    return this.http.get<Product[]|RequestResponse|ResponseError>(this.sys_config.backend_cmm+'/products/',{
+      headers: this.getHeader(),
+      params: new HttpParams().set("page",opt.page).set("pageSize",opt.pageSize).set("query",opt.query)
+    });
+  }
 }

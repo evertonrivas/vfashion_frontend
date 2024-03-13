@@ -2,13 +2,13 @@ import { AfterViewInit, Component, EventEmitter, OnInit, Output } from '@angular
 import { Common } from '../classes/common';
 import { Router } from '@angular/router';
 import { LayoutService } from '../services/layout.service';
-import { B2bFilterService as SysFilter } from '../services/b2b.filter.service';
 import { forkJoin } from 'rxjs';
 import { B2bBrand, Color, ProductCategory, ProductCollection, ProductModel, ProductType, Size } from '../models/product.model';
 import { Options } from '../models/paginate.model';
 import { Filter } from '../models/filter.model';
 import { B2bOrderService } from '../services/b2b.order.service';
 import { CartContent } from '../models/order.model';
+import { SysFilterService } from '../services/sys.filter.service';
 
 @Component({
   selector: 'app-salesforce',
@@ -51,7 +51,7 @@ export class SalesforceComponent extends Common implements AfterViewInit{
  
   constructor(router:Router,
     private svcLay:LayoutService,
-    private svcFil:SysFilter,
+    private svcFil:SysFilterService,
     private svcOrd:B2bOrderService
     ){
     super(router);

@@ -26,6 +26,17 @@ export enum FileType {
     STR  = 2
 }
 
+export enum FieldType{
+    INPUT  = 0,
+    DATE   = 1,
+    PERIOD = 2,
+    RADIO  = 3,
+    CHECK  = 4,
+    COMBO  = 5,
+    NUMBER = 6,
+    MCOMBO = 7
+}
+
 export enum DataOrder{
     NONE      = -1,
     ALFA_ASC  = 0,

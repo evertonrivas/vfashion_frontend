@@ -9,17 +9,23 @@ import { Options, RequestResponse, ResponseError } from '../models/paginate.mode
 @Injectable({
   providedIn: 'root'
 })
-export class B2bFilterService extends MyHttp{
-  private filterAnnouced = new Subject<Filter>();
+export class SysFilterService extends MyHttp{
+  private filterAnnounced = new Subject<Filter>();
+  private filterSysAnnounced = new Subject<string>();
 
-  filterAnnouced$ = this.filterAnnouced.asObservable();
+  filterAnnounced$ = this.filterAnnounced.asObservable();
+  filterSysAnnounced$ = this.filterSysAnnounced.asObservable();
 
   constructor(http:HttpClient) { 
     super(http);
   }
 
   announceFilter(filters:Filter){
-    this.filterAnnouced.next(filters);
+    this.filterAnnounced.next(filters);
+  }
+
+  announceSysFilter(data:string){
+    this.filterSysAnnounced.next(data);
   }
 
   listBrand(opt:Options):Observable<B2bBrand[]|RequestResponse|ResponseError>{ 

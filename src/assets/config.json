@@ -1,9 +1,9 @@
 {
-    "backend_b2b": "http://localhost:5000/b2b/api",
-    "backend_fpr": "http://localhost:5000/fpr/api",
-    "backend_crm": "http://localhost:5000/crm/api",
-    "backend_scm": "http://localhost:5000/scm/api",
-    "backend_cmm": "http://localhost:5000/cmm/api",    
+    "backend_b2b": "http://localhost:5500/b2b/api",
+    "backend_fpr": "http://localhost:5500/fpr/api",
+    "backend_crm": "http://localhost:5500/crm/api",
+    "backend_scm": "http://localhost:5500/scm/api",
+    "backend_cmm": "http://localhost:5500/cmm/api",    
     "company":{
         "name": "Company Name",
         "logo_home": "logo-venda-fashion.png",
