@@ -34,10 +34,10 @@ export class EntitiesComponent extends Common implements AfterViewInit{
     private cdr:ChangeDetectorRef,
     private msg:MessageService,
     private cnf:ConfirmationService,
-    private fil:SysFilterService){
+    private sfil:SysFilterService){
     super(route);
 
-    this.fil.filterSysAnnounced$.subscribe({
+    this.sfil.filterSysAnnounced$.subscribe({
       next:(data) =>{
         this.options.query = data;
         this.loadingData();

@@ -8,6 +8,9 @@ import { UserService } from 'src/app/services/user.service';
 import { SharedModule } from 'src/app/common/shared.module';
 import { CommonModule } from '@angular/common';
 import { FilterComponent } from "../../common/filter/filter.component";
+import { FieldType } from 'src/app/models/system.enum';
+import { FieldOption } from 'src/app/models/field.model';
+import { SysFilterService } from 'src/app/services/sys.filter.service';
 
 @Component({
     selector: 'app-users',
@@ -30,12 +33,22 @@ export class UsersComponent extends Common implements AfterViewInit{
     private svc:UserService,
     private msg:MessageService,
     private cnf:ConfirmationService,
-    private cdr:ChangeDetectorRef){
+    private cdr:ChangeDetectorRef,
+    private sfil:SysFilterService){
     super(route);
+
+    this.sfil.filterSysAnnounced$.subscribe({
+      next:(data) =>{
+        this.options.query = data;
+        this.loadingData();
+      }
+    });
   }
 
   ngAfterViewInit(): void {
     this.loadingData();
+    this.cdr.detectChanges();
+    this.loadingFilterData();
     this.cdr.detectChanges();
   }
 
@@ -49,6 +62,62 @@ export class UsersComponent extends Common implements AfterViewInit{
         this.loading = false;
       }
     });
+  }
+
+  loadingFilterData():void{
+    this.filters.push({
+      label:"Login do sistema",
+      placeholder: "Username...",
+      name: "text",
+      filter_name: "search",
+      filter_prefix: "is",
+      options:undefined,
+      value:undefined,
+      type: FieldType.INPUT
+    });
+
+    this.filters.push({
+      label:"Nível de acesso",
+      placeholder:"Selecione...",
+      name:"access_level",
+      filter_name:"access_level",
+      filter_prefix:"is",
+      options:[{
+        option: "A",
+        value:"Administrador"
+      },{
+        option: "L",
+        value:"Lojista"
+      },{
+        option:"R",
+        value:"Representante"
+      },{
+        option:"V",
+        value:"Vendedor"
+      },{
+        option:"C",
+        value:"Usuário da Empresa"
+      }],
+      value:undefined,
+      type: FieldType.COMBO
+    });
+
+    this.filters.push({
+      label:"Ativo",
+      placeholder:"",
+      name:"active",
+      filter_name:"active",
+      filter_prefix:"is",
+      options:[{
+        option:true,
+        value:"Sim"
+      },{
+        option:false,
+        value:"Não"
+      }],
+      value:undefined,
+      type:FieldType.RADIO
+    })
   }
 
   editData(id:number):void{

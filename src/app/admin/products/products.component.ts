@@ -37,6 +37,13 @@ export class ProductsComponent extends Common implements AfterViewInit {
     private cdr:ChangeDetectorRef,
     private sfil:SysFilterService){
     super(route);
+
+    this.sfil.filterSysAnnounced$.subscribe({
+      next:(data) =>{
+        this.options.query = data;
+        this.loadingData();
+      }
+    });
   }
 
   ngAfterViewInit(): void {

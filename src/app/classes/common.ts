@@ -8,6 +8,7 @@ import * as sys_config from 'src/assets/config.json';
 import { Field } from "../models/field.model";
 
 export class Common{
+    filterVisible:boolean = false;
     filters:Field[] = [];
     sysconfig = ((sys_config as any).default);
     module:ModuleName = ModuleName.NONE;
@@ -169,5 +170,10 @@ export class Common{
 
     getShortMonthNames():string[]{
         return ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ']
+    }
+
+    showFilter():void{
+        console.log(this.filterVisible);
+        this.filterVisible = true;
     }
 }

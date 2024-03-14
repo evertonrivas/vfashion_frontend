@@ -1,3 +1,4 @@
+<app-filter [fields]="filters" [(visible)]="filterVisible"></app-filter>
 <p-panel>
     <ng-template pTemplate="header">
         <div class="flex flex-row w-full justify-content-between align-items-center">
@@ -5,12 +6,6 @@
                 <label class="p-panel-title">Manutenção de Tipos de Produtos</label>
             </div>
             <div class="flex flex-row gap-1">
-                <p-overlayPanel #pnlFilter [style]="{ width: '450px' }">
-                    <ng-template pTemplate="content">
-                        <h5>Filtros</h5>
-                        <app-filter [fields]="filters" [pnlFilter]="pnlFilter"></app-filter>
-                    </ng-template>
-                </p-overlayPanel>
                 <p-overlayPanel #pnlMassive>
                     <ng-template pTemplate="content">
                         <h5>Alteração em Massa</h5>
@@ -20,7 +15,7 @@
                 <p-button [disabled]="tableSelected.length>0?false:true" icon="pi pi-trash" [severity]="'danger'" styleClass="p-button-sm" pTooltip="Excluir selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button>
                 <p-button [disabled]="tableSelected.length>0?false:true" icon="pi pi-massive-actions icon-xsmall" [severity]="'help'" styleClass="p-button-sm" pTooltip="Ações Massivas" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="pnlMassive.toggle($event)"></p-button>
                 <p-button icon="pi pi-deleted icon-xsmall" [severity]="'secondary'" styleClass="p-button-sm" pTooltip="Listar excluído(s)" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button>
-                <p-button icon="pi pi-filter" [severity]="'primary'" styleClass="p-button-sm" pTooltip="Filtro(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="pnlFilter.toggle($event)"></p-button>
+                <p-button icon="pi pi-filter" [severity]="'primary'" styleClass="p-button-sm" pTooltip="Filtro(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="showFilter()"></p-button>
             </div>
         </div>
     </ng-template>

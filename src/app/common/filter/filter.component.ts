@@ -1,12 +1,9 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../common/shared.module';
 import { Field } from '../../models/field.model';
 import { FieldType } from '../../models/system.enum';
-import { Common } from 'src/app/classes/common';
-import { Router } from '@angular/router';
 import { SysFilterService } from 'src/app/services/sys.filter.service';
-import { OverlayPanel } from 'primeng/overlaypanel';
 
 @Component({
   selector: 'app-filter',
@@ -18,13 +15,14 @@ import { OverlayPanel } from 'primeng/overlaypanel';
   templateUrl: './filter.component.html',
   styleUrl: './filter.component.scss'
 })
-export class FilterComponent extends Common{
-  @Input() pnlFilter!:OverlayPanel;
+export class FilterComponent{
+  @Input() visible:boolean = false;
+  @Output() visibleChange = new EventEmitter<boolean>();
   @Input() fields!:Field[];
   fieldType = FieldType;
-  constructor(route:Router,
-    private svc:SysFilterService){
-    super(route);
+  constructor(
+    private svc:SysFilterService,
+    private cdr:ChangeDetectorRef){
   }
 
   doFilter():void{
@@ -34,7 +32,8 @@ export class FilterComponent extends Common{
         filter += f.filter_prefix+":"+f.filter_name+" "+f.value+"||";
       }
     });
-    this.pnlFilter.overlayVisible = false;
+    this.visible = false;
+    this.visibleChange.emit(this.visible);
     this.svc.announceSysFilter(filter);
   }
 
@@ -42,11 +41,13 @@ export class FilterComponent extends Common{
 
   }
 
-  clearFilter():void{
+  clearFilter(announce:boolean = true):void{
     this.fields.forEach((f) =>{
       f.value = undefined;
     });
-    this.pnlFilter.overlayVisible = false;
-    this.svc.announceSysFilter("");
+    this.visible = false;
+    this.visibleChange.emit(this.visible);
+    if(announce!=false)
+      this.svc.announceSysFilter("");
   }
 }
