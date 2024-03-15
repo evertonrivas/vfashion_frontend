@@ -47,7 +47,6 @@ export class UsersComponent extends Common implements AfterViewInit{
 
   ngAfterViewInit(): void {
     this.loadingData();
-    this.cdr.detectChanges();
     this.loadingFilterData();
     this.cdr.detectChanges();
   }
@@ -80,7 +79,7 @@ export class UsersComponent extends Common implements AfterViewInit{
       label:"Nível de acesso",
       placeholder:"Selecione...",
       name:"access_level",
-      filter_name:"access_level",
+      filter_name:"type",
       filter_prefix:"is",
       options:[{
         option: "A",

@@ -1,21 +1,21 @@
 <p-dialog [(visible)]="openForm" [draggable]="true" [modal]="true" class="p-fluid" [style]="{ width: '50vw' }" header="Cadastro/Edição de Milestone (Marco)" (onHide)="closeForm()" (onShow)="loadData()">
     <ng-template pTemplate="content">
-        <div class="field">
-            <label for="slMilestoneType">Tipo do Evento</label>
-            <p-dropdown  appendTo="body" id="slMilestoneType" [options]="eventTypes" placeholder="Seleção de Tipo de Evento..." [showClear]="true" optionLabel="name" optionValue="id" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !selectedEventType.id}" [(ngModel)]="selectedEventType.id">
+        <div class="flex flex-column mb-2">
+            <label class="mb-2">Tipo do Evento</label>
+            <p-dropdown  appendTo="body" [options]="eventTypes" placeholder="Selecone o evento..." [showClear]="true" optionLabel="name" optionValue="id" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !selectedEventType.id}" [(ngModel)]="selectedEventType.id">
             </p-dropdown>
         </div>
-        <div class="field">
-            <label for="txtMilestoneName">Nome</label>
-            <input pInputText type="text" id="txtMilestoneName" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !eventName}" [(ngModel)]="eventName">
+        <div class="flex flex-column mb-2">
+            <label class="mb-2">Nome</label>
+            <input pInputText type="text" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !eventName}" [(ngModel)]="eventName">
         </div>
-        <div class="field">
-            <label for="dtEvent">De</label>
+        <div class="flex flex-column mb-2">
+            <label class="mb-2">De</label>
             <p-calendar appendTo="body" [showIcon]="true" id="dtEvent" dateFormat="dd/mm/yy" class="p-inputtext-sm" [ngClass]="{'ng-invalid ng-dirty' : hasSended && selectedDate==null}" [(ngModel)]="selectedDate"></p-calendar>
         </div>
-    </ng-template>
-    <ng-template pTemplate="footer">
-        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="closeForm()" type="button"></button>
-        <button pButton pRipple label="Salvar" icon="pi pi-check" class="p-button-text" type="submit" (click)="onSubmit()"></button>
+        <div class="flex flex-row justify-content-end gap-2">
+            <p-button pRipple label="Cancelar" icon="pi pi-times" severity="danger" (click)="closeForm()" type="button"></p-button>
+            <p-button pRipple label="Salvar" icon="pi pi-check" type="submit" (click)="onSubmit()"></p-button>
+        </div>
     </ng-template>
 </p-dialog>

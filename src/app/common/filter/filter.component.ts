@@ -29,7 +29,11 @@ export class FilterComponent{
     let filter:string = "";
     this.fields.forEach((f)=>{
       if (f.value!=undefined){
-        filter += f.filter_prefix+":"+f.filter_name+" "+f.value+"||";
+        if(typeof f.value ==='boolean'){
+          filter += f.filter_prefix+":"+f.filter_name+" "+(f.value==true?"1":"0")+"||";
+        }else{
+          filter += f.filter_prefix+":"+f.filter_name+" "+f.value+"||";
+        }
       }
     });
     this.visible = false;

@@ -17,7 +17,8 @@ export interface CalendarEventType{
     has_budget:boolean,
     use_collection:boolean,
     is_milestone:boolean,
-    children: CalendarEventType[]
+    children: CalendarEventType[],
+    parent: CalendarEventType[]
 }
 
 export interface CalendarEvent{

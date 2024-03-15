@@ -35,6 +35,7 @@ export class MilestoneFormComponent extends Common implements AfterViewInit, OnD
       is_milestone: false,
       use_collection: false,
       children: [],
+      parent: []
     }
   }
 
@@ -87,6 +88,7 @@ export class MilestoneFormComponent extends Common implements AfterViewInit, OnD
             is_milestone: false,
             use_collection: false,
             children: [],
+            parent:[]
           };
           this.eventName = "";
           this.selectedDate = null;
@@ -106,6 +108,7 @@ export class MilestoneFormComponent extends Common implements AfterViewInit, OnD
   
   ngAfterViewInit(): void {
     //realiza carga dos tipos de eventos
+    this.options.query="is:just-parent 1||";
     this.serviceSub[0] = this.svc.eventTypeList(this.options).subscribe({
       next: (data) =>{
         ((data as RequestResponse).data as CalendarEventType[]).forEach((d)=>{
@@ -128,6 +131,7 @@ export class MilestoneFormComponent extends Common implements AfterViewInit, OnD
       is_milestone: false,
       use_collection: false,
       children: [],
+      parent: []
     }
     this.eventName = "";
     this.selectedDate = null;

@@ -21,7 +21,7 @@ export class EventFormComponent extends Common implements OnDestroy{
   @Output() CloseModal = new EventEmitter<boolean>;
   @ViewChild('ddet') ddet:Dropdown|null = null;
 
-  selectedEventType:CalendarEventType|null = null;
+  selectedEventType:CalendarEventType|undefined = undefined;
   eventName:string = "";
   eventStart:Date|null = null;
   eventEnd:Date|null = null;
@@ -39,16 +39,6 @@ export class EventFormComponent extends Common implements OnDestroy{
     route:Router,
     private msgSvc:MessageService){
     super(route);
-
-    this.selectedEventType = {
-      id: 0,
-      name: "",
-      has_budget: false,
-      hex_color: "",
-      is_milestone: false,
-      use_collection: false,
-      children: [],
-    }
   }
 
   ngOnDestroy(): void {
@@ -61,13 +51,10 @@ export class EventFormComponent extends Common implements OnDestroy{
 
     //realiza carga dos tipos de eventos
     this.eventTypes = [];
-    this.options.query = "can:list-all 1";
+    this.options.query = "can:list-all 1||is:just-parent 1||is:no-milestone 1||";
     this.serviceSub[0] = this.svc.eventTypeList(this.options).subscribe({
       next: (data) =>{
-        (data as CalendarEventType[]).forEach((evtt) =>{
-          if (evtt.is_milestone==false)
-            this.eventTypes.push(evtt);
-        });
+        this.eventTypes = data as CalendarEventType[];
       },complete: () => {
           if(this.selectedEvent!=null){
 
@@ -144,7 +131,7 @@ export class EventFormComponent extends Common implements OnDestroy{
         },
         complete: () =>{
           this.selectedEvent = null;
-          this.selectedEventType = null;
+          this.selectedEventType = undefined;
           this.hasSended = this.validPeriod = false;
           this.showParentEvents = false;
           this.selectedEvent = null;
@@ -166,16 +153,14 @@ export class EventFormComponent extends Common implements OnDestroy{
       use_collection: false,
       has_budget: false,
       hex_color:"",
-      children: []
+      children: [],
+      parent:[]
     };
 
     //busca em tipos de eventos
     let selected = this.eventTypes.find((v) =>{
       return (this.selectedEventType!=null)?v.id==this.selectedEventType.id:undefined
     });
-
-    console.log("Selected");
-    console.log(selected);
 
     //busca em tipos de eventos filhos
     if (selected==undefined){

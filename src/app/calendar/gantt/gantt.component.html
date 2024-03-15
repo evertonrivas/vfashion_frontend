@@ -6,7 +6,7 @@
     <!-- <p-button icon="pi pi-bolt" styleClass="p-button-rounded  p-button-text p-button-warning" (onClick)="onMilestone(null)" pTooltip="Gerar a partir de modelo" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button> -->
     <p-button icon="pi pi-file-excel" styleClass="p-button-rounded  p-button-success p-button-text" (onClick)="exportCSV()" pTooltip="Exportar para CSV" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button>
     <p-button icon="pi pi-file-export" styleClass="p-button-rounded  p-button-info p-button-text" (onClick)="exportJSON()" pTooltip="Exportar para JSON" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button>
-    <p-calendar #dpp selectionMode="range" [readonlyInput]="true" [(ngModel)]="periodDates" class="p-inputtext-sm pr-2" [showClear]="true" rangeSeparator="-" placeholder="Período desejado..." (ngModelChange)="onDateChanged()"></p-calendar>
+    <p-calendar #dpp selectionMode="range" [readonlyInput]="true" [(ngModel)]="periodDates" class="p-inputtext-sm pr-2" rangeSeparator="-" placeholder="Período desejado..." (ngModelChange)="onDateChanged()"></p-calendar>
     <span class="p-input-icon-right">
         <i class="pi pi-search"></i>
         <input type="text" pInputText placeholder="Procurar evento..." (input)="doSearch($event)" class="p-inputtext-sm"/>
@@ -26,12 +26,12 @@
             <tr>
                 <th pFrozenColumn><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
                 <th pFrozenColumn><small>Evento</small></th>
-                <ng-container *ngFor="let year of response.data">
-                    <ng-container *ngFor="let month of year.months">
+                <ng-container *ngFor="let calendar of response.data">
+                    <ng-container *ngFor="let month of calendar.months">
                         <ng-container *ngFor="let week of month.weeks">
                             <th class="text-center gantt-td-content">
-                                <small *ngIf="isCurrentWeek(week)" style="color:red" pTooltip="Semana Atual" tooltipPosition="top" tooltipStyleClass="text-xs">{{week}}</small>
-                                <small *ngIf="!isCurrentWeek(week)">{{week}}</small>
+                                <small *ngIf="isCurrentWeek(week,calendar.year)" style="color:red" pTooltip="Semana Atual" tooltipPosition="top" tooltipStyleClass="text-xs">{{week}}</small>
+                                <small *ngIf="!isCurrentWeek(week,calendar.year)">{{week}}</small>
                             </th>
                         </ng-container>
                     </ng-container>
@@ -72,6 +72,6 @@
     </p-table>
 </div>
 
-<p-confirmDialog [style]="{width: '50vw'}" acceptButtonStyleClass="p-button-outlined" rejectButtonStyleClass="p-button-outlined" acceptLabel="Sim" rejectLabel="Não"></p-confirmDialog>
+<p-confirmDialog [style]="{width: '50vw'}" rejectButtonStyleClass="p-button-danger" acceptIcon="pi pi-check mr-1" acceptLabel="Sim" rejectIcon="pi pi-ban mr-1" rejectLabel="Não"></p-confirmDialog>
 <app-event-form [selectedEvent]="eventToEdit" [periodStart]="null" [periodEnd]="null" [openForm]="showDialogEvent" (CloseModal)="onCloseModalEvent($event)"></app-event-form>
 <app-milestone-form [selectedEvent]="milestoneToEdit" [periodStart]="null" [periodEnd]="null" [openForm]="showDialogMilestone" (CloseModal)="onCloseModalMilestone($event)"></app-milestone-form>

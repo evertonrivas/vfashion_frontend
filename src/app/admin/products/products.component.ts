@@ -48,8 +48,8 @@ export class ProductsComponent extends Common implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.loadingData();
-    this.cdr.detectChanges();
     this.loadingFilterData();
+    this.cdr.detectChanges();
   }
 
   loadingData(evt:PaginatorState = { page: 0, pageCount: 0}):void{

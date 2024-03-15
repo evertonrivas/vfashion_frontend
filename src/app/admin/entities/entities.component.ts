@@ -47,7 +47,6 @@ export class EntitiesComponent extends Common implements AfterViewInit{
 
   ngAfterViewInit(): void {
     this.loadingData();
-    this.cdr.detectChanges();
     this.loadingFilterData();
     this.cdr.detectChanges();
   }

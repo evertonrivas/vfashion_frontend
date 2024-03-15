@@ -173,7 +173,6 @@ export class Common{
     }
 
     showFilter():void{
-        console.log(this.filterVisible);
         this.filterVisible = true;
     }
 }
