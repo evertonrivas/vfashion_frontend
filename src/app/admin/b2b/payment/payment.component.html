@@ -3,7 +3,7 @@
     <ng-template pTemplate="header">
         <div class="flex flex-row w-full justify-content-between align-items-center">
             <div class="align-items-baseline">
-                <label class="p-panel-title">Manutenção de Modelos de Produtos</label>
+                <label class="p-panel-title">Manutenção de Condições de Pagamento</label>
             </div>
             <div class="flex flex-row gap-1">
                 <p-overlayPanel #pnlMassive>
@@ -32,6 +32,8 @@
                     <th style="width: 50px!important;" class="text-center" pFrozenColumn><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
                     <th style="width: 100px!important;" class="text-center" pFrozenColumn>Ações</th>
                     <th pSortableColumn="name">Nome <p-sortIcon field="name"></p-sortIcon></th>
+                    <th pSortableColumn="installments">Parcela(s) <p-sortIcon field="installments"></p-sortIcon></th>
+                    <th pSortableColumn="received_days">Dia(s) para recebimento <p-sortIcon field="received_days"></p-sortIcon></th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-item>
@@ -39,6 +41,8 @@
                     <td class="text-center"><p-tableCheckbox [value]="item"></p-tableCheckbox></td>
                     <td><p-button [text]="true" icon="pi pi-pencil" pTooltip="Editar" tooltipPosition="top" tooltipStyleClass="text-sm" (onClick)="editData(item.id)"></p-button></td>
                     <td>{{item.name}}</td>
+                    <td>{{item.installments}}</td>
+                    <td>{{item.received_days}}</td>
                 </tr>
             </ng-template>
         </p-table>

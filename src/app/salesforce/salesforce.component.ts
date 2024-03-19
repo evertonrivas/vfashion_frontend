@@ -9,6 +9,13 @@ import { Filter } from '../models/filter.model';
 import { B2bOrderService } from '../services/b2b.order.service';
 import { CartContent } from '../models/order.model';
 import { SysFilterService } from '../services/sys.filter.service';
+import { BrandService } from '../services/brand.service';
+import { CollectionService } from '../services/collection.service';
+import { CategoryService } from '../services/category.service';
+import { ProductTypeService } from '../services/product.type.service';
+import { ModelService } from '../services/model.service';
+import { SizeService } from '../services/size.service';
+import { ColorService } from '../services/color.service';
 
 @Component({
   selector: 'app-salesforce',
@@ -52,7 +59,14 @@ export class SalesforceComponent extends Common implements AfterViewInit{
   constructor(router:Router,
     private svcLay:LayoutService,
     private svcFil:SysFilterService,
-    private svcOrd:B2bOrderService
+    private svcOrd:B2bOrderService,
+    private svcB:BrandService,
+    private svcCl:CollectionService,
+    private svcCt:CategoryService,
+    private svcT:ProductTypeService,
+    private svcM:ModelService,
+    private svcS:SizeService,
+    private svcCo:ColorService
     ){
     super(router);
   }
@@ -93,13 +107,13 @@ export class SalesforceComponent extends Common implements AfterViewInit{
   }
 
   loadFilter():void{
-    const $brand   = this.svcFil.listBrand(this.optBrand);
-    const $collect = this.svcFil.listCollection(this.optCollect);
-    const $categ   = this.svcFil.listCategory(this.optCateg);
-    const $type    = this.svcFil.listType(this.optType);
-    const $model   = this.svcFil.listModel(this.optModel);
-    const $size    = this.svcFil.listSize(this.optSize);
-    const $color   = this.svcFil.listColor(this.optColor);
+    const $brand   = this.svcB.list(this.optBrand);
+    const $collect = this.svcCl.list(this.optCollect);
+    const $categ   = this.svcCt.list(this.optCateg);
+    const $type    = this.svcT.list(this.optType);
+    const $model   = this.svcM.list(this.optModel);
+    const $size    = this.svcS.list(this.optSize);
+    const $color   = this.svcCo.list(this.optColor);
 
     this.serviceSub[0] = forkJoin([$brand,$collect,$categ,$type,$model,$size,$color])
     .subscribe({
@@ -118,7 +132,7 @@ export class SalesforceComponent extends Common implements AfterViewInit{
   doFilter():void{
     this.route.navigate(["/salesforce/grid"]).finally(() =>{
       this.filteredEvent.emit();
-      this.svcFil.announceFilter(this.filter);
+      this.svcFil.announceB2bFilter(this.filter);
       this.sidebarVisible = false;
     });
   }

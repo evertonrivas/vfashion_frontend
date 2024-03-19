@@ -1,5 +1,5 @@
 <div class="grid">
-    <div class="col-12 lg:col-6 xl:col-3" *ngFor="let card of topCards">
+    <div [class]="module==modules.ADM?'col-12 lg:col-6 xl:col-2':'col-12 lg:col-6 xl:col-3'" *ngFor="let card of topCards">
         <app-card [card]="card"></app-card>
     </div>
 

@@ -15,11 +15,11 @@ const routes: Routes = [{
 { path: 'return', loadChildren: () => import('./return/return.module').then(m => m.ReturnModule) },
 {
   path:'', pathMatch: 'full', redirectTo: '/login'
-}
+},
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes,{onSameUrlNavigation:'reload'})],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

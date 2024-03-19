@@ -4,7 +4,7 @@ import { Card } from 'src/app/models/card.model';
 import { CardComponent, FormatType } from './card/card.component';
 import { EntityType } from 'src/app/models/entity.model';
 import { Router } from '@angular/router';
-import { ModuleName } from 'src/app/models/system.enum';
+import { AccessLevel, ModuleName } from 'src/app/models/system.enum';
 import { Common } from 'src/app/classes/common';
 import { formatCurrency } from '@angular/common';
 import { CommonModule } from '@angular/common';
@@ -14,6 +14,7 @@ import { CardModule } from 'primeng/card';
 
 import * as echarts from 'echarts';
 import { IndicatorsService } from 'src/app/services/indicators.service';
+import { SecurityService } from 'src/app/services/security.service';
 
 
 @Component({
@@ -45,7 +46,8 @@ export class DashboardComponent extends Common implements AfterViewInit,OnInit,O
   //cards do topo
   topCards:Card[] = []
   
-  constructor(private svc:IndicatorsService,
+  constructor(private svcI:IndicatorsService,
+    private svcU:SecurityService,
     route:Router){
       super(route)
   }
@@ -57,7 +59,10 @@ export class DashboardComponent extends Common implements AfterViewInit,OnInit,O
   }
 
   private mountTopCards():void{
-    for(let i=0;i<4;i++){
+    
+    let maxCards:number = (this.module==this.modules.ADM)?6:4;
+    
+    for(let i=0;i<maxCards;i++){
       let card:Card = {
         value:0,
         dataType: FormatType.TEXT,
@@ -72,10 +77,10 @@ export class DashboardComponent extends Common implements AfterViewInit,OnInit,O
   }
 
   private mountSCMdata():void{
-    const $valueOrder  = this.svc.calendarValueOrder();
-    const $countOrder  = this.svc.calendarCountOrder();
-    const $countCustomer = this.svc.calendarCountEntity(EntityType.C);
-    const $countRepresentative = this.svc.calendarCountEntity(EntityType.R);
+    const $valueOrder  = this.svcI.calendarValueOrder();
+    const $countOrder  = this.svcI.calendarCountOrder();
+    const $countCustomer = this.svcI.calendarCountEntity(EntityType.C);
+    const $countRepresentative = this.svcI.calendarCountEntity(EntityType.R);
 
     this.serviceSub[0] = forkJoin([$valueOrder,$countOrder,$countCustomer,$countRepresentative]).subscribe(([valueOrder,countOrder,countCustomer,countRep])=>{
       this.topCards[0].icon      = "finance_chip";
@@ -259,11 +264,51 @@ export class DashboardComponent extends Common implements AfterViewInit,OnInit,O
   }
 
   private mountAdminData():void{
-    //Tamanho do banco de dados + crescimento estimado 
-    
-    //numero de licenças
+    const $totalUsers = this.svcI.licenseCount();
+    const $totalAdmin = this.svcI.licenseCount(AccessLevel.ADMIN);
+    const $totalRepre = this.svcI.licenseCount(AccessLevel.REPR);
+    const $totalLoja  = this.svcI.licenseCount(AccessLevel.STORE);
+    const $totalLojaI = this.svcI.licenseCount(AccessLevel.ISTORE);
+    const $totalUser  = this.svcI.licenseCount(AccessLevel.USER);
 
-    //
+    this.serviceSub[0] = forkJoin([$totalUsers,$totalAdmin,$totalRepre,$totalLoja,$totalLojaI,$totalUser]).subscribe(([totalUsers,totalAdmin,totalRepre,totalLoja,totalLojaI,totalUser])=>{
+      this.topCards[0].icon      = "license";
+      this.topCards[0].iconColor = "green"
+      this.topCards[0].title     = "Total de Licenças";
+      this.topCards[0].value     = totalUsers as number;
+      this.topCards[0].dataType  = FormatType.NUMBER;
+
+      this.topCards[1].icon      = "shield_person";
+      this.topCards[1].iconColor = "blue";
+      this.topCards[1].title     = "Lic. Administrador";
+      this.topCards[1].value     = totalAdmin as number;
+      this.topCards[1].dataType  = FormatType.NUMBER;
+
+      this.topCards[2].icon      = "account_circle";
+      this.topCards[2].iconColor = "purple";
+      this.topCards[2].title     = "Lic. Representante";
+      this.topCards[2].value     = totalRepre as number;
+      this.topCards[2].dataType  = FormatType.NUMBER;
+
+      this.topCards[3].icon      = "person_apron";
+      this.topCards[3].iconColor = "orange";
+      this.topCards[3].title     = "Lic. Lojista";
+      this.topCards[3].value     = totalLoja as number;
+      this.topCards[3].dataType  = FormatType.NUMBER;
+
+
+      this.topCards[4].icon      = "network_intelligence_history";
+      this.topCards[4].iconColor = "yellow";
+      this.topCards[4].title     = "Lic. Lojista (IA)";
+      this.topCards[4].value     = totalLojaI as number;
+      this.topCards[4].dataType  = FormatType.NUMBER;
+      
+      this.topCards[5].icon      = "person";
+      this.topCards[5].iconColor = "gray";
+      this.topCards[5].title     = "Lic. Colaborador";
+      this.topCards[5].value     = totalUser as number;
+      this.topCards[5].dataType  = FormatType.NUMBER;
+    });
   }
 
   private mountB2BData():void{

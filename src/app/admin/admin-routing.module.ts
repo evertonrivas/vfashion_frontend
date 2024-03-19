@@ -25,6 +25,7 @@ import { FunnelStagesComponent } from './crm/funnel-stages/funnel-stages.compone
 import { StepsComponent } from './fpr/steps/steps.component';
 import { ReasonsComponent } from './fpr/reasons/reasons.component';
 import { EventTypesComponent } from './scm/event-types/event-types.component';
+import { PaymentComponent } from './b2b/payment/payment.component';
 
 const routes: Routes = [{ 
   path: '', 
@@ -57,7 +58,8 @@ const routes: Routes = [{
       { path: 'product-grids', component: ProductGridComponent },
       { path: 'product-types', component: ProductTypeComponent },
       { path: 'sizes', component: SizesComponent },
-      { path: 'table-prices', component: TablePricesComponent }
+      { path: 'table-prices', component: TablePricesComponent },
+      { path: 'payment-condition', component: PaymentComponent }
     ]
   },{
     path: 'crm',

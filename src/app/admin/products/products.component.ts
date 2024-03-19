@@ -13,6 +13,13 @@ import { FieldType } from 'src/app/models/system.enum';
 import { Field, FieldOption } from 'src/app/models/field.model';
 import { B2bBrand, Color, ProductCategory, ProductCollection, ProductModel, ProductType, Size } from 'src/app/models/product.model';
 import { forkJoin } from 'rxjs';
+import { BrandService } from 'src/app/services/brand.service';
+import { ModelService } from 'src/app/services/model.service';
+import { CollectionService } from 'src/app/services/collection.service';
+import { CategoryService } from 'src/app/services/category.service';
+import { ColorService } from 'src/app/services/color.service';
+import { SizeService } from 'src/app/services/size.service';
+import { ProductTypeService } from 'src/app/services/product.type.service';
 
 @Component({
     selector: 'app-products',
@@ -35,7 +42,15 @@ export class ProductsComponent extends Common implements AfterViewInit {
     private cnf:ConfirmationService,
     private svc:ProductsService,
     private cdr:ChangeDetectorRef,
-    private sfil:SysFilterService){
+    private sfil:SysFilterService,
+    private svcB:BrandService,
+    private svcM:ModelService,
+    private svcCl:CollectionService,
+    private svcCt:CategoryService,
+    private svcCo:ColorService,
+    private svcS:SizeService,
+    private svcT:ProductTypeService
+    ){
     super(route);
 
     this.sfil.filterSysAnnounced$.subscribe({
@@ -76,13 +91,13 @@ export class ProductsComponent extends Common implements AfterViewInit {
       type: FieldType.INPUT
     });
 
-    const $pBrand  = this.sfil.listBrand({page:1,pageSize:1,query:'can:list-all 1'});
-    const $pModel  = this.sfil.listModel({page:1,pageSize:1,query:'can:list-all 1'});
-    const $pCollec = this.sfil.listCollection({page:1,pageSize:1,query:'can:list-all 1'});
-    const $pCateg  = this.sfil.listCategory({page:1,pageSize:1,query:'can:list-all 1'});
-    const $pColor  = this.sfil.listColor({page:1, pageSize:1,query:'can:list-all 1'});
-    const $pSize   = this.sfil.listSize({page:1,pageSize:1,query:'can:list-all 1'});
-    const $pType   = this.sfil.listType({page:1,pageSize:1,query:'can:list-all 1'});
+    const $pBrand  = this.svcB.list({page:1,pageSize:1,query:'can:list-all 1'});
+    const $pModel  = this.svcM.list({page:1,pageSize:1,query:'can:list-all 1'});
+    const $pCollec = this.svcCl.list({page:1,pageSize:1,query:'can:list-all 1'});
+    const $pCateg  = this.svcCt.list({page:1,pageSize:1,query:'can:list-all 1'});
+    const $pColor  = this.svcCo.list({page:1, pageSize:1,query:'can:list-all 1'});
+    const $pSize   = this.svcS.list({page:1,pageSize:1,query:'can:list-all 1'});
+    const $pType   = this.svcT.list({page:1,pageSize:1,query:'can:list-all 1'});
 
     this.serviceSub [1] = forkJoin([$pBrand,$pModel,$pCollec,$pCateg,$pColor,$pSize,$pType]).subscribe(([valBrand,valModel,valCollec,valCateg,valColor,valSize,valType]) =>{
       let optBrand:FieldOption[]  = [];

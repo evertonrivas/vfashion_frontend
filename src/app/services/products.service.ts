@@ -26,4 +26,11 @@ export class ProductsService extends MyHttp{
       params: new HttpParams().set("page",opt.page).set("pageSize",opt.pageSize).set("query",opt.query)
     });
   }
+
+  listGrid(opt:Options):Observable<RequestResponse|ResponseError>{
+    return this.http.get<RequestResponse|ResponseError>(this.sys_config.backend_cmm+'/products-grid/',{
+      headers: this.getHeader(),
+      params: new HttpParams().set("page",opt.page).set("pageSize",opt.pageSize).set("query",opt.query)
+    });
+  }
 }

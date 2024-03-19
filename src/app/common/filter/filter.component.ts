@@ -39,6 +39,7 @@ export class FilterComponent{
     this.visible = false;
     this.visibleChange.emit(this.visible);
     this.svc.announceSysFilter(filter);
+    this.cdr.detectChanges();
   }
 
   onDateChanged():void{

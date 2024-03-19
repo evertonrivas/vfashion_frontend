@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ContentType, MyHttp } from './my-http';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Funnel } from '../models/crm.model';
+import { Funnel, FunnelStage } from '../models/crm.model';
 import { Entity, EntityHistory } from '../models/entity.model';
 import { Options, RequestResponse, ResponseError } from '../models/paginate.model';
 
@@ -19,7 +19,14 @@ export class CrmService  extends MyHttp{
     return this.http.get<Funnel[]|RequestResponse|ResponseError>(this.sys_config.backend_crm+'/funnels/',
     {
       headers:this.getHeader(),
-      params: new HttpParams().set("query",opt.query as string)
+      params: new HttpParams().set("page",opt.page).set("pageSize",opt.pageSize).set("query",opt.query as string)
+    });
+  }
+
+  listStages(opt:Options):Observable<FunnelStage[]|RequestResponse|ResponseError>{
+    return this.http.get<FunnelStage[]|RequestResponse|ResponseError>(this.sys_config.backend_crm+'/funnel-stages/',{
+      headers: this.getHeader(),
+      params: new HttpParams().set("page",opt.page).set("pageSize",opt.pageSize).set("query",opt.query)
     });
   }
 

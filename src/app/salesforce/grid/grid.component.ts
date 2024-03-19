@@ -15,6 +15,7 @@ import { Dialog } from 'primeng/dialog';
 import { IndicatorsService } from 'src/app/services/indicators.service';
 import { CartItem } from 'src/app/models/order.model';
 import { SysFilterService } from 'src/app/services/sys.filter.service';
+import { ColorService } from 'src/app/services/color.service';
 
 export interface SelectedImg{
   [index:number]:string
@@ -62,14 +63,15 @@ export class GridComponent extends Common implements AfterViewInit{
     private svcOrd:B2bOrderService,
     private svcEnt:EntitiesService,
     private svcInd:IndicatorsService,
-    private msg:MessageService){
+    private msg:MessageService,
+    private svcCo:ColorService){
     super(route);
     this.config.ripple = true;
 
     //busca padrao do sistema em caso refresh ou inicio da tela
     this.options.query    = "is:order_by price||is:order asc";
 
-    this.svcFil.filterAnnounced$.subscribe({
+    this.svcFil.filterB2bAnnounced$.subscribe({
       next:(data) =>{
         this.options.query = '';
         this.filtered = true;
@@ -131,7 +133,7 @@ export class GridComponent extends Common implements AfterViewInit{
 
   listColors(){
     this.loading = true;
-    this.svcFil.listColor({
+    this.svcCo.list({
       page:1,
       pageSize: parseInt(this.sysconfig.system.pageSize),
       query:'can:list-all 1'

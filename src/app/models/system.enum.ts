@@ -69,8 +69,10 @@ export enum CustomerCurve{
 export enum AccessLevel{
     ADMIN = 'A', //administrador
     STORE = 'L', //lojista
+    ISTORE= 'I', //lojista (ia)
     REPR  = 'R', //representante
     SALES = 'V', //vendedor
     USER  = 'C', //company user
+    NONE  = ''
 }
 //A = Administrador, L = Lojista, R = Representante, V = Vendedor, C = Company User

@@ -4,7 +4,7 @@
         <div *ngIf="field.type!=fieldType.RADIO" class="flex flex-column mb-2">
             <label *ngIf="field.type!=fieldType.CHECK" class="mb-1">{{field.label}}</label>
             <input *ngIf="field.type==fieldType.INPUT" pInputText [placeholder]="field.placeholder" [(ngModel)]="field.value">
-            <p-inputNumber *ngIf="field.type==fieldType.NUMBER" [(ngModel)]="field.value"></p-inputNumber>
+            <p-inputNumber *ngIf="field.type==fieldType.NUMBER" [(ngModel)]="field.value" [showButtons]="true" [min]="0"></p-inputNumber>
             <p-calendar *ngIf="field.type==fieldType.DATE" dateFormat="dd/mm/yyyy"></p-calendar>
             <p-calendar *ngIf="field.type==fieldType.PERIOD" 
                 selectionMode="range" 

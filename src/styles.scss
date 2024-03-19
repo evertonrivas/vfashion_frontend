@@ -101,6 +101,10 @@ body{
     @include use-md-icon("dashboard")
 }
 
+.pi-payment{
+    @include use-md-icon("wallet")
+}
+
 .pi-settings{
     @include use-md-icon("settings")
 }

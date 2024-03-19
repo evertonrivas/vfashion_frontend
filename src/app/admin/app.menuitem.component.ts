@@ -1,6 +1,7 @@
-import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { Router } from "@angular/router";
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { LayoutService } from "../services/layout.service";
 
 @Component({
     selector: '[app-menuitem]',
@@ -47,10 +48,13 @@ export class AppMenuitemComponent implements OnInit{
     @Input() index!: number;
     @Input() @HostBinding('class.layout-root-menuitem') root!: boolean;
     @Input() parentKey!: string;
+    @Input() visible:boolean = true;
+    @Output() visibleChange = new EventEmitter<boolean>();
     key: string = "";
     active:boolean = false;
 
-    constructor(private cd: ChangeDetectorRef, public router: Router){
+    constructor(private cd: ChangeDetectorRef, public router: Router,
+        private svc:LayoutService){
         
     }
 
@@ -68,6 +72,8 @@ export class AppMenuitemComponent implements OnInit{
     }
 
     itemClick(event: Event) {
+
+        this.svc.onMenuToggle();
         // avoid processing disabled items
         if (this.item.disabled) {
             event.preventDefault();

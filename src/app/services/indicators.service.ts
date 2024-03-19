@@ -3,7 +3,7 @@ import { MyHttp } from './my-http';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { ResponseError } from '../models/paginate.model';
-import { EntityType } from '../models/system.enum';
+import { AccessLevel, EntityType } from '../models/system.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -53,6 +53,13 @@ export class IndicatorsService extends MyHttp{
    calendarValueOrderByRepresentative():Observable<any>{
     return this.http.get<any>(this.sys_config.backend_b2b+'',{
       headers: this.getHeader()
+    });
+   }
+
+   licenseCount(level:AccessLevel = AccessLevel.NONE):Observable<number|ResponseError>{
+    return this.http.get<number|ResponseError>(this.sys_config.backend_cmm+'/users/count',{
+      headers: this.getHeader(),
+      params: new HttpParams().set("level",level.toString())
     });
    }
   
