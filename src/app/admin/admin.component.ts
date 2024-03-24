@@ -31,7 +31,7 @@ export class AdminComponent extends Common implements OnInit, AfterViewInit{
             {
                 label: 'Sistema',
                 items: [
-                    { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: [this.modulePath+'/configurations'] },
+                    //{ label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: [this.modulePath+'/configurations']},
                     { label: 'Entidades', icon: 'pi pi-fw pi-entities icon-small', routerLink: [this.modulePath+'/entities'] },
                     { label: 'Produtos', icon: 'pi pi-fw pi-products icon-small', routerLink: [this.modulePath+'/products'] },
                     { label: 'Usuários', icon: 'pi pi-fw pi-users icon-small', routerLink: [this.modulePath+'/users'] }
@@ -40,7 +40,7 @@ export class AdminComponent extends Common implements OnInit, AfterViewInit{
             {
                 label: 'B2B - Salesforce',
                 items: [
-                    { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: [this.modulePath+'/b2b/configurations'] },
+                    //{ label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: [this.modulePath+'/b2b/configurations'], queryParams: { place: this.modules.B2B } },
                     { label: 'Marcas', icon: 'pi pi-fw pi-marks icon-small', routerLink: [this.modulePath+'/b2b/brands'] },
                     { label: 'Categorias/Cordenados', icon: 'pi pi-fw pi-category icon-small', routerLink: [this.modulePath+'/b2b/categories'] },
                     { label: 'Coleções', icon: 'pi pi-fw pi-collection icon-small', routerLink: [this.modulePath+'/b2b/collections'] },
@@ -59,7 +59,7 @@ export class AdminComponent extends Common implements OnInit, AfterViewInit{
             {
                 label: 'CRM - Funis',
                 items: [
-                    { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: [this.modulePath+'/crm/configurations'] },
+                    // { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: [this.modulePath+'/crm/configurations'], queryParams: { place: this.modules.CRM }  },
                     { label: 'Cadastro de Funis', icon: 'pi pi-fw pi-funnel icon-small', routerLink: [this.modulePath+'/crm/funnels'] },
                     { label: 'Cadastro de Estágios', icon: 'pi pi-fw pi-stages icon-small', routerLink: [this.modulePath+'/crm/funnel-stages']},
                     // { label: 'Campos dinâmicos', icon: 'pi pi-fw pi-fields', routerLink: ['/uikit/misc'] }
@@ -68,7 +68,7 @@ export class AdminComponent extends Common implements OnInit, AfterViewInit{
             {
                 label: 'FPR - Devoluções',
                 items: [
-                    { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: [this.modulePath+'/fpr/configurations'] },
+                    //{ label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: [this.modulePath+'/fpr/configurations'], queryParams: { place: this.modules.FPR }  },
                     { label: 'Etapas', icon: 'pi pi-fw pi-steps icon-small', routerLink: [this.modulePath+'/fpr/steps'] },
                     { label: 'Motivos', icon: 'pi pi-fw pi-reasons icon-small', routerLink:[this.modulePath+'/fpr/reasons']}
                 ]
@@ -76,7 +76,7 @@ export class AdminComponent extends Common implements OnInit, AfterViewInit{
             { 
                 label: 'SCM - Calendário',
                 items:[
-                    { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink:[this.modulePath+'/scm/configurations'] },
+                    //{ label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink:[this.modulePath+'/scm/configurations'], queryParams: { place: this.modules.SCM }  },
                     { label: 'Tipos de Eventos', icon: 'pi pi-fw pi-events icon-small', routerLink:[this.modulePath+'/scm/event-types'] }
                 ]
             },
