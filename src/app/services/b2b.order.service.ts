@@ -26,7 +26,7 @@ export class B2bOrderService extends MyHttp{
   listGallery(options:Options):Observable<Product[]|RequestResponse|ResponseError>{
     return this.http.get<Product[]|RequestResponse|ResponseError>(this.sys_config.backend_b2b+'/product-stock/gallery/',{
       headers: this.getHeader(),
-      params: new HttpParams().set("page",options.page).set("pageSize",options.pageSize).set("query",options.query)
+      params: this.getParams(options)
     });
   }
 
@@ -95,7 +95,7 @@ export class B2bOrderService extends MyHttp{
   listPayment(opt:Options):Observable<PaymentCondition[]|RequestResponse|ResponseError>{
     return this.http.get<PaymentCondition[]|RequestResponse|ResponseError>(this.sys_config.backend_b2b+'/payment-conditions/',{
       headers: this.getHeader(),
-      params: new HttpParams().set("page",opt.page).set("pageSize",opt.pageSize).set("query",opt.query)
+      params: this.getParams(opt)
     });
   }
 
@@ -119,7 +119,7 @@ export class B2bOrderService extends MyHttp{
   listMyOrders(options:Options):Observable<OrderHistory[]|RequestResponse|ResponseError>{
     return this.http.get<OrderHistory[]|RequestResponse|ResponseError>(this.sys_config.backend_b2b+'/orders/history/'+localStorage.getItem("id_profile"),{
       headers: this.getHeader(),
-      params: new HttpParams().set("page",options.page).set("pageSize",options.pageSize).set("query",options.query)
+      params: this.getParams(options)
     });
   }
 

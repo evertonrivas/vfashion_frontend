@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ContentType, MyHttp } from './my-http';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Entity, EntityContact, EntityWeb } from '../models/entity.model';
 import { Options, RequestResponse, ResponseError } from '../models/paginate.model';
@@ -81,7 +81,7 @@ export class EntitiesService extends MyHttp {
     let url = this.sys_config.backend_cmm+'/legal-entities/load-history/'+idCustomer.toString();
     return this.http.get<Entity[]|RequestResponse|ResponseError>(url,{
       headers: this.getHeader(),
-      params: new HttpParams().set('page',opt.page).set("pageSize",opt.pageSize).set('query',opt.query)
+      params: this.getParams(opt)
     });
   }
 
@@ -89,7 +89,7 @@ export class EntitiesService extends MyHttp {
     let url = this.sys_config.backend_cmm+'/legal-entities/';
     return this.http.get<Entity[]|RequestResponse|ResponseError>(url,{
       headers: this.getHeader(),
-      params: new HttpParams().set('page',opt.page).set('pageSize',opt.pageSize).set('query',opt.query)
+      params: this.getParams(opt)
     });
   }
 }

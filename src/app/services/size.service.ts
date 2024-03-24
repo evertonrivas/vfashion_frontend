@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Options, RequestResponse, ResponseError } from '../models/paginate.model';
 import { Size } from '../models/product.model';
-import { MyHttp } from './my-http';
+import { ContentType, MyHttp } from './my-http';
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +17,19 @@ export class SizeService extends MyHttp{
   list(opt:Options):Observable<Size[]|RequestResponse|ResponseError>{
     return this.http.get<Size[]|RequestResponse|ResponseError>(this.sys_config.backend_cmm+'/translate-sizes/',{
       headers: this.getHeader(),
-      params: new HttpParams().set("page",opt.page)
-        .set("pageSize",opt.pageSize).set("query",opt.query)
+      params: this.getParams(opt)
+    });
+  }
+
+  load(id:number):Observable<Size|ResponseError>{
+    return this.http.get<Size|ResponseError>(this.sys_config.backend_b2b+'/translate-sizes/'+id.toString(),{
+      headers: this.getHeader()
+    });
+  }
+  
+  save(data:any):Observable<number|boolean|ResponseError>{
+    return this.http.post<number|boolean|ResponseError>(this.sys_config.backend_b2b+'/translate-sizes/'+(data.id>0?data.id.toString():''),data,{
+      headers:this.getHeader(ContentType.json)
     });
   }
 }

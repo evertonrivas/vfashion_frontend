@@ -43,9 +43,7 @@ export class ProfileService extends MyHttp {
     var url = this.sys_config.backend_cmm+"/legal-entities/";
     return this.http.get<Profile[]|RequestResponse|ResponseError>(url,{
       headers: this.getHeader(),
-      params: new HttpParams().set("page",options.page)
-        .set("pageSize",options.pageSize.toString())
-        .set("query",options.query)
+      params: this.getParams(options)
     });
   }
 

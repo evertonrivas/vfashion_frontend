@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { MyHttp } from './my-http';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { ContentType, MyHttp } from './my-http';
+import { HttpClient } from '@angular/common/http';
 import { Options, RequestResponse, ResponseError } from '../models/paginate.model';
 import { Observable } from 'rxjs';
 import { Order } from '../models/order.model';
@@ -18,7 +18,19 @@ export class B2bReturnService  extends MyHttp{
   listReasons(opt:Options):Observable<RequestResponse|Reason[]|ResponseError>{
     return this.http.get<RequestResponse|Reason[]|ResponseError>(this.sys_config.backend_fpr+'/reasons/',{
       headers: this.getHeader(),
-      params: new HttpParams().set("page",opt.page).set("pageSize",opt.pageSize).set("query",opt.query)
+      params: this.getParams(opt)
+    });
+  }
+
+  loadReason(id:number):Observable<Reason|ResponseError>{
+    return this.http.get<Reason|ResponseError>(this.sys_config.backend_fpr+'/reasons/'+id.toString(),{
+      headers: this.getHeader()
+    });
+  }
+
+  saveReason(data:any):Observable<number|boolean|ResponseError>{
+    return this.http.post<number|boolean|ResponseError>(this.sys_config.backend_fpr+'/reasons/'+(data.id>0?data.id.toString():''),data,{
+      headers: this.getHeader(ContentType.json)
     });
   }
 

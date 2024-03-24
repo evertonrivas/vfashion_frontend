@@ -14,22 +14,22 @@ export class UserService extends MyHttp{
     super(http);
   }
 
-  userGet(id:number):Observable<User|ResponseError>{
+  load(id:number):Observable<User|ResponseError>{
     var url = this.sys_config.backend_cmm+"/users/"+id.toString();
     return this.http.get<User|ResponseError>(url,{
       headers: this.getHeader()
     });
   }
 
-  userList(options:Options):Observable<User[]|RequestResponse|ResponseError>{
+  list(options:Options):Observable<User[]|RequestResponse|ResponseError>{
     var url = this.sys_config.backend_cmm+"/users/";
     return this.http.get<User[]|RequestResponse|ResponseError>(url,{
       headers: this.getHeader(),
-      params: new HttpParams().set("page",options.page).set("pageSize",options.pageSize).set("query",options.query)
+      params: this.getParams(options)
     });
   }
 
-  userSave(users:User[]):Observable<boolean|number|ResponseError>{
+  save(users:User[]):Observable<boolean|number|ResponseError>{
     var url = this.sys_config.backend_cmm+"/users/";
     return this.http.post<boolean>(url,users,{
       headers:this.getHeader(ContentType.json)

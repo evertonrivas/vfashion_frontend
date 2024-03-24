@@ -1,5 +1,6 @@
 import { HttpClient, HttpHandler, HttpHeaders, HttpParams } from "@angular/common/http";
 import * as configData from 'src/assets/config.json';
+import { Options } from "../models/paginate.model";
 
 export enum ContentType {
     text = 0,
@@ -36,5 +37,9 @@ export class MyHttp {
             header = header.set('Content-Type',content_type);
         }
         return header;
+    }
+
+    protected getParams(opt:Options):HttpParams{
+        return new HttpParams().set("page",opt.page).set("pageSize",opt.pageSize).set("query",opt.query);
     }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ContentType, MyHttp } from './my-http';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Funnel, FunnelStage } from '../models/crm.model';
 import { Entity, EntityHistory } from '../models/entity.model';
@@ -19,28 +19,40 @@ export class CrmService  extends MyHttp{
     return this.http.get<Funnel[]|RequestResponse|ResponseError>(this.sys_config.backend_crm+'/funnels/',
     {
       headers:this.getHeader(),
-      params: new HttpParams().set("page",opt.page).set("pageSize",opt.pageSize).set("query",opt.query as string)
+      params: this.getParams(opt)
+    });
+  }
+
+  loadFunnel(id:number):Observable<Funnel|ResponseError>{
+    return this.http.get<Funnel|ResponseError>(this.sys_config.backend_crm+'/funnels/'+id.toString(),{
+      headers: this.getHeader()
     });
   }
 
   listStages(opt:Options):Observable<FunnelStage[]|RequestResponse|ResponseError>{
     return this.http.get<FunnelStage[]|RequestResponse|ResponseError>(this.sys_config.backend_crm+'/funnel-stages/',{
       headers: this.getHeader(),
-      params: new HttpParams().set("page",opt.page).set("pageSize",opt.pageSize).set("query",opt.query)
+      params: this.getParams(opt)
+    });
+  }
+
+  loadStage(id:number):Observable<FunnelStage|ResponseError>{
+    return this.http.get<FunnelStage|ResponseError>(this.sys_config.backend_crm+'/funnel-stages/'+id.toString(),{
+      headers: this.getHeader()
     });
   }
 
   getCustomersOfStage(idStage:number,opts:Options):Observable<Entity[]|RequestResponse|ResponseError>{
     return this.http.get<Entity[]|RequestResponse|ResponseError>(this.sys_config.backend_cmm+'/legal-entities/by-crm-stage/'+idStage.toString(),{
       headers: this.getHeader(),
-      params: new HttpParams().set("page",opts.page).set("query",opts.query as string)
+      params: this.getParams(opts)
     });
   }
 
   getRepresentatives(opts:Options):Observable<Entity[]>{
     return this.http.get<Entity[]>(this.sys_config.backend_cmm+'/legal-entities/',{
       headers: this.getHeader(ContentType.json),
-      params: new HttpParams().set("query",opts.query as string)
+      params: this.getParams(opts)
     });
   }
 

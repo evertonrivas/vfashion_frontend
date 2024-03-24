@@ -5,6 +5,7 @@ import { CalendarModel, CalendarEvent, CalendarEventData, CalendarEventType } fr
 import { Observable } from 'rxjs';
 import { Options, RequestResponse, ResponseError } from '../models/paginate.model';
 import { CommercialRule } from '../models/commercial-rule.model';
+import { EventType } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -18,14 +19,14 @@ export class CalendarService extends MyHttp{
   calendarLoad(options:Options):Observable<CalendarModel[]|RequestResponse|ResponseError>{
     return this.http.get<CalendarModel[]|RequestResponse|ResponseError>(this.sys_config.backend_scm+'/calendar/',{
       headers: this.getHeader(),
-      params: new HttpParams().set("page",options.page).set("pageSize",options.pageSize).set("query",options.query)
+      params: this.getParams(options)
     });
   }
 
   calendarEventLoad(options:Options):Observable<CalendarEvent[]|RequestResponse|ResponseError>{
     return this.http.get<CalendarEvent[]|RequestResponse|ResponseError>(this.sys_config.backend_scm+'/calendar/events',{
       headers: this.getHeader(),
-      params: new HttpParams().set("page",options.page).set("pageSize",options.pageSize).set("query",options.query)
+      params: this.getParams(options)
     })
   }
 
@@ -67,7 +68,13 @@ export class CalendarService extends MyHttp{
     let myParams:HttpParams = new HttpParams().set("page",options.page);
     return this.http.get<CalendarEventType[]|RequestResponse|ResponseError>(this.sys_config.backend_scm+'/event-type/',{
       headers: this.getHeader(),
-      params: new HttpParams().set("page",options.page).set("pageSize",options.pageSize).set("query",options.query)
+      params: this.getParams(options)
+    });
+  }
+
+  eventTypeLoad(id:number):Observable<CalendarEventType|ResponseError>{
+    return this.http.get<CalendarEventType|ResponseError>(this.sys_config.backend_scm+'/event-type/'+id.toString(),{
+      headers: this.getHeader()
     });
   }
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Options, RequestResponse, ResponseError } from '../models/paginate.model';
 import { Observable } from 'rxjs';
-import { MyHttp } from './my-http';
+import { ContentType, MyHttp } from './my-http';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { TablePrice } from '../models/table-price.model';
 
@@ -17,8 +17,19 @@ export class TablePriceService extends MyHttp{
   list(opt:Options):Observable<TablePrice[]|RequestResponse|ResponseError>{
     return this.http.get<TablePrice[]|RequestResponse|ResponseError>(this.sys_config.backend_cmm+'/table-price/',{
       headers: this.getHeader(),
-      params: new HttpParams().set("page",opt.page)
-        .set("pageSize",opt.pageSize).set("query",opt.query)
+      params: this.getParams(opt)
+    });
+  }
+
+  load(id:number):Observable<TablePrice|ResponseError>{
+    return this.http.get<TablePrice|ResponseError>(this.sys_config.backend_b2b+'/table-price/'+id.toString(),{
+      headers: this.getHeader()
+    });
+  }
+  
+  save(data:any):Observable<number|boolean|ResponseError>{
+    return this.http.post<number|boolean|ResponseError>(this.sys_config.backend_b2b+'/table-price/'+(data.id>0?data.id.toString():''),data,{
+      headers:this.getHeader(ContentType.json)
     });
   }
 }
