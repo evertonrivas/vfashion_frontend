@@ -2,11 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AdminComponent } from './admin.component';
 import { DashboardComponent } from '../common/dashboard/dashboard.component';
-import { ConfigComponent } from './config/config.component';
-import { ConfigComponent as ConfigB2B } from './b2b/config/config.component';
-import { ConfigComponent as ConfigCRM } from './crm/config/config.component';
-import { ConfigComponent as ConfigFPR } from './fpr/config/config.component';
-import { ConfigComponent as ConfigSCM } from './scm/config/config.component';
+import { ConfigComponent } from '../common/config/config.component';
+import { ConfigComponent as ConfigB2B } from '../common/config/config.component';
+import { ConfigComponent as ConfigFPR } from '../common/config/config.component';
+import { ConfigComponent as ConfigSCM } from '../common/config/config.component';
 import { EntitiesComponent } from './entities/entities.component';
 import { ProductsComponent } from './products/products.component';
 import { UsersComponent } from './users/users.component';
@@ -64,7 +63,6 @@ const routes: Routes = [{
   },{
     path: 'crm',
     children:[
-      { path: 'configurations', component: ConfigCRM },
       { path: 'funnels', component: FunnelsComponent },
       { path: 'funnel-stages', component: FunnelStagesComponent }
     ]

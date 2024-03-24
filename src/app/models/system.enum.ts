@@ -27,14 +27,16 @@ export enum FileType {
 }
 
 export enum FieldType{
-    INPUT  = 0,
-    DATE   = 1,
-    PERIOD = 2,
-    RADIO  = 3,
-    CHECK  = 4,
-    COMBO  = 5,
-    NUMBER = 6,
-    MCOMBO = 7
+    HIDDEN = 0,
+    INPUT  = 1,
+    DATE   = 2,
+    PERIOD = 3,
+    RADIO  = 4,
+    CHECK  = 5,
+    COMBO  = 6,
+    NUMBER = 7,
+    MCOMBO = 8,
+    TEXT   = 9
 }
 
 export enum DataOrder{

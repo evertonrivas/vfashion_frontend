@@ -92,13 +92,14 @@ export interface ProductStock{
     sizes : ProductStockSizes[]
 }
 
-// export interface Grid{
-//     [key:number]: {
-//         [key:string]:{
-//             [key:string]: number
-//         }
-//     }
-// }
+export interface ProductGrid{
+    id:number,
+    origin_id:number,
+    name:string,
+    default:boolean,
+    date_created:string,
+    date_updated:string|null
+}
 
 export interface SubTotal{
     [key:number]: {
