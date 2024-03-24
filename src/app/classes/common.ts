@@ -1,43 +1,35 @@
 import { Subscription } from "rxjs";
-import { Checkbox } from "../models/checkbox.model";
 import { Options, RequestResponse } from "../models/paginate.model";
 import { AccessLevel, FileType, ModuleName } from "../models/system.enum";
 import { Router } from "@angular/router";
-import { MenuItem } from "primeng/api/menuitem";
 import * as sys_config from 'src/assets/config.json';
-import { Field } from "../models/field.model";
+import { FieldFilter, FormRow } from "../models/field.model";
 
 export class Common{
-    filterVisible:boolean = false;
-    filters:Field[] = [];
-    sysconfig = ((sys_config as any).default);
-    module:ModuleName = ModuleName.NONE;
-    modulePath:string = "";
-    modules = ModuleName;
-    response:RequestResponse;
+    filterVisible:boolean = false; //exibe ou nao os filtros do admin
+    filters:FieldFilter[] = []; //campo de configuracao dos filtros
+    formRows:FormRow[] = []; //campos do formulario de cadastro
+    idToEdit:number = 0;//id do registro que esta em edicao no form
+    formVisible:boolean = false; //exibe ou oculta o formulario
+    sysconfig = ((sys_config as any).default); //arquivo de configuracoes do sistema
+    module:ModuleName = ModuleName.NONE; // nome do module que estah em uso no sistema
+    modulePath:string = ""; //url do caminho do modulo
+    modules = ModuleName; //lista de modulos existentes
+    response:RequestResponse; //resposta padrao para os servicos
     options:Options = {
         page: 1,
         pageSize: this.sysconfig.system.pageSize,
         query:''
-    };
-    masterChecked:boolean = false;
-    hasSended:boolean = false;
-    hasSendDelete:boolean = false;
-    isEdit:boolean = false;
-    registryChecked:Checkbox = {};
-    serviceSub:Subscription[] = [];
-    isCollapsedMassive:boolean = false;
-    isCollapsedFilter:boolean = false;
-    offcanvas:any;
-    modal:any;
-    totalChecked:number = 0;
-    message:string = "";
-    searchTerm:string = "";
-    loading:boolean = false;
-    showDialog:boolean = false;
-    level_access!:AccessLevel;
-    levels = AccessLevel;
-    tableSelected:any[] = [];
+    }; //opcoes padrao para buscas no sistema
+    hasSended:boolean = false;//serve para validacao de campos quando ha envio
+    hasSendDelete:boolean = false;//serve para validacao de campos quando ha exclusao
+    serviceSub:Subscription[] = []; //armazena o retorno das subscriptions do sistema
+    level_access!:AccessLevel; //nivel de acesso do usuario ao sistema
+    levels = AccessLevel; //niveis de acesso existentes
+    loading:boolean = false; //carregando, utilizado em varios pontos do sistema
+    showDialog:boolean = false; //flag de exibicao de dialogs pelo sistema
+    tableSelected:any[] = []; //selecao de checkbox em tabelas do sistema
+    isTrash:boolean = false; //indica se esta na visualizacao de lixeira ou nao
 
     constructor(protected route:Router){
         this.response = {
@@ -90,39 +82,39 @@ export class Common{
         return dt.toLocaleString([],{ month:'short' }).replace(".","");
     }
 
-    paginate(page:number){
-        this.options.page = page;
-    }
+    // paginate(page:number){
+    //     this.options.page = page;
+    // }
 
-    setPaginationSize(size:number):void{
-        this.options.pageSize = size;
-    }
+    // setPaginationSize(size:number):void{
+    //     this.options.pageSize = size;
+    // }
 
-    checkUncheckAll():void{
-        Object.keys(this.registryChecked).forEach((v) =>{
-          this.registryChecked[Number(v)] = this.masterChecked;
-        });
-    }
+    // checkUncheckAll():void{
+    //     Object.keys(this.registryChecked).forEach((v) =>{
+    //       this.registryChecked[Number(v)] = this.masterChecked;
+    //     });
+    // }
 
-    collapseMassive():void{
-        this.isCollapsedMassive = !this.isCollapsedMassive;
-        let el:HTMLElement|null = document.getElementById("massiveFilterPanel");
-        if(el!=null){
-            if(el.className=="collapse show"){
-                this.isCollapsedFilter = false;
-            }
-        }
-    }
+    // collapseMassive():void{
+    //     this.isCollapsedMassive = !this.isCollapsedMassive;
+    //     let el:HTMLElement|null = document.getElementById("massiveFilterPanel");
+    //     if(el!=null){
+    //         if(el.className=="collapse show"){
+    //             this.isCollapsedFilter = false;
+    //         }
+    //     }
+    // }
 
-    collapseFilter():void{
-        this.isCollapsedFilter = !this.isCollapsedFilter;
-        let el:HTMLElement|null = document.getElementById("massiveFilterPanel");
-        if(el!=null){
-            if(el.className=="collapse show"){
-                this.isCollapsedMassive = false;
-            }
-        }
-    }
+    // collapseFilter():void{
+    //     this.isCollapsedFilter = !this.isCollapsedFilter;
+    //     let el:HTMLElement|null = document.getElementById("massiveFilterPanel");
+    //     if(el!=null){
+    //         if(el.className=="collapse show"){
+    //             this.isCollapsedMassive = false;
+    //         }
+    //     }
+    // }
 
     /**
      * 
