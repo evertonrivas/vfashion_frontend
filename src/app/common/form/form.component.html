@@ -1,0 +1,62 @@
+<p-dialog [(visible)]="visible" styleClass="w-6" (onHide)="clearFields()" [header]="title" [modal]="true">
+    <!-- <h5 class="text-center">{{title}}</h5> -->
+    <ng-container>
+        <div class="flex flex-row w-full mb-2 gap-2" *ngFor="let row of rows">
+            <div class="flex flex-column w-full" *ngFor="let field of row.fields">
+                <label *ngIf="field.type!=fieldType.CHECK && field.type!=fieldType.RADIO && field.type!=fieldType.HIDDEN" class="mb-1">{{field.label}}</label>
+                <input *ngIf="field.type==fieldType.INPUT" pInputText [placeholder]="field.placeholder" [(ngModel)]="field.value">
+                <p-inputNumber *ngIf="field.type==fieldType.NUMBER" [(ngModel)]="field.value" [showButtons]="true" [min]="0" styleClass="w-full"></p-inputNumber>
+                <p-calendar *ngIf="field.type==fieldType.DATE" dateFormat="dd/mm/yyyy"></p-calendar>
+                <p-calendar *ngIf="field.type==fieldType.PERIOD" 
+                    selectionMode="range" 
+                    appendTo="body"
+                    [readonlyInput]="true" 
+                    [(ngModel)]="field.value" 
+                    class="p-inputtext-sm pr-2" 
+                    [showClear]="true" 
+                    rangeSeparator="-" 
+                    [placeholder]="field.placeholder" 
+                    (ngModelChange)="onDateChanged()" 
+                    dateFormat="dd/mm/yyyy"></p-calendar>
+                <p-dropdown *ngIf="field.type==fieldType.COMBO" 
+                    [options]="field.options" 
+                    optionValue="value"
+                    optionLabel="label"
+                    appendTo="body" 
+                    [showClear]="true" 
+                    [filter]="true"
+                    styleClass="w-full"
+                    [(ngModel)]="field.value"
+                    [placeholder]="field.placeholder"
+                    emptyMessage="Nenhum registro encontrado!"></p-dropdown>
+                <p-multiSelect *ngIf="field.type==fieldType.MCOMBO" 
+                    [options]="field.options" 
+                    optionValue="value"
+                    optionLabel="label"
+                    [(ngModel)]="field.value" 
+                    [placeholder]="field.placeholder" 
+                    [showClear]="true"
+                    display="chip"
+                    appendTo="body"
+                    [maxSelectedLabels]="3"
+                    emptyMessage="Nenhum registro encontrado!"></p-multiSelect>
+                <p-checkbox *ngIf="field.type==fieldType.CHECK" [(ngModel)]="field.value" [binary]="true" [label]="field.label"></p-checkbox>
+            </div>
+        </div>
+        <!-- <div *ngIf="field.type!=fieldType.RADIO" class="flex flex-column mb-2">
+            
+        </div> -->
+        <!-- <div class="flex flex-column" *ngIf="field.type==fieldType.RADIO">
+            <label class="mb-1">{{field.label}}</label>
+            <div class="flex flex-wrap gap-3">
+                <div class="flex" *ngFor="let opt of field.options">
+                    <p-radioButton [name]="field.name" [value]="opt.option" [label]="opt.value" [(ngModel)]="field.value"></p-radioButton>
+                </div>
+            </div>
+        </div> -->
+    </ng-container>
+    <div class="flex flex-row justify-content-end w-full gap-1">
+        <p-button icon="pi pi-ban" label="Cancelar" severity="danger" styleClass="p-button-sm" (onClick)="clearFields()"></p-button>
+        <p-button icon="pi pi-save" label="Salvar" (onClick)="doSave();" styleClass="p-button-sm"></p-button>
+    </div>
+</p-dialog>
