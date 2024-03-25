@@ -9,12 +9,8 @@ import { MyHttp } from './my-http';
 })
 export class SysService extends MyHttp{
   private filterB2bAnnounced = new Subject<Filter>();
-  private filterSysAnnounced = new Subject<string>();
-  private saveSysAnnounced   = new Subject<any>();
 
   filterB2bAnnounced$ = this.filterB2bAnnounced.asObservable();
-  filterSysAnnounced$ = this.filterSysAnnounced.asObservable();
-  saveSysAnnounced$   = this.saveSysAnnounced.asObservable();
 
   constructor(http:HttpClient) { 
     super(http);
@@ -22,16 +18,6 @@ export class SysService extends MyHttp{
 
   announceB2bFilter(filters:Filter){
     this.filterB2bAnnounced.next(filters);
-    return;
-  }
-
-  announceSysFilter(data:string){
-    this.filterSysAnnounced.next(data);
-    return;
-  }
-
-  announceSysSave(data:any){
-    this.saveSysAnnounced.next(data);
     return;
   }
 }
