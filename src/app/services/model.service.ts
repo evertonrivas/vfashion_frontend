@@ -28,8 +28,8 @@ export class ModelService extends MyHttp{
   }
   
   save(data:any):Observable<number|boolean|ResponseError>{
-    return this.http.post<number|boolean|ResponseError>(this.sys_config.backend_b2b+'/collection/'+(data.id>0?data.id.toString():''),data,{
+    return this.http.post<number|boolean|ResponseError>(this.sys_config.backend_cmm+'/products-model/'+(data.id>0?data.id.toString():''),data,{
       headers:this.getHeader(ContentType.json)
-    })
+    });
   }
 }

@@ -22,13 +22,13 @@ export class ProductTypeService extends MyHttp{
   }
 
   load(id:number):Observable<ProductType|ResponseError>{
-    return this.http.get<ProductType|ResponseError>(this.sys_config.backend_b2b+'/products-type/'+id.toString(),{
+    return this.http.get<ProductType|ResponseError>(this.sys_config.backend_cmm+'/products-type/'+id.toString(),{
       headers: this.getHeader()
     });
   }
   
   save(data:any):Observable<number|boolean|ResponseError>{
-    return this.http.post<number|boolean|ResponseError>(this.sys_config.backend_b2b+'/products-type/'+(data.id>0?data.id.toString():''),data,{
+    return this.http.post<number|boolean|ResponseError>(this.sys_config.backend_cmm+'/products-type/'+(data.id>0?data.id.toString():''),data,{
       headers:this.getHeader(ContentType.json)
     });
   }

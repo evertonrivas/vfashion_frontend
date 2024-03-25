@@ -22,13 +22,13 @@ export class SizeService extends MyHttp{
   }
 
   load(id:number):Observable<Size|ResponseError>{
-    return this.http.get<Size|ResponseError>(this.sys_config.backend_b2b+'/translate-sizes/'+id.toString(),{
+    return this.http.get<Size|ResponseError>(this.sys_config.backend_cmm+'/translate-sizes/'+id.toString(),{
       headers: this.getHeader()
     });
   }
   
   save(data:any):Observable<number|boolean|ResponseError>{
-    return this.http.post<number|boolean|ResponseError>(this.sys_config.backend_b2b+'/translate-sizes/'+(data.id>0?data.id.toString():''),data,{
+    return this.http.post<number|boolean|ResponseError>(this.sys_config.backend_cmm+'/translate-sizes/'+(data.id>0?data.id.toString():''),data,{
       headers:this.getHeader(ContentType.json)
     });
   }
