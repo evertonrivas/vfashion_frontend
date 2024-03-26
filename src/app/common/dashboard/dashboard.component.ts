@@ -1,7 +1,7 @@
 import { Component,OnInit,OnDestroy, AfterViewInit } from '@angular/core';
 import { EChartsOption, MarkLineComponentOption } from 'echarts';
 import { Card } from 'src/app/models/card.model';
-import { CardComponent, FormatType } from './card/card.component';
+import { CardComponent } from './card/card.component';
 import { EntityType } from 'src/app/models/entity.model';
 import { Router } from '@angular/router';
 import { AccessLevel, ModuleName } from 'src/app/models/system.enum';
@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { forkJoin } from 'rxjs';
 import { NgxEchartsModule, NGX_ECHARTS_CONFIG } from 'ngx-echarts';
 import { CardModule } from 'primeng/card';
+import { SubtitleCard, FormatType } from 'src/app/models/card.model';
 
 import * as echarts from 'echarts';
 import { IndicatorsService } from 'src/app/services/indicators.service';
@@ -115,7 +116,7 @@ export class DashboardComponent extends Common implements AfterViewInit,OnInit,O
         axisPointer:{
           type: 'shadow'
         },
-        valueFormatter: (value) => formatCurrency(parseFloat(value.toString()),"pt","R$")
+        valueFormatter: (value) => formatCurrency(parseFloat((value as number).toString()),"pt","R$")
       },
       legend:{},
       grid:{
@@ -145,7 +146,7 @@ export class DashboardComponent extends Common implements AfterViewInit,OnInit,O
           data:[{ 
             name: 'supermeta', symbol: 'none', xAxis: 30000, 
             label:{
-              formatter: (item) => 'Super \n'+formatCurrency(parseFloat(item.value.toString()),"pt","R$")
+              formatter: (item) => 'Super \n'+formatCurrency(parseFloat((item.value as number).toString()),"pt","R$")
             },
             lineStyle:{
               color: '#ffc107',
@@ -155,7 +156,7 @@ export class DashboardComponent extends Common implements AfterViewInit,OnInit,O
           },{
             name: 'meta', symbol: 'none', xAxis: 25000,
             label:{
-              formatter: (item) => 'Meta \n'+ formatCurrency(parseFloat(item.value.toString()),"pt","R$")
+              formatter: (item) => 'Meta \n'+ formatCurrency(parseFloat((item.value as number).toString()),"pt","R$")
             },
             lineStyle:{
               color: '#198754',
@@ -174,7 +175,7 @@ export class DashboardComponent extends Common implements AfterViewInit,OnInit,O
     //secondChart
     this.secondChartOption = {
       tooltip: {
-        valueFormatter: (value) => formatCurrency(parseFloat(value.toString()),"pt","R$")
+        valueFormatter: (value) => formatCurrency(parseFloat((value as number).toString()),"pt","R$")
       },
       legend: {
         data:['Última Coleção'],
@@ -277,37 +278,78 @@ export class DashboardComponent extends Common implements AfterViewInit,OnInit,O
       this.topCards[0].title     = "Total de Licenças";
       this.topCards[0].value     = totalUsers as number;
       this.topCards[0].dataType  = FormatType.NUMBER;
+      // this.topCards[0].subtitle  = {
+      //   text: "Total lic.: R$ 127,50",
+      //   prefix:  undefined,
+      //   prefixColor: undefined,
+      //   show_arrow: false,
+      //   dataType: FormatType.MONEY
+      // };
 
       this.topCards[1].icon      = "shield_person";
       this.topCards[1].iconColor = "blue";
       this.topCards[1].title     = "Lic. Administrador";
       this.topCards[1].value     = totalAdmin as number;
       this.topCards[1].dataType  = FormatType.NUMBER;
+      // this.topCards[1].subtitle  = {
+      //   text: "Valor/licença: R$ 127,50",
+      //   prefix:  undefined,
+      //   prefixColor: undefined,
+      //   show_arrow: false,
+      //   dataType: FormatType.MONEY
+      // };
 
       this.topCards[2].icon      = "account_circle";
       this.topCards[2].iconColor = "purple";
       this.topCards[2].title     = "Lic. Representante";
       this.topCards[2].value     = totalRepre as number;
       this.topCards[2].dataType  = FormatType.NUMBER;
+      // this.topCards[2].subtitle  = {
+      //   text: "Valor/licença: R$ 75,50",
+      //   prefix:  undefined,
+      //   prefixColor: undefined,
+      //   show_arrow: false,
+      //   dataType: FormatType.MONEY
+      // };
 
       this.topCards[3].icon      = "person_apron";
       this.topCards[3].iconColor = "orange";
       this.topCards[3].title     = "Lic. Lojista";
       this.topCards[3].value     = totalLoja as number;
       this.topCards[3].dataType  = FormatType.NUMBER;
-
+      // this.topCards[3].subtitle  = {
+      //   text: "Valor/licença: R$ 44,90",
+      //   prefix:  undefined,
+      //   prefixColor: undefined,
+      //   show_arrow: false,
+      //   dataType: FormatType.MONEY
+      // };
 
       this.topCards[4].icon      = "network_intelligence_history";
       this.topCards[4].iconColor = "yellow";
       this.topCards[4].title     = "Lic. Lojista (IA)";
       this.topCards[4].value     = totalLojaI as number;
       this.topCards[4].dataType  = FormatType.NUMBER;
+      // this.topCards[4].subtitle  = {
+      //   text: "Valor/licença: R$ 75,50",
+      //   prefix:  undefined,
+      //   prefixColor: undefined,
+      //   show_arrow: false,
+      //   dataType: FormatType.MONEY
+      // };
       
       this.topCards[5].icon      = "person";
       this.topCards[5].iconColor = "gray";
       this.topCards[5].title     = "Lic. Colaborador";
       this.topCards[5].value     = totalUser as number;
       this.topCards[5].dataType  = FormatType.NUMBER;
+      // this.topCards[5].subtitle  = {
+      //   text: "Valor/licença: R$ 64,90",
+      //   prefix:  undefined,
+      //   prefixColor: undefined,
+      //   show_arrow: false,
+      //   dataType: FormatType.MONEY
+      // };
     });
   }
 

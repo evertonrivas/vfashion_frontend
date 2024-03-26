@@ -32,6 +32,7 @@ import { PaginatorModule } from 'primeng/paginator';
 import { SidebarModule } from 'primeng/sidebar';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { RadioButtonModule } from 'primeng/radiobutton';
+import { ToggleButtonModule } from 'primeng/togglebutton';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import { RadioButtonModule } from 'primeng/radiobutton';
     TableModule,
     ToastModule,
     TooltipModule,
-    MultiSelectModule
+    MultiSelectModule,
+    ToggleButtonModule
   ],
   exports:[
     CnpjCpfPipe,
@@ -103,7 +105,8 @@ import { RadioButtonModule } from 'primeng/radiobutton';
     TableModule,
     ToastModule,
     TooltipModule,
-    MultiSelectModule
+    MultiSelectModule,
+    ToggleButtonModule
   ]
 })
 export class SharedModule { }

@@ -34,6 +34,16 @@ export class B2bReturnService  extends MyHttp{
     });
   }
 
+  deleteReason(ids:number[],toTrash:boolean):Observable<boolean|ResponseError>{
+    return this.http.delete<boolean|ResponseError>(this.sys_config.backend_fpr+"/reasons/",{
+      headers: this.getHeader(ContentType.json),
+      body: {
+        toTrash: toTrash,
+        ids: ids
+      }
+    });
+  }
+
   saveReturn(p_id_order:number,p_id_product:[number]):Observable<Boolean|ResponseError>{
     return this.http.post<Boolean|ResponseError>(this.sys_config.backend_fpr+'/return/',{
       "id_order": p_id_order,

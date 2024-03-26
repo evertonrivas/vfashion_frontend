@@ -15,21 +15,22 @@
     <div class="flex justify-content-between mb-3">
         <div>
             <span class="block text-500 font-medium mb-3">{{card.title}}</span>
-            <div class="text-900 font-medium text-xl" *ngIf="card.dataType==0">{{card.value | shortMoney}}</div>
-            <div class="text-900 font-medium text-xl" *ngIf="card.dataType==1">{{card.value}}</div>
-            <div class="text-900 font-medium text-xl" *ngIf="card.dataType==2">{{card.text}}</div>
-            <div class="text-900 font-medium text-xl" *ngIf="card.dataType==3"  [innerHTML]="card.text"></div>
+            <div class="text-900 font-medium text-xl" *ngIf="card.dataType==type.MONEY">{{card.value | shortMoney}}</div>
+            <div class="text-900 font-medium text-xl" *ngIf="card.dataType==type.NUMBER">{{card.value}}</div>
+            <div class="text-900 font-medium text-xl" *ngIf="card.dataType==type.PERCENT">{{card.value | number: '1.2-2'}}%</div>
+            <div class="text-900 font-medium text-xl" *ngIf="card.dataType==type.HTML">{{card.text}}</div>
+            <div class="text-900 font-medium text-xl" *ngIf="card.dataType==type.HTML"  [innerHTML]="card.text"></div>
         </div>
         <div class="flex align-items-center justify-content-center border-round" [ngClass]="card.iconColor!=null?'bg-'+card.iconColor+'-100':''" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
             <i class="material-symbols-outlined text-xl" [ngClass]="card.iconColor!=null?'text-'+card.iconColor+'-500':''">{{card.icon}}</i>
         </div>
     </div>
     <ng-container *ngIf="card.subtitle!=null">
-        <span class="font-medium" [ngClass]="card.subtitle.prefixColor!=null?'text-'+card.subtitle.prefixColor+'-500':''">{{card.subtitle.prefix}} </span>
+        <span class="font-medium" [ngClass]="card.subtitle.prefixColor?'text-'+card.subtitle.prefixColor+'-500':''">{{card.subtitle.prefix}} </span>
         <span class="text-500">{{card.subtitle.text}}</span>
 		<span *ngIf="card.subtitle.show_arrow" class="text-500 mr-1">{{arrow_down?'Queda de ':'Suba de '}}</span>
         <i *ngIf="card.subtitle.show_arrow && arrow_down" class="pi pi-arrow-down text-red-500 mr-1"></i>
         <i *ngIf="card.subtitle.show_arrow && arrow_up" class="pi pi-arrow-up text-green-500 mr-1"></i>
-        <span class="text-500">{{percent | number: '1.2-2'}}%</span>
+        <span *ngIf="card.subtitle.dataType==type.PERCENT" class="text-500">{{number | number: '1.2'}}%</span>
     </ng-container>
 </div>

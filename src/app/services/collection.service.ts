@@ -32,4 +32,14 @@ export class CollectionService extends MyHttp{
       headers:this.getHeader(ContentType.json)
     })
   }
+
+  delete(ids:number[],toTrash:boolean):Observable<boolean|ResponseError>{
+    return this.http.delete<boolean|ResponseError>(this.sys_config.backend_b2b+"/collection/",{
+      headers: this.getHeader(ContentType.json),
+      body: {
+        toTrash: toTrash,
+        ids: ids
+      }
+    });
+  }
 }

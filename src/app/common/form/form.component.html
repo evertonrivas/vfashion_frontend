@@ -3,10 +3,10 @@
     <ng-container>
         <div class="flex flex-row w-full mb-2 gap-2" *ngFor="let row of rows">
             <div class="flex flex-column w-full" *ngFor="let field of row.fields">
-                <label *ngIf="field.type!=fieldType.CHECK && field.type!=fieldType.RADIO && field.type!=fieldType.HIDDEN" class="mb-1">{{field.label}}</label>
-                <input *ngIf="field.type==fieldType.INPUT" pInputText [placeholder]="field.placeholder" [(ngModel)]="field.value">
-                <p-inputNumber *ngIf="field.type==fieldType.NUMBER" [(ngModel)]="field.value" [showButtons]="true" [min]="0" styleClass="w-full"></p-inputNumber>
-                <p-calendar *ngIf="field.type==fieldType.DATE" dateFormat="dd/mm/yyyy"></p-calendar>
+                <label *ngIf="field.type!=fieldType.CHECK && field.type!=fieldType.HIDDEN" class="mb-1">{{field.label}}</label>
+                <input *ngIf="field.type==fieldType.INPUT" pInputText [placeholder]="field.placeholder" [(ngModel)]="field.value" [ngClass]="field.case==fieldCase.UPPER?'uppercase':(field.case==fieldCase.LOWER?'lowercase':'')" [disabled]="field.disabled">
+                <p-inputNumber *ngIf="field.type==fieldType.NUMBER" [(ngModel)]="field.value" [showButtons]="true" [min]="0" styleClass="w-full" [disabled]="field.disabled"></p-inputNumber>
+                <p-calendar *ngIf="field.type==fieldType.DATE" dateFormat="dd/mm/yyyy" [disabled]="field.disabled"></p-calendar>
                 <p-calendar *ngIf="field.type==fieldType.PERIOD" 
                     selectionMode="range" 
                     appendTo="body"
@@ -17,7 +17,8 @@
                     rangeSeparator="-" 
                     [placeholder]="field.placeholder" 
                     (ngModelChange)="onDateChanged()" 
-                    dateFormat="dd/mm/yyyy"></p-calendar>
+                    dateFormat="dd/mm/yyyy"
+                    [disabled]="field.disabled"></p-calendar>
                 <p-dropdown *ngIf="field.type==fieldType.COMBO" 
                     [options]="field.options" 
                     optionValue="value"
@@ -28,7 +29,8 @@
                     styleClass="w-full"
                     [(ngModel)]="field.value"
                     [placeholder]="field.placeholder"
-                    emptyMessage="Nenhum registro encontrado!"></p-dropdown>
+                    emptyMessage="Nenhum registro encontrado!"
+                    [disabled]="field.disabled"></p-dropdown>
                 <p-multiSelect *ngIf="field.type==fieldType.MCOMBO" 
                     [options]="field.options" 
                     optionValue="value"
@@ -39,8 +41,14 @@
                     display="chip"
                     appendTo="body"
                     [maxSelectedLabels]="3"
-                    emptyMessage="Nenhum registro encontrado!"></p-multiSelect>
-                <p-checkbox *ngIf="field.type==fieldType.CHECK" [(ngModel)]="field.value" [binary]="true" [label]="field.label"></p-checkbox>
+                    emptyMessage="Nenhum registro encontrado!"
+                    [disabled]="field.disabled"></p-multiSelect>
+                <p-checkbox *ngIf="field.type==fieldType.CHECK" [(ngModel)]="field.value" [binary]="true" [label]="field.label" [disabled]="field.disabled"></p-checkbox>
+                <div class="flex flex-row gap-2 mt-2" *ngIf="field.type==fieldType.RADIO">
+                    <div class="flex" *ngFor="let opt of field.options">
+                        <p-radioButton [name]="field.name" [value]="opt.value" [label]="opt.label" [(ngModel)]="field.value" [disabled]="field.disabled"></p-radioButton>
+                    </div>
+                </div>
             </div>
         </div>
         <!-- <div *ngIf="field.type!=fieldType.RADIO" class="flex flex-column mb-2">

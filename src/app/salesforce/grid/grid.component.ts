@@ -14,7 +14,7 @@ import { Entity } from 'src/app/models/entity.model';
 import { Dialog } from 'primeng/dialog';
 import { IndicatorsService } from 'src/app/services/indicators.service';
 import { CartItem } from 'src/app/models/order.model';
-import { SysFilterService } from 'src/app/services/sys.filter.service';
+import { SysService } from 'src/app/services/sys.service';
 import { ColorService } from 'src/app/services/color.service';
 
 export interface SelectedImg{
@@ -56,7 +56,7 @@ export class GridComponent extends Common implements AfterViewInit{
   productToCartSubtotal:SubTotal = {};
 
   constructor(route:Router,
-    private svcFil:SysFilterService,
+    private ssvc:SysService,
     private cdr:ChangeDetectorRef,
     private config:PrimeNGConfig,
     private cfg:ConfirmationService,
@@ -71,7 +71,7 @@ export class GridComponent extends Common implements AfterViewInit{
     //busca padrao do sistema em caso refresh ou inicio da tela
     this.options.query    = "is:order_by price||is:order asc";
 
-    this.svcFil.filterB2bAnnounced$.subscribe({
+    this.ssvc.filterB2bAnnounced$.subscribe({
       next:(data) =>{
         this.options.query = '';
         this.filtered = true;
@@ -109,14 +109,8 @@ export class GridComponent extends Common implements AfterViewInit{
     this.listProducts();
     this.cdr.detectChanges();
     this.listColors();
-    this.cdr.detectChanges();
-    //throw new Error('ngAfterViewInit Method not implemented.');
+    this.cdr.detectChanges();    
   }
-
-  // ngOnChanges(changes: SimpleChanges): void {
-  //   this.listProducts();
-  //   this.cdr.detectChanges();
-  // }
 
   listProducts(){
     this.loading = true;

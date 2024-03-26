@@ -67,7 +67,12 @@ export class ReturnComponent extends Common implements AfterViewInit{
                 this.selectedProduct[id_product] = true;
               }
               if(this.selectedReason[id_product]==undefined){
-                this.selectedReason[id_product] = {};
+                this.selectedReason[id_product] = {
+                  id:0,
+                  description:undefined,
+                  date_created:undefined,
+                  date_updated:undefined
+                };
               }
             })
             this.cdr.detectChanges();

@@ -5,12 +5,13 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { PaginatorState } from 'primeng/paginator';
 import { Common } from 'src/app/classes/common';
 import { SharedModule } from 'src/app/common/shared.module';
-import { RequestResponse } from 'src/app/models/paginate.model';
+import { RequestResponse, ResponseError } from 'src/app/models/paginate.model';
 import { EntitiesService } from 'src/app/services/entities.service';
 import { FilterComponent } from "../../common/filter/filter.component";
-import { SysFilterService } from 'src/app/services/sys.filter.service';
-import { Field } from 'src/app/models/field.model';
-import { FieldType } from 'src/app/models/system.enum';
+import { FieldCase, FieldType } from 'src/app/models/system.enum';
+import { FormComponent } from 'src/app/common/form/form.component';
+import { Entity } from 'src/app/models/entity.model';
+import { FormField, FormRow } from 'src/app/models/field.model';
 
 @Component({
     selector: 'app-entities',
@@ -24,25 +25,24 @@ import { FieldType } from 'src/app/models/system.enum';
     imports: [
         CommonModule,
         SharedModule,
-        FilterComponent
+        FilterComponent,
+        FormComponent
     ]
 })
 
 export class EntitiesComponent extends Common implements AfterViewInit{
+  localObject!:Entity;
   constructor(route:Router,
     private svc:EntitiesService,
     private cdr:ChangeDetectorRef,
     private msg:MessageService,
-    private cnf:ConfirmationService,
-    private sfil:SysFilterService){
+    private cnf:ConfirmationService){
     super(route);
+  }
 
-    this.sfil.filterSysAnnounced$.subscribe({
-      next:(data) =>{
-        this.options.query = data;
-        this.loadingData();
-      }
-    });
+  doFilter(query:string):void{
+    this.options.query = query;
+    this.loadingData();
   }
 
   ngAfterViewInit(): void {
@@ -51,9 +51,19 @@ export class EntitiesComponent extends Common implements AfterViewInit{
     this.cdr.detectChanges();
   }
 
-  loadingData(evt:PaginatorState = { page: 0, pageCount: 0}):void{
+  loadingData(evt:PaginatorState = { page: 0, pageCount: 0},pTrash:boolean = false):void{
     this.loading = true;
     this.options.page = ((evt.page as number)+1);
+
+    //se nao existe trash no query
+    if(this.options.query.indexOf("trash")==-1){
+      this.options.query += (pTrash==true?"trash 1||":"");
+    }else{
+      if(pTrash==false){
+        this.options.query = this.options.query.replace("trash 1||","");
+      }
+    }
+
     this.serviceSub[0] = this.svc.listEntity(this.options).subscribe({
       next: (data) =>{
         this.response = data as RequestResponse;
@@ -82,12 +92,131 @@ export class EntitiesComponent extends Common implements AfterViewInit{
       filter_name: "type",
       filter_prefix: "is",
       name:"type",
-      options:[{option:'C',value:'Cliente'},{option:'R',value:'Representante'},{option:'S',value:'Fornecedor'}],
+      options:[{value:'C',label:'Cliente'},{value:'R',label:'Representante'},{value:'S',label:'Fornecedor'}],
       value:undefined
     });
   }
 
-  editData(id:number):void{
-    
+  onEditData(id:number = 0):void{
+    //limpa o formulario
+    this.formRows = [];
+    let fieldName:FormField = {
+      label: "Nome",
+      name: "name",
+      options: undefined,
+      placeholder: "Digite o nome...",
+      type: FieldType.INPUT,
+      value: undefined,
+      required: true,
+      case: FieldCase.UPPER,
+      disabled: false
+    };
+    this.idToEdit = id;
+
+    if(id>0){
+      //busca os dados do registro para edicao
+      this.serviceSub[2] = this.svc.loadEntity(id).subscribe({
+        next: (data) =>{
+          if ("name" in data){
+            this.localObject = data as Entity;
+            fieldName.value = this.localObject.name;
+
+            //monta as linhas do forme e exibe o mesmo
+            let row:FormRow = {
+              fields: [fieldName]
+            }
+            this.formRows.push(row);
+            this.formVisible = true;
+            
+          }else{
+            this.msg.clear();
+            this.msg.add({
+              summary:"Falha...",
+              detail: "Ocorreu um erro ao tentar carregar o registro",
+              severity:"error"
+            });
+          }
+        }
+      });
+    }else{
+      //monta as linhas do forme e exibe o mesmo
+      let row:FormRow = {
+        fields: [fieldName]
+      }  
+      this.formRows.push(row);
+      this.formVisible = true;
+    }
+  }
+
+  onDataSave(data:any):void{
+    this.hasSended = true;
+    this.serviceSub[3] = this.svc.saveEntity(data as Entity).subscribe({
+      next:(data) =>{
+        this.hasSended = false;
+        this.formVisible = false;
+        this.msg.clear();
+        if(typeof data ==='number'){
+          this.msg.add({
+            summary:"Sucesso...",
+            detail: "Registro criado com sucesso!",
+            severity:"success"
+          });
+        }else if(typeof data ==='boolean'){
+          this.msg.add({
+            summary:"Sucesso...",
+            detail: "Registro atualizado com sucesso!",
+            severity:"success"
+          });
+        }else{
+          this.msg.add({
+            summary:"Falha...",
+            detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+            severity:"error"
+          });
+        }
+        this.loadingData();
+      }
+    });
+  }
+
+  onDataDelete(pSendToTrash:boolean):void{
+    this.cnf.confirm({
+      header:"Confirmação de "+(pSendToTrash==true?"exclusão":"restauração"),
+      message:"Deseja realmente "+(pSendToTrash==true?"excluir":"restaurar")+" o(s) registro(s) marcado(s)?",
+      acceptLabel:"Sim",
+      acceptIcon:"pi pi-check mr-1",
+      acceptButtonStyleClass:"p-button-sm",
+      accept:() =>{
+        let ids:number[] = [];
+        this.tableSelected.forEach((v) =>{
+          ids.push((v as Entity).id);
+        });
+        this.serviceSub[3] = this.svc.deleteEntity(ids,pSendToTrash).subscribe({
+          next: (data) =>{
+            this.msg.clear();
+            //carrega com base no botao de lixeira
+            this.loadingData({page:0,pageCount:0},this.isTrash);
+            //limpa os registros selecionados
+            this.tableSelected = [];
+            if (typeof data ==='boolean'){
+              this.msg.add({
+                severity:"success",
+                summary:"Sucesso!",
+                detail:"Registro(s) "+(pSendToTrash==true?"excluído":"restaurado")+"(s) com sucesso!"
+              });
+            }else{
+              this.msg.add({
+                summary:"Falha...",
+                detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+                severity:"error"
+              });
+            }
+          }
+        });
+      },
+      rejectLabel:"Não",
+      rejectIcon:"pi pi-ban mr-1",
+      rejectButtonStyleClass:"p-button-danger p-button-sm"
+    });
   }
 }

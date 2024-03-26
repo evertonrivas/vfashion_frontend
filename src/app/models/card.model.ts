@@ -13,7 +13,7 @@ export interface Card {
     title:string|null,
     subtitle:SubtitleCard|null,
     text:string|null
-    value:number|null
+    value:number
 }
 
 export interface SubtitleCard{

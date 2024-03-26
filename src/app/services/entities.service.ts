@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ContentType, MyHttp } from './my-http';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Entity, EntityContact, EntityWeb } from '../models/entity.model';
+import { CustomerGroup, Entity, EntityContact, EntityWeb } from '../models/entity.model';
 import { Options, RequestResponse, ResponseError } from '../models/paginate.model';
 
 @Injectable({
@@ -18,6 +18,16 @@ export class EntitiesService extends MyHttp {
     var url = this.sys_config.backend_cmm+'/legal-entities/'+(id!=null?id:localStorage.getItem('id_user'));
     return this.http.get<Entity|ResponseError>(url,{
       headers:this.getHeader()
+    });
+  }
+
+  deleteEntity(ids:number[],toTrash:boolean):Observable<boolean|ResponseError>{
+    return this.http.delete<boolean|ResponseError>(this.sys_config.backend_cmm+"/legal-entities/",{
+      headers: this.getHeader(ContentType.json),
+      body: {
+        toTrash: toTrash,
+        ids: ids
+      }
     });
   }
 
@@ -90,6 +100,35 @@ export class EntitiesService extends MyHttp {
     return this.http.get<Entity[]|RequestResponse|ResponseError>(url,{
       headers: this.getHeader(),
       params: this.getParams(opt)
+    });
+  }
+
+  listCustomerGroup(opt:Options):Observable<CustomerGroup|RequestResponse|ResponseError>{
+    return this.http.get<CustomerGroup|RequestResponse|ResponseError>(this.sys_config.backend_b2b+'/customer-group/',{
+      headers: this.getHeader(),
+      params: this.getParams(opt)
+    });
+  }
+
+  loadCustomerGroup(id:number):Observable<CustomerGroup|ResponseError>{
+    return this.http.get<CustomerGroup|ResponseError>(this.sys_config.backend_b2b+'/customer-group/'+id.toString(),{
+      headers: this.getHeader()
+    });
+  }
+
+  saveCustomerGroup(data:any):Observable<boolean|number|ResponseError>{
+    return this.http.post<boolean|number|ResponseError>(this.sys_config.backend_b2b+'/customer-group/'+(data.id>0?data.id.toString():''),data,{
+      headers: this.getHeader(ContentType.json)
+    });
+  }
+
+  deleteCustomerGroup(ids:number[],toTrash:boolean):Observable<boolean|ResponseError>{
+    return this.http.delete<boolean|ResponseError>(this.sys_config.backend_b2b+"/customer-group/",{
+      headers: this.getHeader(ContentType.json),
+      body: {
+        toTrash: toTrash,
+        ids: ids
+      }
     });
   }
 }

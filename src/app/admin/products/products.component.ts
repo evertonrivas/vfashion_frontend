@@ -5,13 +5,12 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { PaginatorState } from 'primeng/paginator';
 import { Common } from 'src/app/classes/common';
 import { SharedModule } from 'src/app/common/shared.module';
-import { RequestResponse } from 'src/app/models/paginate.model';
+import { RequestResponse, ResponseError } from 'src/app/models/paginate.model';
 import { ProductsService } from 'src/app/services/products.service';
-import { SysFilterService } from 'src/app/services/sys.filter.service';
 import { FilterComponent } from "../../common/filter/filter.component";
-import { FieldType } from 'src/app/models/system.enum';
-import { Field, FieldOption } from 'src/app/models/field.model';
-import { B2bBrand, Color, ProductCategory, ProductCollection, ProductModel, ProductType, Size } from 'src/app/models/product.model';
+import { FieldCase, FieldType } from 'src/app/models/system.enum';
+import { FieldOption, FormField, FormRow } from 'src/app/models/field.model';
+import { B2bBrand, Color, Product, ProductCategory, ProductCollection, ProductModel, ProductType, Size } from 'src/app/models/product.model';
 import { forkJoin } from 'rxjs';
 import { BrandService } from 'src/app/services/brand.service';
 import { ModelService } from 'src/app/services/model.service';
@@ -20,6 +19,7 @@ import { CategoryService } from 'src/app/services/category.service';
 import { ColorService } from 'src/app/services/color.service';
 import { SizeService } from 'src/app/services/size.service';
 import { ProductTypeService } from 'src/app/services/product.type.service';
+import { FormComponent } from 'src/app/common/form/form.component';
 
 @Component({
     selector: 'app-products',
@@ -33,16 +33,17 @@ import { ProductTypeService } from 'src/app/services/product.type.service';
     imports: [
         CommonModule,
         SharedModule,
-        FilterComponent
+        FilterComponent,
+        FormComponent
     ]
 })
 export class ProductsComponent extends Common implements AfterViewInit {
+  localObject!:Product;
   constructor(route:Router,
     private msg:MessageService,
     private cnf:ConfirmationService,
     private svc:ProductsService,
     private cdr:ChangeDetectorRef,
-    private sfil:SysFilterService,
     private svcB:BrandService,
     private svcM:ModelService,
     private svcCl:CollectionService,
@@ -52,13 +53,11 @@ export class ProductsComponent extends Common implements AfterViewInit {
     private svcT:ProductTypeService
     ){
     super(route);
+  }
 
-    this.sfil.filterSysAnnounced$.subscribe({
-      next:(data) =>{
-        this.options.query = data;
-        this.loadingData();
-      }
-    });
+  doFilter(query:string):void{
+    this.options.query = query;
+    this.loadingData();
   }
 
   ngAfterViewInit(): void {
@@ -67,9 +66,19 @@ export class ProductsComponent extends Common implements AfterViewInit {
     this.cdr.detectChanges();
   }
 
-  loadingData(evt:PaginatorState = { page: 0, pageCount: 0}):void{
+  loadingData(evt:PaginatorState = { page: 0, pageCount: 0},pTrash:boolean = false):void{
     this.loading = true;
     this.options.page = ((evt.page as number)+1);
+
+    //se nao existe trash no query
+    if(this.options.query.indexOf("trash")==-1){
+      this.options.query += (pTrash==true?"trash 1||":"");
+    }else{
+      if(pTrash==false){
+        this.options.query = this.options.query.replace("trash 1||","");
+      }
+    }
+
     this.serviceSub[0] = this.svc.listProducts(this.options).subscribe({
       next: (data) =>{
         this.response = data as RequestResponse;
@@ -109,31 +118,31 @@ export class ProductsComponent extends Common implements AfterViewInit {
       let optType:FieldOption[]   = [];
       
       (valBrand as B2bBrand[]).forEach((b) =>{
-        optBrand.push({option: b.id, value: b.name as string});
+        optBrand.push({value: b.id, label: b.name as string});
       });
 
       (valModel as ProductModel[]).forEach((m) =>{
-        optModel.push({option: m.id,value: m.name});
+        optModel.push({value: m.id, label: m.name});
       });
 
       (valCollec as ProductCollection[]).forEach((c) =>{
-        optCollec.push({option: c.id,value: c.name});
+        optCollec.push({value: c.id, label: c.name});
       });
 
       (valCateg as ProductCategory[]).forEach((c) =>{
-        optCateg.push({option: c.id,value: c.name as string});
+        optCateg.push({value: c.id, label: c.name as string});
       });
 
       (valColor as Color[]).forEach((c) =>{
-        optColor.push({option: c.id,value: c.name});
+        optColor.push({value: c.id, label: c.name});
       });
 
       (valSize as Size[]).forEach((s) =>{
-        optSize.push({option: s.id,value: s.name});
+        optSize.push({value: s.id, label: s.name});
       });
 
       (valType as ProductType[]).forEach((t) =>{
-        optType.push({option: t.id,value: t.name});
+        optType.push({value: t.id, label: t.name});
       });
 
       this.filters.push({
@@ -215,7 +224,126 @@ export class ProductsComponent extends Common implements AfterViewInit {
     });
   }
 
-  editData(id:number){
+  onEditData(id:number = 0):void{
+    //limpa o formulario
+    this.formRows = [];
+    let fieldName:FormField = {
+      label: "Descrição",
+      name: "description",
+      options: undefined,
+      placeholder: "Digite a descrição...",
+      type: FieldType.INPUT,
+      value: undefined,
+      required: true,
+      case: FieldCase.UPPER,
+      disabled: false
+    };
+    this.idToEdit = id;
 
+    if(id>0){
+      //busca os dados do registro para edicao
+      this.serviceSub[2] = this.svc.load(id).subscribe({
+        next: (data) =>{
+          if ("name" in data){
+            this.localObject = data as Product;
+            fieldName.value = this.localObject.description;
+
+            //monta as linhas do forme e exibe o mesmo
+            let row:FormRow = {
+              fields: [fieldName]
+            }
+            this.formRows.push(row);
+            this.formVisible = true;
+            
+          }else{
+            this.msg.clear();
+            this.msg.add({
+              summary:"Falha...",
+              detail: "Ocorreu um erro ao tentar carregar o registro",
+              severity:"error"
+            });
+          }
+        }
+      });
+    }else{
+      //monta as linhas do forme e exibe o mesmo
+      let row:FormRow = {
+        fields: [fieldName]
+      }  
+      this.formRows.push(row);
+      this.formVisible = true;
+    }
+  }
+
+  onDataSave(data:any):void{
+    this.hasSended = true;
+    this.serviceSub[3] = this.svc.save(data).subscribe({
+      next:(data) =>{
+        this.hasSended = false;
+        this.formVisible = false;
+        this.msg.clear();
+        if(typeof data ==='number'){
+          this.msg.add({
+            summary:"Sucesso...",
+            detail: "Registro criado com sucesso!",
+            severity:"success"
+          });
+        }else if(typeof data ==='boolean'){
+          this.msg.add({
+            summary:"Sucesso...",
+            detail: "Registro atualizado com sucesso!",
+            severity:"success"
+          });
+        }else{
+          this.msg.add({
+            summary:"Falha...",
+            detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+            severity:"error"
+          });
+        }
+        this.loadingData();
+      }
+    });
+  }
+
+  onDataDelete(pSendToTrash:boolean):void{
+    this.cnf.confirm({
+      header:"Confirmação de "+(pSendToTrash==true?"exclusão":"restauração"),
+      message:"Deseja realmente "+(pSendToTrash==true?"excluir":"restaurar")+" o(s) registro(s) marcado(s)?",
+      acceptLabel:"Sim",
+      acceptIcon:"pi pi-check mr-1",
+      acceptButtonStyleClass:"p-button-sm",
+      accept:() =>{
+        let ids:number[] = [];
+        this.tableSelected.forEach((v) =>{
+          ids.push((v as Product).id);
+        });
+        this.serviceSub[3] = this.svc.delete(ids,pSendToTrash).subscribe({
+          next: (data) =>{
+            this.msg.clear();
+            //carrega com base no botao de lixeira
+            this.loadingData({page:0,pageCount:0},this.isTrash);
+            //limpa os registros selecionados
+            this.tableSelected = [];
+            if (typeof data ==='boolean'){
+              this.msg.add({
+                severity:"success",
+                summary:"Sucesso!",
+                detail:"Registro(s) "+(pSendToTrash==true?"excluído":"restaurado")+"(s) com sucesso!"
+              });
+            }else{
+              this.msg.add({
+                summary:"Falha...",
+                detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+                severity:"error"
+              });
+            }
+          }
+        });
+      },
+      rejectLabel:"Não",
+      rejectIcon:"pi pi-ban mr-1",
+      rejectButtonStyleClass:"p-button-danger p-button-sm"
+    });
   }
 }

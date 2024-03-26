@@ -1,4 +1,7 @@
-<app-filter [fields]="filters" [(visible)]="filterVisible"></app-filter>
+<app-filter [fields]="filters" [(visible)]="filterVisible" [isTrash]="isTrash" (queryToFilter)="doFilter($event)"></app-filter>
+<app-form [(visible)]="formVisible" [rows]="formRows" title="Edição de Usuário" [registryId]="idToEdit" (objectToSave)="onDataSave($event)"></app-form>
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
 <p-panel>
     <ng-template pTemplate="header">
         <div class="flex flex-row w-full justify-content-between align-items-center">
@@ -13,9 +16,9 @@
                 </p-overlayPanel>
                 <!-- <p-button icon="pi pi-plus" [severity]="'success'" styleClass="p-button-sm" pTooltip="Novo registro" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button> -->
                 <!-- <p-button [disabled]="tableSelected.length>0?false:true" icon="pi pi-trash" [severity]="'danger'" styleClass="p-button-sm" pTooltip="Excluir selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button> -->
-                <p-button [disabled]="tableSelected.length>0?false:true" icon="pi pi-massive-actions icon-xsmall" [severity]="'help'" styleClass="p-button-sm" pTooltip="Ações Massivas" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="pnlMassive.toggle($event)"></p-button>
+                <!-- <p-button [disabled]="tableSelected.length>0?false:true" icon="pi pi-massive-actions icon-xsmall" [severity]="'help'" styleClass="p-button-sm" pTooltip="Ações Massivas" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="pnlMassive.toggle($event)"></p-button> -->
                 <!-- <p-button icon="pi pi-deleted icon-xsmall" [severity]="'secondary'" styleClass="p-button-sm" pTooltip="Listar excluído(s)" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button> -->
-                <p-button icon="pi pi-filter" [severity]="'primary'" styleClass="p-button-sm" pTooltip="Filtro(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="showFilter()"></p-button>
+                <p-button icon="pi pi-filter" [severity]="'warning'" styleClass="p-button-sm" pTooltip="Filtro(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="showFilter()"></p-button>
             </div>
         </div>
     </ng-template>
@@ -29,7 +32,7 @@
             [(selection)]="tableSelected">
             <ng-template pTemplate="header">
                 <tr>
-                    <th style="width: 50px!important;" class="text-center" pFrozenColumn><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+                    <!-- <th style="width: 50px!important;" class="text-center" pFrozenColumn><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th> -->
                     <th style="width: 100px!important;" pFrozenColumn>Ações</th>
                     <th pSortableColumn="username" pFrozenColumn>Username <p-sortIcon field="username"></p-sortIcon></th>
                     <th pSortableColumn="type">Nível de Acesso <p-sortIcon field="type"></p-sortIcon></th>
@@ -38,11 +41,16 @@
             </ng-template>
             <ng-template pTemplate="body" let-item>
                 <tr>
-                    <td class="text-center"><p-tableCheckbox [value]="item"></p-tableCheckbox></td>
-                    <td><p-button [text]="true" icon="pi pi-pencil" pTooltip="Editar" tooltipPosition="top" tooltipStyleClass="text-sm" (onClick)="editData(item.id)"></p-button></td>
+                    <!-- <td class="text-center"><p-tableCheckbox [value]="item"></p-tableCheckbox></td> -->
+                    <td><p-button [text]="true" icon="pi pi-pencil" pTooltip="Editar" tooltipPosition="top" tooltipStyleClass="text-sm" (onClick)="onEditData(item.id)"></p-button></td>
                     <td>{{item.username}}</td>
                     <td>{{item.type | userType }}</td>
                     <td>{{item.active==true?"Sim":"Não" }}</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="5" class="text-center">Nenhum registro existente!</td>
                 </tr>
             </ng-template>
         </p-table>

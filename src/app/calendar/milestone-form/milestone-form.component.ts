@@ -109,7 +109,7 @@ export class MilestoneFormComponent extends Common implements AfterViewInit, OnD
   ngAfterViewInit(): void {
     //realiza carga dos tipos de eventos
     this.options.query="is:just-parent 1||";
-    this.serviceSub[0] = this.svc.eventTypeList(this.options).subscribe({
+    this.serviceSub[0] = this.svc.listEventType(this.options).subscribe({
       next: (data) =>{
         ((data as RequestResponse).data as CalendarEventType[]).forEach((d)=>{
           if (d.is_milestone){

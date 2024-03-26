@@ -29,6 +29,16 @@ export class CrmService  extends MyHttp{
     });
   }
 
+  deleteFunnel(ids:number[],toTrash:boolean):Observable<boolean|ResponseError>{
+    return this.http.delete<boolean|ResponseError>(this.sys_config.backend_crm+"/funnels/",{
+      headers: this.getHeader(ContentType.json),
+      body: {
+        toTrash: toTrash,
+        ids: ids
+      }
+    });
+  }
+
   listStages(opt:Options):Observable<FunnelStage[]|RequestResponse|ResponseError>{
     return this.http.get<FunnelStage[]|RequestResponse|ResponseError>(this.sys_config.backend_crm+'/funnel-stages/',{
       headers: this.getHeader(),
@@ -39,6 +49,16 @@ export class CrmService  extends MyHttp{
   loadStage(id:number):Observable<FunnelStage|ResponseError>{
     return this.http.get<FunnelStage|ResponseError>(this.sys_config.backend_crm+'/funnel-stages/'+id.toString(),{
       headers: this.getHeader()
+    });
+  }
+
+  deleteStages(ids:number[],toTrash:boolean):Observable<boolean|ResponseError>{
+    return this.http.delete<boolean|ResponseError>(this.sys_config.backend_crm+"/funnel-stages/",{
+      headers: this.getHeader(ContentType.json),
+      body: {
+        toTrash: toTrash,
+        ids: ids
+      }
     });
   }
 

@@ -36,7 +36,14 @@ export enum FieldType{
     COMBO  = 6,
     NUMBER = 7,
     MCOMBO = 8,
-    TEXT   = 9
+    TEXT   = 9,
+    COLOR  = 10
+}
+
+export enum FieldCase{
+    UPPER  = 0,
+    LOWER  = 1,
+    NONE   = 2
 }
 
 export enum DataOrder{

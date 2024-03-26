@@ -34,6 +34,7 @@ export class AdminComponent extends Common implements OnInit, AfterViewInit{
                     //{ label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: [this.modulePath+'/configurations']},
                     { label: 'Entidades', icon: 'pi pi-fw pi-entities icon-small', routerLink: [this.modulePath+'/entities'] },
                     { label: 'Produtos', icon: 'pi pi-fw pi-products icon-small', routerLink: [this.modulePath+'/products'] },
+                    { label: 'Un. Medida', icon:'pi pi-fw pi-unity-measure icon-small', routerLink: [this.modulePath+'/measure-unit']},
                     { label: 'Usuários', icon: 'pi pi-fw pi-users icon-small', routerLink: [this.modulePath+'/users'] }
                 ]
             },

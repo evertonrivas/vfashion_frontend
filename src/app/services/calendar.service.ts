@@ -52,7 +52,7 @@ export class CalendarService extends MyHttp{
     });
   }
 
-  eventTypeSave(event:CalendarEventType):Observable<boolean|ResponseError>{
+  saveEventType(event:CalendarEventType):Observable<boolean|ResponseError>{
     let data = {
       name: event.name,
       hex_color: event.hex_color,
@@ -64,7 +64,7 @@ export class CalendarService extends MyHttp{
     });
   }
 
-  eventTypeList(options:Options):Observable<CalendarEventType[]|RequestResponse|ResponseError>{
+  listEventType(options:Options):Observable<CalendarEventType[]|RequestResponse|ResponseError>{
     let myParams:HttpParams = new HttpParams().set("page",options.page);
     return this.http.get<CalendarEventType[]|RequestResponse|ResponseError>(this.sys_config.backend_scm+'/event-type/',{
       headers: this.getHeader(),
@@ -72,9 +72,19 @@ export class CalendarService extends MyHttp{
     });
   }
 
-  eventTypeLoad(id:number):Observable<CalendarEventType|ResponseError>{
+  loadEventType(id:number):Observable<CalendarEventType|ResponseError>{
     return this.http.get<CalendarEventType|ResponseError>(this.sys_config.backend_scm+'/event-type/'+id.toString(),{
       headers: this.getHeader()
+    });
+  }
+
+  deleteEventType(ids:number[],toTrash:boolean):Observable<boolean|ResponseError>{
+    return this.http.delete<boolean|ResponseError>(this.sys_config.backend_b2b+"/brand/",{
+      headers: this.getHeader(ContentType.json),
+      body: {
+        toTrash: toTrash,
+        ids: ids
+      }
     });
   }
 

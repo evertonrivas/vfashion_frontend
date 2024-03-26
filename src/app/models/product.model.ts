@@ -34,6 +34,8 @@ export interface Product {
 export interface B2bBrand{
     id: number,
     name: string|null,
+    id_brand:number,
+    brand:string|null,
     date_created: string,
     date_updated: string|null
 }
@@ -97,8 +99,21 @@ export interface ProductGrid{
     origin_id:number,
     name:string,
     default:boolean,
+    distribution: ProductGridDistribution[]
     date_created:string,
     date_updated:string|null
+}
+
+export interface ProductGridDistribution{
+    id_color:number,
+    color:string,
+    sizes:ProductGridDistributionSize[]
+}
+
+export interface ProductGridDistributionSize{
+    id_size:number,
+    size:string,
+    value:number
 }
 
 export interface SubTotal{

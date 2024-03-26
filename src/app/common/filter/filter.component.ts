@@ -1,9 +1,9 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../common/shared.module';
-import { Field } from '../../models/field.model';
+import { FieldFilter } from '../../models/field.model';
 import { FieldType } from '../../models/system.enum';
-import { SysFilterService } from 'src/app/services/sys.filter.service';
+import { SysService } from 'src/app/services/sys.service';
 
 @Component({
   selector: 'app-filter',
@@ -18,10 +18,12 @@ import { SysFilterService } from 'src/app/services/sys.filter.service';
 export class FilterComponent{
   @Input() visible:boolean = false;
   @Output() visibleChange = new EventEmitter<boolean>();
-  @Input() fields!:Field[];
+  @Output() queryToFilter = new EventEmitter<string>();
+  @Input() fields!:FieldFilter[];
+  @Input() isTrash:boolean = false;
   fieldType = FieldType;
   constructor(
-    private svc:SysFilterService,
+    private svc:SysService,
     private cdr:ChangeDetectorRef){
   }
 
@@ -38,7 +40,7 @@ export class FilterComponent{
     });
     this.visible = false;
     this.visibleChange.emit(this.visible);
-    this.svc.announceSysFilter(filter);
+    this.queryToFilter.emit(filter+(this.isTrash==true?"trash 1||":""));
     this.cdr.detectChanges();
   }
 
@@ -53,6 +55,6 @@ export class FilterComponent{
     this.visible = false;
     this.visibleChange.emit(this.visible);
     if(announce!=false)
-      this.svc.announceSysFilter("");
+      this.queryToFilter.emit("");
   }
 }

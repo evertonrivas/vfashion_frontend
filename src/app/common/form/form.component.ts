@@ -1,9 +1,8 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SharedModule } from '../shared.module';
 import { CommonModule } from '@angular/common';
-import { FieldType } from 'src/app/models/system.enum';
+import { FieldCase, FieldType } from 'src/app/models/system.enum';
 import { FormRow } from 'src/app/models/field.model';
-import { SysService } from 'src/app/services/sys.service';
 
 @Component({
   selector: 'app-form',
@@ -23,6 +22,7 @@ export class FormComponent {
   @Input() title:string = "";
   @Input() registryId:number = 0;
   fieldType = FieldType;
+  fieldCase = FieldCase;
   dataToSave:string = "";
 
   constructor(){
@@ -40,8 +40,15 @@ export class FormComponent {
     this.dataToSave = '{"id":"'+this.registryId.toString()+'"';
     this.rows.forEach((r) =>{
       r.fields.forEach((f) =>{
-        this.dataToSave += ',"'+f.name+'":"'+f.value+'"'
-      })
+        if (f.case==FieldCase.UPPER){
+          this.dataToSave += ',"'+f.name+'":"'+String(f.value).toUpperCase()+'"'
+        }else if(f.case==FieldCase.LOWER){
+          this.dataToSave += ',"'+f.name+'":"'+String(f.value).toLowerCase()+'"'
+        }
+        else{
+          this.dataToSave += ',"'+f.name+'":"'+f.value+'"'
+        }
+      });
     });
     this.dataToSave += "}";
 

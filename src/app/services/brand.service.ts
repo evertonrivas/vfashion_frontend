@@ -33,10 +33,13 @@ export class BrandService extends MyHttp{
     });
   }
 
-  delete(ids:number[]):Observable<boolean|ResponseError>{
-    return this.http.delete<boolean|ResponseError>(this.sys_config.backend_b2b,{
+  delete(ids:number[],toTrash:boolean):Observable<boolean|ResponseError>{
+    return this.http.delete<boolean|ResponseError>(this.sys_config.backend_b2b+"/brand/",{
       headers: this.getHeader(ContentType.json),
-      body: ids
+      body: {
+        toTrash: toTrash,
+        ids: ids
+      }
     });
   }
 }

@@ -52,7 +52,7 @@ export class EventFormComponent extends Common implements OnDestroy{
     //realiza carga dos tipos de eventos
     this.eventTypes = [];
     this.options.query = "can:list-all 1||is:just-parent 1||is:no-milestone 1||";
-    this.serviceSub[0] = this.svc.eventTypeList(this.options).subscribe({
+    this.serviceSub[0] = this.svc.listEventType(this.options).subscribe({
       next: (data) =>{
         this.eventTypes = data as CalendarEventType[];
       },complete: () => {

@@ -1,8 +1,8 @@
-import { FieldType } from "./system.enum";
+import { FieldType,FieldCase } from "./system.enum";
 
 export interface FieldOption{
-    option: any,
-    value: string
+    value: any,
+    label: string
 }
 
 export interface FieldFilter {
@@ -23,7 +23,9 @@ export interface FormField {
     type: FieldType,
     value: any|undefined,
     options:FieldOption[]|undefined,
-    required:boolean
+    required:boolean,
+    case:FieldCase,
+    disabled:boolean
 }
 
 export interface FormRow{

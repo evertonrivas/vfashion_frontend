@@ -232,3 +232,15 @@ body{
 .pi-search{
     @include use-md-icon('search')
 }
+
+.pi-customer-group{
+    @include use-md-icon('groups_2')
+}
+
+.pi-unity-measure{
+    @include use-md-icon('square_foot')
+}
+
+.pi-restore-from-trash{
+    @include use-md-icon('restore_from_trash')
+}

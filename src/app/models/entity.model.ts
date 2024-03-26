@@ -78,4 +78,14 @@ export interface EntityNotification{
     remember:string,
 }
 
+export interface CustomerGroup{
+    id:number,
+    name:string,
+    id_representative:number|null,
+    representative:string|undefined,
+    need_approvement:boolean,
+    date_created:string,
+    date_updated:string
+}
+
 export { EntityType }

@@ -8,7 +8,7 @@ import { Options } from '../models/paginate.model';
 import { Filter } from '../models/filter.model';
 import { B2bOrderService } from '../services/b2b.order.service';
 import { CartContent } from '../models/order.model';
-import { SysFilterService } from '../services/sys.filter.service';
+import { SysService } from '../services/sys.service';
 import { BrandService } from '../services/brand.service';
 import { CollectionService } from '../services/collection.service';
 import { CategoryService } from '../services/category.service';
@@ -58,7 +58,7 @@ export class SalesforceComponent extends Common implements AfterViewInit{
  
   constructor(router:Router,
     private svcLay:LayoutService,
-    private svcFil:SysFilterService,
+    private ssvc:SysService,
     private svcOrd:B2bOrderService,
     private svcB:BrandService,
     private svcCl:CollectionService,
@@ -132,7 +132,7 @@ export class SalesforceComponent extends Common implements AfterViewInit{
   doFilter():void{
     this.route.navigate(["/salesforce/grid"]).finally(() =>{
       this.filteredEvent.emit();
-      this.svcFil.announceB2bFilter(this.filter);
+      this.ssvc.announceB2bFilter(this.filter);
       this.sidebarVisible = false;
     });
   }

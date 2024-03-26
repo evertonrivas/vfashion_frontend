@@ -19,8 +19,8 @@
                 dateFormat="dd/mm/yyyy"></p-calendar>
             <p-dropdown *ngIf="field.type==fieldType.COMBO" 
                 [options]="field.options" 
-                optionValue="option"
-                optionLabel="value"
+                optionValue="value"
+                optionLabel="label"
                 appendTo="body" 
                 [showClear]="true" 
                 [filter]="true"
@@ -30,8 +30,8 @@
                 emptyMessage="Nenhum registro encontrado!"></p-dropdown>
             <p-multiSelect *ngIf="field.type==fieldType.MCOMBO" 
                 [options]="field.options" 
-                optionValue="option"
-                optionLabel="value"
+                optionValue="value"
+                optionLabel="label"
                 [(ngModel)]="field.value" 
                 [placeholder]="field.placeholder" 
                 [showClear]="true"
@@ -45,7 +45,7 @@
             <label class="mb-1">{{field.label}}</label>
             <div class="flex flex-wrap gap-3">
                 <div class="flex" *ngFor="let opt of field.options">
-                    <p-radioButton [name]="field.name" [value]="opt.option" [label]="opt.value" [(ngModel)]="field.value"></p-radioButton>
+                    <p-radioButton [name]="field.name" [value]="opt.value" [label]="opt.label" [(ngModel)]="field.value"></p-radioButton>
                 </div>
             </div>
         </div>
