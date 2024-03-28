@@ -4,7 +4,7 @@
         <div class="flex flex-row w-full mb-2 gap-2" *ngFor="let row of rows">
             <div class="flex flex-column w-full" *ngFor="let field of row.fields">
                 <label *ngIf="field.type!=fieldType.CHECK && field.type!=fieldType.HIDDEN" class="mb-1">{{field.label}}</label>
-                <input *ngIf="field.type==fieldType.INPUT" pInputText [placeholder]="field.placeholder" [(ngModel)]="field.value" [ngClass]="field.case==fieldCase.UPPER?'uppercase':(field.case==fieldCase.LOWER?'lowercase':'')" [disabled]="field.disabled">
+                <input *ngIf="field.type==fieldType.INPUT" pInputText [placeholder]="field.placeholder!=undefined?field.placeholder:''" [(ngModel)]="field.value" [ngClass]="field.case==fieldCase.UPPER?'uppercase':(field.case==fieldCase.LOWER?'lowercase':'')" [disabled]="field.disabled">
                 <p-inputNumber *ngIf="field.type==fieldType.NUMBER" [(ngModel)]="field.value" [showButtons]="true" [min]="0" styleClass="w-full" [disabled]="field.disabled"></p-inputNumber>
                 <p-calendar *ngIf="field.type==fieldType.DATE" dateFormat="dd/mm/yyyy" [disabled]="field.disabled"></p-calendar>
                 <p-calendar *ngIf="field.type==fieldType.PERIOD" 
@@ -15,7 +15,7 @@
                     class="p-inputtext-sm pr-2" 
                     [showClear]="true" 
                     rangeSeparator="-" 
-                    [placeholder]="field.placeholder" 
+                    [placeholder]="field.placeholder!=undefined?field.placeholder:''" 
                     (ngModelChange)="onDateChanged()" 
                     dateFormat="dd/mm/yyyy"
                     [disabled]="field.disabled"></p-calendar>
@@ -28,7 +28,7 @@
                     [filter]="true"
                     styleClass="w-full"
                     [(ngModel)]="field.value"
-                    [placeholder]="field.placeholder"
+                    [placeholder]="field.placeholder!=undefined?field.placeholder:''"
                     emptyMessage="Nenhum registro encontrado!"
                     [disabled]="field.disabled"></p-dropdown>
                 <p-multiSelect *ngIf="field.type==fieldType.MCOMBO" 
@@ -36,7 +36,7 @@
                     optionValue="value"
                     optionLabel="label"
                     [(ngModel)]="field.value" 
-                    [placeholder]="field.placeholder" 
+                    [placeholder]="field.placeholder!=undefined?field.placeholder:''" 
                     [showClear]="true"
                     display="chip"
                     appendTo="body"

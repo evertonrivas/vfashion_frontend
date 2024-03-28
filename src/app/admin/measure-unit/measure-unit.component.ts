@@ -2,40 +2,37 @@ import { CommonModule } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { Common } from 'src/app/classes/common';
-import { SharedModule } from 'src/app/common/shared.module';
-import { FilterComponent } from "../../../common/filter/filter.component";
 import { PaginatorState } from 'primeng/paginator';
-import { SizeService } from 'src/app/services/size.service';
-import { RequestResponse, ResponseError } from 'src/app/models/paginate.model';
+import { Common } from 'src/app/classes/common';
+import { FilterComponent } from 'src/app/common/filter/filter.component';
 import { FormComponent } from 'src/app/common/form/form.component';
-import { Size } from 'src/app/models/product.model';
-import { FormField, FormRow } from 'src/app/models/field.model';
+import { SharedModule } from 'src/app/common/shared.module';
+import { FieldOption, FormField, FormRow } from 'src/app/models/field.model';
+import { MeasureUnit } from 'src/app/models/measure-unit';
+import { RequestResponse, ResponseError } from 'src/app/models/paginate.model';
 import { FieldCase, FieldType } from 'src/app/models/system.enum';
+import { MeasureUnitService } from 'src/app/services/measure-unit.service';
 
 @Component({
-    selector: 'app-sizes',
-    standalone: true,
-    providers: [
-        MessageService,
-        ConfirmationService
-    ],
-    templateUrl: './sizes.component.html',
-    styleUrl: './sizes.component.scss',
-    imports: [
-        CommonModule,
-        SharedModule,
-        FilterComponent,
-        FormComponent
-    ]
+  selector: 'app-measure-unit',
+  standalone: true,
+  imports: [
+    CommonModule,
+    SharedModule,
+    FilterComponent,
+    FormComponent
+  ],
+  providers:[MessageService,ConfirmationService],
+  templateUrl: './measure-unit.component.html',
+  styleUrl: './measure-unit.component.scss'
 })
-export class SizesComponent extends Common implements AfterViewInit{
-  localObject!:Size;
+export class MeasureUnitComponent extends Common implements AfterViewInit{
+  localObject!:MeasureUnit;
   constructor(route:Router,
-    private svc:SizeService,
     private msg:MessageService,
     private cnf:ConfirmationService,
-    private cdr:ChangeDetectorRef){
+    private cdr:ChangeDetectorRef,
+    private svc:MeasureUnitService){
     super(route);
   }
 
@@ -63,7 +60,7 @@ export class SizesComponent extends Common implements AfterViewInit{
       }
     }
 
-    this.serviceSub[0] = this.svc.list(this.options).subscribe({
+    this.serviceSub[1] = this.svc.list(this.options).subscribe({
       next: (data) =>{
         this.response = data as RequestResponse;
         this.cdr.detectChanges();
@@ -73,69 +70,60 @@ export class SizesComponent extends Common implements AfterViewInit{
   }
 
   loadingFilterData():void{
-
+    this.filters.push({
+      label:"Texto da Busca",
+      placeholder:"Nome ou descrição",
+      type: FieldType.INPUT,
+      filter_name: "search",
+      filter_prefix: "is",
+      name:"",
+      options:undefined,
+      value:undefined
+    });
   }
 
   onEditData(id:number = 0):void{
     //limpa o formulario
     this.formRows = [];
     this.idToEdit = id;
-    let fieldName:FormField = {
-      label: "Nome",
-      name: "name",
+    let fDesc:FormField = {
+      label: "Descrição",
+      name: "description",
       options: undefined,
       placeholder: "Digite o nome...",
       type: FieldType.INPUT,
       value: undefined,
       required: true,
-      case: FieldCase.NONE,
+      case: FieldCase.UPPER,
       disabled: false
     };
 
-    let fOldSize:FormField = {
-      label: "Sigla Original",
-      name: "old_size",
+    let fCode:FormField = {
+      label: "Código",
+      name: "code",
       options: undefined,
-      placeholder: "Ex: P",
+      placeholder: "Digite o código...",
       type: FieldType.INPUT,
       value: undefined,
-      required: true,
       case: FieldCase.UPPER,
-      disabled: false
+      disabled: false,
+      required: false
     }
-
-    let fNewSize:FormField = {
-      label: "Nova Sigla",
-      name: "new_size",
-      options: undefined,
-      placeholder: "Ex: SM",
-      type: FieldType.INPUT,
-      value: undefined,
-      required: true,
-      case: FieldCase.UPPER,
-      disabled: false
-    }
-    
 
     if(id>0){
       //busca os dados do registro para edicao
       this.serviceSub[2] = this.svc.load(id).subscribe({
         next: (data) =>{
-          if ("name" in data){
-            this.localObject = data as Size;
-            fieldName.value = this.localObject.name;
-            fOldSize.value  = this.localObject.old_size;
-            fNewSize.value  = this.localObject.new_size;
+          if ("description" in data){
+            this.localObject = data as MeasureUnit;
+            fDesc.value = this.localObject.description;
+            fCode.value = this.localObject.code;
 
             //monta as linhas do forme e exibe o mesmo
             let row:FormRow = {
-              fields: [fieldName]
-            }
-            let row1:FormRow = {
-              fields: [fOldSize,fNewSize]
+              fields: [fDesc,fCode]
             }
             this.formRows.push(row);
-            this.formRows.push(row1);
             this.formVisible = true;
             
           }else{
@@ -151,13 +139,9 @@ export class SizesComponent extends Common implements AfterViewInit{
     }else{
       //monta as linhas do forme e exibe o mesmo
       let row:FormRow = {
-        fields: [fieldName]
+        fields: [fDesc,fCode]
       }  
-      let row1:FormRow = {
-        fields: [fOldSize,fNewSize]
-      }
       this.formRows.push(row);
-      this.formRows.push(row1);
       this.formVisible = true;
     }
   }
@@ -203,7 +187,7 @@ export class SizesComponent extends Common implements AfterViewInit{
       accept:() =>{
         let ids:number[] = [];
         this.tableSelected.forEach((v) =>{
-          ids.push((v as Size).id);
+          ids.push((v as MeasureUnit).id);
         });
         this.serviceSub[3] = this.svc.delete(ids,pSendToTrash).subscribe({
           next: (data) =>{

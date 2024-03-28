@@ -25,6 +25,7 @@ import { StepsComponent } from './fpr/steps/steps.component';
 import { ReasonsComponent } from './fpr/reasons/reasons.component';
 import { EventTypesComponent } from './scm/event-types/event-types.component';
 import { PaymentComponent } from './b2b/payment/payment.component';
+import { MeasureUnitComponent } from './measure-unit/measure-unit.component';
 
 const routes: Routes = [{ 
   path: '', 
@@ -41,6 +42,9 @@ const routes: Routes = [{
   },{
     path: 'products',
     component: ProductsComponent
+  },{ 
+    path: 'measure-unit', 
+    component: MeasureUnitComponent 
   },{
     path: 'users',
     component: UsersComponent
