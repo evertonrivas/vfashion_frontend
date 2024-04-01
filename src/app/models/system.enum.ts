@@ -37,7 +37,8 @@ export enum FieldType{
     NUMBER = 7,
     MCOMBO = 8,
     TEXT   = 9,
-    COLOR  = 10
+    COLOR  = 10,
+    PASSWD = 11
 }
 
 export enum FieldCase{
