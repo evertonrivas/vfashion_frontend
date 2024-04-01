@@ -3,7 +3,7 @@ export interface Country {
     name:string
 }
 
-export interface StageRegion{
+export interface StateRegion{
     id:number,
     country:Country,
     name:string,
@@ -12,7 +12,7 @@ export interface StageRegion{
 
 export interface City{
     id:number,
-    state_region:StageRegion,
+    state_region:StateRegion,
     name:string,
     brazil_ibge_code:string|null
 }
