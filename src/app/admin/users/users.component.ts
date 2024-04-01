@@ -12,6 +12,9 @@ import { FieldCase, FieldType } from 'src/app/models/system.enum';
 import { FormComponent } from 'src/app/common/form/form.component';
 import { FormField, FormRow } from 'src/app/models/field.model';
 import { User } from 'src/app/models/user.model';
+import { EntitiesService } from 'src/app/services/entities.service';
+import { Entity } from 'src/app/models/entity.model';
+import { PasswordModule } from 'primeng/password';
 
 @Component({
     selector: 'app-users',
@@ -26,13 +29,20 @@ import { User } from 'src/app/models/user.model';
         CommonModule,
         SharedModule,
         FilterComponent,
-        FormComponent
+        FormComponent,
+        PasswordModule
     ]
 })
 export class UsersComponent extends Common implements AfterViewInit{
   localObject!:User;
+  showDialogReset:boolean = false;
+  usernameReset:string = '';
+  tempPassword:string = '';
+  visibleMassive:boolean = false;
+  defaultPassword:any;
   constructor(route:Router,
     private svc:UserService,
+    private svcE:EntitiesService,
     private msg:MessageService,
     private cnf:ConfirmationService,
     private cdr:ChangeDetectorRef){
@@ -139,9 +149,9 @@ export class UsersComponent extends Common implements AfterViewInit{
       placeholder: "Digite o username...",
       type: FieldType.INPUT,
       value: undefined,
-      required:true,
+      required: true,
       case:FieldCase.LOWER,
-      disabled:false
+      disabled: false
     };
 
     let fLevel:FormField = {
@@ -157,7 +167,7 @@ export class UsersComponent extends Common implements AfterViewInit{
         { value:'R', label:'Representante' },
         { value:'U', label:'Usuário da Empresa' }
       ],
-      required: false,
+      required: true,
       case: FieldCase.UPPER,
       disabled: false
     }
@@ -169,9 +179,46 @@ export class UsersComponent extends Common implements AfterViewInit{
       type: FieldType.RADIO,
       value: undefined,
       options: [{ value:'0', label:'Não' },{ value:'1', label:'Sim' }],
-      required: false,
+      required: true,
       case: FieldCase.NONE,
       disabled: false
+    }
+
+    let fEntity:FormField = {
+      label:"Entidade",
+      name: "id_entity",
+      placeholder: "Selecione...",
+      type: FieldType.COMBO,
+      value: undefined,
+      required: false,
+      case:FieldCase.NONE,
+      disabled: false,
+      options: []
+    }
+    this.svcE.listEntity({page:1,pageSize:1,query:"can:list-all 1"}).subscribe({
+      next: (data) =>{
+        (data as Entity[]).forEach((e) =>{
+          fEntity.options?.push({
+            value: e.id.toString(),
+            label: (e.type=='C'?'CLIENTE - ':(e.type=='R'?'REPRESENTANTE - ':'FORNECEDOR - ')) + e.name
+          });
+        });
+      },
+      complete: () =>{
+        this.cdr.detectChanges();
+      }
+    });
+
+    let fPwd:FormField = {
+      label: "Senha: | Confirmar senha:",
+      name:"password",
+      placeholder:"Digite sua senha | Confirme a senha digitada",
+      type: FieldType.PASSWD,
+      value: [undefined,undefined],
+      required:true,
+      case: FieldCase.NONE,
+      disabled:false,
+      options: undefined
     }
 
     if(id>0){
@@ -181,18 +228,39 @@ export class UsersComponent extends Common implements AfterViewInit{
           if ("username" in data){
             this.localObject = data as User;
             fieldName.value = this.localObject.username;
-            fActive.value = this.localObject.active;
-            fLevel.value  = this.localObject.type;
+            fActive.value   = this.localObject.active;
+
+            switch(this.localObject.type){
+              case 'A': fLevel.value = { value:'A', label:'Administrador' }; break;
+              case 'L': fLevel.value = { value:'L', label:'Lojista' }; break;
+              case 'I': fLevel.value = { value:'I', label:'Lojista (IA)' }; break;
+              case 'R': fLevel.value = { value:'R', label:'Representante' }; break;
+              case 'U': fLevel.value = { value:'U', label:'Usuário da Empresa' }; break;
+            }
+
+            fEntity.options?.forEach((o) =>{
+              if(o.value ==this.localObject.id_entity){
+                fEntity.value = o;
+              }
+            });
 
             //monta as linhas do forme e exibe o mesmo
             let row:FormRow = {
               fields: [fieldName]
             }
             let row1:FormRow = {
+              fields: [fEntity]
+            }
+            let row2:FormRow = {
               fields: [fLevel,fActive]
+            }
+            let row3:FormRow = {
+              fields: [fPwd]
             }
             this.formRows.push(row);
             this.formRows.push(row1);
+            this.formRows.push(row2);
+            this.formRows.push(row3);
             this.formVisible = true;
             
           }else{
@@ -211,17 +279,25 @@ export class UsersComponent extends Common implements AfterViewInit{
         fields: [fieldName]
       }
       let row1:FormRow = {
+        fields: [fEntity]
+      }
+      let row2:FormRow = {
         fields: [fLevel,fActive]
+      }
+      let row3:FormRow = {
+        fields: [fPwd]
       }
       this.formRows.push(row);
       this.formRows.push(row1);
+      this.formRows.push(row2);
+      this.formRows.push(row3);
       this.formVisible = true;
     }
   }
 
   onDataSave(data:any):void{
     this.hasSended = true;
-    this.serviceSub[3] = this.svc.save(data).subscribe({
+    this.serviceSub[3] = this.svc.save([data]).subscribe({
       next:(data) =>{
         this.hasSended = false;
         this.formVisible = false;
@@ -252,8 +328,8 @@ export class UsersComponent extends Common implements AfterViewInit{
 
   onDataDelete(pSendToTrash:boolean):void{
     this.cnf.confirm({
-      header:"Confirmação de "+(pSendToTrash==true?"exclusão":"restauração"),
-      message:"Deseja realmente "+(pSendToTrash==true?"excluir":"restaurar")+" o(s) registro(s) marcado(s)?",
+      header:"Confirmação de "+(pSendToTrash==true?"inativação":"reativação"),
+      message:"Deseja realmente "+(pSendToTrash==true?"inativar":"reativar")+" o(s) registro(s) marcado(s)?",
       acceptLabel:"Sim",
       acceptIcon:"pi pi-check mr-1",
       acceptButtonStyleClass:"p-button-sm",
@@ -273,7 +349,7 @@ export class UsersComponent extends Common implements AfterViewInit{
               this.msg.add({
                 severity:"success",
                 summary:"Sucesso!",
-                detail:"Registro(s) "+(pSendToTrash==true?"excluído":"restaurado")+"(s) com sucesso!"
+                detail:"Registro(s) "+(pSendToTrash==true?"inativado":"reativado")+"(s) com sucesso!"
               });
             }else{
               this.msg.add({
@@ -288,6 +364,29 @@ export class UsersComponent extends Common implements AfterViewInit{
       rejectLabel:"Não",
       rejectIcon:"pi pi-ban mr-1",
       rejectButtonStyleClass:"p-button-danger p-button-sm"
+    });
+  }
+
+  addUsers():void{
+    this.visibleMassive = true;
+  }
+
+  resetUserPassword(id:number,uname:string):void{
+    this.svc.resetPassword(id).subscribe({
+      next:(data) =>{
+        if(typeof data ==='string'){
+          this.usernameReset   = uname;
+          this.showDialogReset = true;
+          this.tempPassword = data as string;
+        }else{
+          this.msg.add({
+            key: 'systemToast',
+            severity: 'error',
+            summary: 'Ocorreu o seguinte erro no sistema!',
+            detail: (data as ResponseError).error_details
+          });
+        }
+      }
     });
   }
 }

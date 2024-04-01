@@ -9,15 +9,10 @@
                 <label class="p-panel-title">Manutenção de Usuários</label>
             </div>
             <div class="flex flex-row gap-1">
-                <p-overlayPanel #pnlMassive>
-                    <ng-template pTemplate="content">
-                        <h5>Alteração em Massa</h5>
-                    </ng-template>
-                </p-overlayPanel>
                 <p-button icon="pi pi-plus" [severity]="'success'" styleClass="p-button-sm" pTooltip="Novo registro" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="onEditData()"></p-button>
-                <p-button *ngIf="!isTrash" [disabled]="tableSelected.length>0?false:true" icon="pi pi-trash" [severity]="'danger'" styleClass="p-button-sm" pTooltip="Excluir selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="onDataDelete(true)"></p-button>
-                <p-button *ngIf="isTrash" [disabled]="tableSelected.length>0?false:true" icon="pi pi-restore-from-trash icon-xsmall" [severity]="'danger'" styleClass="p-button-sm" pTooltip="Restaurar selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="onDataDelete(false)"></p-button>
-                <p-button [disabled]="tableSelected.length>0?false:true" icon="pi pi-massive-actions icon-xsmall" [severity]="'help'" styleClass="p-button-sm" pTooltip="Ações Massivas" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="pnlMassive.toggle($event)"></p-button>
+                <p-button *ngIf="!isTrash" [disabled]="tableSelected.length>0?false:true" icon="pi pi-inactive-user icon-xsmall" [severity]="'danger'" styleClass="p-button-sm" pTooltip="Excluir selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="onDataDelete(true)"></p-button>
+                <p-button *ngIf="isTrash" [disabled]="tableSelected.length>0?false:true" icon="pi pi-active-user icon-xsmall" [severity]="'danger'" styleClass="p-button-sm" pTooltip="Restaurar selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="onDataDelete(false)"></p-button>
+                <p-button icon="pi pi-add-users icon-xsmall" [severity]="'help'" styleClass="p-button-sm" pTooltip="Adição em Massa" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="addUsers()"></p-button>
                 <p-button icon="pi pi-filter" [severity]="'warning'" styleClass="p-button-sm" pTooltip="Filtro(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="showFilter()"></p-button>
                 <p-toggleButton [onIcon]="'pi pi-deleted icon-xsmall'" [offIcon]="'pi pi-deleted icon-xsmall'" styleClass="p-button-sm" pTooltip="Listar excluído(s)" tooltipPosition="top" tooltipStyleClass="text-xs" [(ngModel)]="isTrash" (onChange)="loadingData({page:0,pageCount:0},isTrash)"></p-toggleButton>
             </div>
@@ -34,7 +29,7 @@
             <ng-template pTemplate="header">
                 <tr>
                     <th style="width: 50px!important;" class="text-center" pFrozenColumn><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
-                    <th style="width: 100px!important;" pFrozenColumn>Ações</th>
+                    <th style="width: 150px!important;" pFrozenColumn>Ações</th>
                     <th pSortableColumn="username" pFrozenColumn>Username <p-sortIcon field="username"></p-sortIcon></th>
                     <th pSortableColumn="type">Nível de Acesso <p-sortIcon field="type"></p-sortIcon></th>
                     <th pSortableColumn="active">Ativo <p-sortIcon field="active"></p-sortIcon></th>
@@ -43,7 +38,10 @@
             <ng-template pTemplate="body" let-item>
                 <tr>
                     <td class="text-center"><p-tableCheckbox [value]="item"></p-tableCheckbox></td>
-                    <td><p-button [text]="true" icon="pi pi-pencil" pTooltip="Editar" tooltipPosition="top" tooltipStyleClass="text-sm" (onClick)="onEditData(item.id)"></p-button></td>
+                    <td>
+                        <p-button [text]="true" icon="pi pi-pencil" pTooltip="Editar" tooltipPosition="top" tooltipStyleClass="text-sm" (onClick)="onEditData(item.id)"></p-button>
+                        <p-button [text]="true" icon="pi pi-lock-open" pTooltip="Redefinir Senha" tooltipPosition="left" (onClick)="resetUserPassword(item.id,item.username)"></p-button>
+                    </td>
                     <td>{{item.username}}</td>
                     <td>{{item.type | userType }}</td>
                     <td>{{item.active==true?"Sim":"Não" }}</td>
@@ -69,3 +67,46 @@
         </p-paginator>
     </ng-template>
 </p-panel>
+
+<p-dialog header="Redefinição de senha" [visible]="showDialogReset" [closable]="false">
+    <p>Você solicitou a redefinção de senha do usuário {{usernameReset}}<br> e a nova senha é: <strong>{{tempPassword}}</strong></p>
+    <div class="flex flex-row justify-content-center w-full"><p-button icon="pi pi-check" styleClass="p-button-sm p-button-success" label="OK" (onClick)="showDialogReset = false"></p-button></div>
+</p-dialog>
+
+<p-sidebar [(visible)]="visibleMassive" position="right" styleClass="w-30rem">
+    <ng-template pTemplate="header"><h5>Adição em Massa</h5></ng-template>
+    <div class="flex flex-column mb-2">
+        <label class="mb-1">Tipo de usuário</label>
+        <p-dropdown
+            [options]="[{ value: 'A', label:'Administrador' },{ value:'L', label:'Lojista' },{ value:'I', label:'Lojista (IA)' },{ value:'R', label:'Representante' },{ value:'U',label:'Usuário da Empresa' }]" 
+            optionLabel="label"
+            appendTo="body" 
+            [showClear]="true" 
+            [filter]="true"
+            styleClass="w-full"
+            placeholder="Selecione..."
+            emptyMessage="Nenhum registro encontrado!">
+        </p-dropdown>
+    </div>
+    <div class="flex flex-column mb-2">
+        <label class="mb-1">Regra</label>
+        <p-dropdown
+            [options]="[{ value:'FN', label:'Primeiro Nome' },{ value:'LN', label:'Último Sobrenome' },{ value: 'FL', label:'Primeiro e Último sobrenome' },{ value:'IL', label:'Inicial do Primeiro nome + Sobrenome' },{ value:'PI',label:'Primeiro nome + Inicial do Último Sobrenome' }]" 
+            optionLabel="label"
+            appendTo="body" 
+            [showClear]="true" 
+            [filter]="true"
+            styleClass="w-full"
+            placeholder="Selecione..."
+            emptyMessage="Nenhum registro encontrado!">
+        </p-dropdown>
+    </div>
+    <div class="flex flex-column mb-2">
+        <label class="mb-1">Senha inicial:</label>
+        <p-password styleClass="w-full" inputStyleClass="w-full" appendTo="body" promptLabel="Digite a senha"  weakLabel="Fraco" mediumLabel="Médio" strongLabel="Forte" [toggleMask]="true" [(ngModel)]="defaultPassword"></p-password>
+    </div>
+    <div class="flex flex-row justify-content-end gap-1">
+        <p-button label="Cancelar" severity="danger" icon="pi pi-ban" styleClass="p-button-sm"></p-button>
+        <p-button label="Executar" icon="pi pi-cog" styleClass="p-button-sm"></p-button>
+    </div>
+</p-sidebar>
