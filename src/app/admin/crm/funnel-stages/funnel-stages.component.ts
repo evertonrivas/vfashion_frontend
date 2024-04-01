@@ -167,39 +167,35 @@ export class FunnelStagesComponent extends Common implements AfterViewInit{
     }
   }
 
-  loadingFormData(data:any):void{
-    
-  }
-
   onDataSave(data:any):void{
     this.hasSended = true;
-    // this.serviceSub[3] = this.svc.save(this.idToEdit,data).subscribe({
-    //   next:(data) =>{
-    //     this.hasSended = false;
-    //     this.formVisible = false;
-    //     this.msg.clear();
-    //     if(typeof data ==='number'){
-    //       this.msg.add({
-    //         summary:"Sucesso...",
-    //         detail: "Registro criado com sucesso!",
-    //         severity:"success"
-    //       });
-    //     }else if(typeof data ==='boolean'){
-    //       this.msg.add({
-    //         summary:"Sucesso...",
-    //         detail: "Registro atualizado com sucesso!",
-    //         severity:"success"
-    //       });
-    //     }else{
-    //       this.msg.add({
-    //         summary:"Falha...",
-    //         detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
-    //         severity:"error"
-    //       });
-    //     }
-    //     this.loadingData();
-    //   }
-    // });
+    this.serviceSub[3] = this.svc.saveStages(data).subscribe({
+      next:(data) =>{
+        this.hasSended = false;
+        this.formVisible = false;
+        this.msg.clear();
+        if(typeof data ==='number'){
+          this.msg.add({
+            summary:"Sucesso...",
+            detail: "Registro criado com sucesso!",
+            severity:"success"
+          });
+        }else if(typeof data ==='boolean'){
+          this.msg.add({
+            summary:"Sucesso...",
+            detail: "Registro atualizado com sucesso!",
+            severity:"success"
+          });
+        }else{
+          this.msg.add({
+            summary:"Falha...",
+            detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+            severity:"error"
+          });
+        }
+        this.loadingData();
+      }
+    });
   }
 
   onDataDelete(pSendToTrash:boolean):void{
