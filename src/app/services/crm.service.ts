@@ -3,7 +3,7 @@ import { ContentType, MyHttp } from './my-http';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Funnel, FunnelStage } from '../models/crm.model';
-import { Entity, EntityHistory } from '../models/entity.model';
+import { Entity } from '../models/entity.model';
 import { Options, RequestResponse, ResponseError } from '../models/paginate.model';
 
 @Injectable({
@@ -39,6 +39,12 @@ export class CrmService  extends MyHttp{
     });
   }
 
+  saveFunnel(data:any):Observable<number|boolean|ResponseError>{
+    return this.http.post<number|boolean|ResponseError>(this.sys_config.backend_crm+'/funnels/'+(data.id>0?data.id.toString():''),data,{
+      headers:this.getHeader(ContentType.json)
+    })
+  }
+
   listStages(opt:Options):Observable<FunnelStage[]|RequestResponse|ResponseError>{
     return this.http.get<FunnelStage[]|RequestResponse|ResponseError>(this.sys_config.backend_crm+'/funnel-stages/',{
       headers: this.getHeader(),
@@ -60,6 +66,12 @@ export class CrmService  extends MyHttp{
         ids: ids
       }
     });
+  }
+
+  saveStages(data:any):Observable<number|boolean|ResponseError>{
+    return this.http.post<number|boolean|ResponseError>(this.sys_config.backend_crm+'/funnel-stages/'+(data.id>0?data.id.toString():''),data,{
+      headers:this.getHeader(ContentType.json)
+    })
   }
 
   getCustomersOfStage(idStage:number,opts:Options):Observable<Entity[]|RequestResponse|ResponseError>{

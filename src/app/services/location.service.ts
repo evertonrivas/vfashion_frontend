@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MyHttp } from './my-http';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Country, StageRegion,City } from '../models/place.model';
+import { Country, StateRegion,City } from '../models/place.model';
 import { Options, RequestResponse, ResponseError } from '../models/paginate.model';
 
 @Injectable({
@@ -21,8 +21,8 @@ export class LocationService extends MyHttp{
     });
   }
 
-  listStageRegions(opts:Options):Observable<StageRegion[]|RequestResponse|ResponseError>{
-    return this.http.get<StageRegion[]|RequestResponse|ResponseError>(this.sys_config.backend_cmm+'/state-regions/',{
+  listStageRegions(opts:Options):Observable<StateRegion[]|RequestResponse|ResponseError>{
+    return this.http.get<StateRegion[]|RequestResponse|ResponseError>(this.sys_config.backend_cmm+'/state-regions/',{
       headers: this.getHeader(),
       params: this.getParams(opts)
     });
