@@ -55,11 +55,11 @@ export class UsersComponent extends Common implements AfterViewInit{
     this.options.page = ((evt.page as number)+1);
 
     //se nao existe trash no query
-    if(this.options.query.indexOf("trash")==-1){
-      this.options.query += (pTrash==true?"trash 1||":"");
+    if(this.options.query.indexOf("active")==-1){
+      this.options.query += (pTrash==true?"active 1||":"");
     }else{
       if(pTrash==false){
-        this.options.query = this.options.query.replace("trash 1||","");
+        this.options.query = this.options.query.replace("active 1||","");
       }
     }
 
@@ -159,7 +159,7 @@ export class UsersComponent extends Common implements AfterViewInit{
       ],
       required: false,
       case: FieldCase.UPPER,
-      disabled: true
+      disabled: false
     }
 
     let fActive:FormField = {
@@ -167,7 +167,7 @@ export class UsersComponent extends Common implements AfterViewInit{
       name: "active",
       placeholder: undefined,
       type: FieldType.RADIO,
-      value: 1,
+      value: undefined,
       options: [{ value:'0', label:'Não' },{ value:'1', label:'Sim' }],
       required: false,
       case: FieldCase.NONE,
@@ -247,6 +247,47 @@ export class UsersComponent extends Common implements AfterViewInit{
         }
         this.loadingData();
       }
+    });
+  }
+
+  onDataDelete(pSendToTrash:boolean):void{
+    this.cnf.confirm({
+      header:"Confirmação de "+(pSendToTrash==true?"exclusão":"restauração"),
+      message:"Deseja realmente "+(pSendToTrash==true?"excluir":"restaurar")+" o(s) registro(s) marcado(s)?",
+      acceptLabel:"Sim",
+      acceptIcon:"pi pi-check mr-1",
+      acceptButtonStyleClass:"p-button-sm",
+      accept:() =>{
+        let ids:number[] = [];
+        this.tableSelected.forEach((v) =>{
+          ids.push((v as User).id);
+        });
+        this.serviceSub[3] = this.svc.delete(ids,pSendToTrash).subscribe({
+          next: (data) =>{
+            this.msg.clear();
+            //carrega com base no botao de lixeira
+            this.loadingData({page:0,pageCount:0},this.isTrash);
+            //limpa os registros selecionados
+            this.tableSelected = [];
+            if (typeof data ==='boolean'){
+              this.msg.add({
+                severity:"success",
+                summary:"Sucesso!",
+                detail:"Registro(s) "+(pSendToTrash==true?"excluído":"restaurado")+"(s) com sucesso!"
+              });
+            }else{
+              this.msg.add({
+                summary:"Falha...",
+                detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+                severity:"error"
+              });
+            }
+          }
+        });
+      },
+      rejectLabel:"Não",
+      rejectIcon:"pi pi-ban mr-1",
+      rejectButtonStyleClass:"p-button-danger p-button-sm"
     });
   }
 }
