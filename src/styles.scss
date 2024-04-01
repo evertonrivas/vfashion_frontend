@@ -244,3 +244,15 @@ body{
 .pi-restore-from-trash{
     @include use-md-icon('restore_from_trash')
 }
+
+.pi-inactive-user{
+    @include use-md-icon('person_remove')
+}
+
+.pi-active-user{
+    @include use-md-icon('person_add')
+}
+
+.pi-add-users{
+    @include use-md-icon('group_add')
+}
