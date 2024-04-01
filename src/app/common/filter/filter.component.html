@@ -1,5 +1,5 @@
 <p-sidebar [(visible)]="visible" position="right" styleClass="w-30rem" (onHide)="clearFilter(false)">
-    <h5>Filtros</h5>
+    <ng-template pTemplate="header"><h5>Filtros</h5></ng-template>
     <ng-container *ngFor="let field of fields" >
         <div *ngIf="field.type!=fieldType.RADIO" class="flex flex-column mb-2">
             <label *ngIf="field.type!=fieldType.CHECK" class="mb-1">{{field.label}}</label>
