@@ -138,6 +138,8 @@ export class FunnelsComponent extends Common implements AfterViewInit{
           if ("name" in data){
             this.localObject = data as Funnel;
             fieldName.value = this.localObject.name;
+            fType.value     = this.localObject.type;
+            fDefault.value  = this.localObject.is_default;
 
             //monta as linhas do forme e exibe o mesmo
             let row:FormRow = {
@@ -176,33 +178,33 @@ export class FunnelsComponent extends Common implements AfterViewInit{
 
   onDataSave(data:any):void{
     this.hasSended = true;
-    // this.serviceSub[3] = this.svc.save(this.idToEdit,data).subscribe({
-    //   next:(data) =>{
-    //     this.hasSended = false;
-    //     this.formVisible = false;
-    //     this.msg.clear();
-    //     if(typeof data ==='number'){
-    //       this.msg.add({
-    //         summary:"Sucesso...",
-    //         detail: "Registro criado com sucesso!",
-    //         severity:"success"
-    //       });
-    //     }else if(typeof data ==='boolean'){
-    //       this.msg.add({
-    //         summary:"Sucesso...",
-    //         detail: "Registro atualizado com sucesso!",
-    //         severity:"success"
-    //       });
-    //     }else{
-    //       this.msg.add({
-    //         summary:"Falha...",
-    //         detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
-    //         severity:"error"
-    //       });
-    //     }
-    //     this.loadingData();
-    //   }
-    // });
+    this.serviceSub[3] = this.svc.saveFunnel(data).subscribe({
+      next:(data) =>{
+        this.hasSended = false;
+        this.formVisible = false;
+        this.msg.clear();
+        if(typeof data ==='number'){
+          this.msg.add({
+            summary:"Sucesso...",
+            detail: "Registro criado com sucesso!",
+            severity:"success"
+          });
+        }else if(typeof data ==='boolean'){
+          this.msg.add({
+            summary:"Sucesso...",
+            detail: "Registro atualizado com sucesso!",
+            severity:"success"
+          });
+        }else{
+          this.msg.add({
+            summary:"Falha...",
+            detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+            severity:"error"
+          });
+        }
+        this.loadingData();
+      }
+    });
   }
 
   onDataDelete(pSendToTrash:boolean):void{
