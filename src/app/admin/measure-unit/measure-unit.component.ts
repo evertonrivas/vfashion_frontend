@@ -107,7 +107,7 @@ export class MeasureUnitComponent extends Common implements AfterViewInit{
       value: undefined,
       case: FieldCase.UPPER,
       disabled: false,
-      required: false
+      required: true
     }
 
     if(id>0){
