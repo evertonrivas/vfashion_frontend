@@ -15,6 +15,17 @@ import { User } from 'src/app/models/user.model';
 import { EntitiesService } from 'src/app/services/entities.service';
 import { Entity } from 'src/app/models/entity.model';
 import { PasswordModule } from 'primeng/password';
+import { City, StateRegion } from 'src/app/models/place.model';
+import { LocationService } from 'src/app/services/location.service';
+
+export interface filterParams{
+  level: string|undefined,
+  rule:any|undefined
+  state_region: StateRegion|undefined
+  password:string|undefined,
+  city:City|undefined,
+  user_type: any|undefined
+}
 
 @Component({
     selector: 'app-users',
@@ -39,10 +50,25 @@ export class UsersComponent extends Common implements AfterViewInit{
   usernameReset:string = '';
   tempPassword:string = '';
   visibleMassive:boolean = false;
-  defaultPassword:any;
+  entitiesToCreateUser:Entity[] = [];
+  selectedEntitiesToCreateUser:Entity[] = [];
+  filtersToSearch:filterParams = {
+    level: undefined,
+    rule: undefined,
+    state_region: undefined,
+    password: undefined,
+    city: undefined,
+    user_type: undefined
+  };
+  states:StateRegion[] = [];
+  cities:City[] = [];
+  sendMassive:boolean = false;
+  validate:boolean = false;
+  filtering:boolean = false;
   constructor(route:Router,
     private svc:UserService,
     private svcE:EntitiesService,
+    private svcL:LocationService,
     private msg:MessageService,
     private cnf:ConfirmationService,
     private cdr:ChangeDetectorRef){
@@ -57,6 +83,11 @@ export class UsersComponent extends Common implements AfterViewInit{
   ngAfterViewInit(): void {
     this.loadingData();
     this.loadingFilterData();
+    this.svcL.listStageRegions({page:1,pageSize:1,query:'can:list-all 1||order-by acronym||order asc'}).subscribe({
+      next:(data) =>{
+        this.states = data as StateRegion[];
+      }
+    });
     this.cdr.detectChanges();
   }
 
@@ -388,5 +419,87 @@ export class UsersComponent extends Common implements AfterViewInit{
         }
       }
     });
+  }
+
+  getCities():void{
+    this.svcL.listCities({page:1,pageSize:1,query:"can:list-all 1||is:state_region "+this.filtersToSearch.state_region?.id}).subscribe({
+      next:(data) =>{
+        this.cities = data as City[];
+      }
+    })
+  }
+
+  searchToCreate():void{
+    this.filtering = true;
+    let nquery:string = "can:list-all 1||";
+    if (this.filtersToSearch.city!=undefined){
+      nquery += "id_city "+this.filtersToSearch.city.id+"||";
+    }
+    if (this.filtersToSearch.state_region!=undefined){
+      nquery += "id_state_region "+this.filtersToSearch.state_region.id+"||";
+    }
+    if (this.filtersToSearch.level!=undefined){
+      nquery += "type "+this.filtersToSearch.level+"||";
+    }
+    this.svcE.listEntity({ page:1, pageSize:1, query:nquery}).subscribe({
+      next:(data) =>{
+        this.filtering = false;
+        this.entitiesToCreateUser = data as Entity[];
+      }
+    });
+  }
+
+  cancelMassive():void{
+    this.filtersToSearch = {
+      city:undefined,
+      level: undefined,
+      password: undefined,
+      rule: undefined,
+      state_region: undefined,
+      user_type: undefined
+    }
+    this.entitiesToCreateUser = [];
+    this.selectedEntitiesToCreateUser = [];
+    this.visibleMassive = false;
+  }
+
+  executeMassive():void{
+    this.validate = true;
+    if(this.filtersToSearch.rule!=undefined && this.filtersToSearch.password!=undefined && this.filtersToSearch.user_type!=undefined){
+      this.validate = false;
+      this.sendMassive = true;
+
+      let ids:number[] = [];
+      this.selectedEntitiesToCreateUser.forEach((u) =>{
+        ids.push(u.id);
+      });
+
+      this.svc.userMassive(ids,
+        this.filtersToSearch.password as string, 
+        this.filtersToSearch.rule.value as string,
+        this.filtersToSearch.user_type.value as string).subscribe({
+        next:(data) =>{
+          this.sendMassive = false;
+          this.msg.clear();
+          if(typeof data==='boolean'){
+            this.msg.add({
+              severity:"success",
+              summary:"Sucesso!",
+              detail:"Registro(s) criado(s) com sucesso!"
+            });
+            this.visibleMassive = false;
+            this.loadingData();
+            this.cancelMassive();
+          }else{
+            this.msg.add({
+              key: 'systemToast',
+              severity: 'error',
+              summary: 'Ocorreu o seguinte erro no sistema!',
+              detail: (data as ResponseError).error_details
+            });
+          }
+        }
+      });
+    }
   }
 }

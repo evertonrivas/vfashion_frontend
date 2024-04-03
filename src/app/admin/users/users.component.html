@@ -73,40 +73,125 @@
     <div class="flex flex-row justify-content-center w-full"><p-button icon="pi pi-check" styleClass="p-button-sm p-button-success" label="OK" (onClick)="showDialogReset = false"></p-button></div>
 </p-dialog>
 
-<p-sidebar [(visible)]="visibleMassive" position="right" styleClass="w-30rem">
+<p-sidebar [(visible)]="visibleMassive" position="right" styleClass="w-6">
     <ng-template pTemplate="header"><h5>Adição em Massa</h5></ng-template>
-    <div class="flex flex-column mb-2">
-        <label class="mb-1">Tipo de usuário</label>
+    <div class="flex flex-column w-full">
+        <label class="mb-1">Tipo de Entidade</label>
         <p-dropdown
-            [options]="[{ value: 'A', label:'Administrador' },{ value:'L', label:'Lojista' },{ value:'I', label:'Lojista (IA)' },{ value:'R', label:'Representante' },{ value:'U',label:'Usuário da Empresa' }]" 
+            [options]="[{ value: 'C', label:'Cliente' },{ value:'R', label:'Representante' }]" 
             optionLabel="label"
+            optionValue="value"
             appendTo="body" 
             [showClear]="true" 
             [filter]="true"
             styleClass="w-full"
             placeholder="Selecione..."
-            emptyMessage="Nenhum registro encontrado!">
+            emptyMessage="Nenhum registro encontrado!"
+            [(ngModel)]="filtersToSearch.level">
         </p-dropdown>
     </div>
-    <div class="flex flex-column mb-2">
-        <label class="mb-1">Regra</label>
-        <p-dropdown
-            [options]="[{ value:'FN', label:'Primeiro Nome' },{ value:'LN', label:'Último Sobrenome' },{ value: 'FL', label:'Primeiro e Último sobrenome' },{ value:'IL', label:'Inicial do Primeiro nome + Sobrenome' },{ value:'PI',label:'Primeiro nome + Inicial do Último Sobrenome' }]" 
-            optionLabel="label"
-            appendTo="body" 
-            [showClear]="true" 
-            [filter]="true"
-            styleClass="w-full"
-            placeholder="Selecione..."
-            emptyMessage="Nenhum registro encontrado!">
-        </p-dropdown>
+    <div class="flex flex-row gap-1 mb-2">
+        <div class="flex flex-column">
+            <label class="mb-1">Estado/UF</label>
+            <p-dropdown
+                [options]="states"
+                [filter]="true"
+                filterBy="name,acronym"
+                appendTo="body"
+                [showClear]="true"
+                styleClass="w-full"
+                placeholder="Selecione..."
+                emptyMessage="Nenhum registro encontrado!"
+                [(ngModel)]="filtersToSearch.state_region"
+                (ngModelChange)="getCities()"
+                >
+                <ng-template pTemplate="selectedItem">
+                    {{filtersToSearch.state_region?.acronym}} - {{filtersToSearch.state_region?.name}}
+                </ng-template>
+                <ng-template pTemplate="item" let-item>
+                    {{item.acronym}} - {{item.name}}
+                </ng-template>
+            </p-dropdown>
+        </div>
+        <div class="flex flex-column w-full">
+            <label class="mb-1">Cidade</label>
+            <p-dropdown
+                [options]="cities"
+                [filter]="true"
+                filterBy="name,acronym"
+                appendTo="body"
+                [showClear]="true"
+                styleClass="w-full"
+                placeholder="Selecione..."
+                emptyMessage="Nenhum registro encontrado!"
+                [(ngModel)]="filtersToSearch.city">
+                <ng-template pTemplate="selectedItem">
+                    {{filtersToSearch.city?.name}}
+                </ng-template>
+                <ng-template pTemplate="item" let-item>
+                    {{item.name}}
+                </ng-template>
+            </p-dropdown>
+        </div>
     </div>
-    <div class="flex flex-column mb-2">
-        <label class="mb-1">Senha inicial:</label>
-        <p-password styleClass="w-full" inputStyleClass="w-full" appendTo="body" promptLabel="Digite a senha"  weakLabel="Fraco" mediumLabel="Médio" strongLabel="Forte" [toggleMask]="true" [(ngModel)]="defaultPassword"></p-password>
+    <div class="flex flex-row mb-2">
+        <p-button icon="pi pi-search icon-xsmall" label="Filtrar" (onClick)="searchToCreate();" styleClass="p-button-sm" [loading]="filtering"></p-button>
     </div>
-    <div class="flex flex-row justify-content-end gap-1">
-        <p-button label="Cancelar" severity="danger" icon="pi pi-ban" styleClass="p-button-sm"></p-button>
-        <p-button label="Executar" icon="pi pi-cog" styleClass="p-button-sm"></p-button>
+    <p-table [value]="entitiesToCreateUser" [loading]="filtering" [(selection)]="selectedEntitiesToCreateUser" dataKey="id" styleClass="p-datatable-striped" [scrollable]="true" scrollHeight="350px">
+        <ng-template pTemplate="header">
+            <tr>
+                <th><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+                <th>Nome</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+            <tr>
+                <td><p-tableCheckbox [value]="item"></p-tableCheckbox></td>
+                <td>{{item.name}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="2" class="text-center">Nenhum registro existente!</td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <div class="flex flex-row mb-2 gap-1">
+        <div class="flex flex-column w-full">
+            <label class="mb-1">Regra</label>
+            <p-dropdown
+                [options]="[{ value: 'FL', label:'Primeiro e Último sobrenome' },{ value:'IL', label:'Inicial do Primeiro nome + Sobrenome' },{ value:'PI',label:'Primeiro nome + Inicial do Último Sobrenome' }]" 
+                optionLabel="label"
+                appendTo="body" 
+                [showClear]="true" 
+                [filter]="true"
+                styleClass="w-full"
+                placeholder="Selecione..."
+                emptyMessage="Nenhum registro encontrado!"
+                [(ngModel)]="filtersToSearch.rule"
+                [ngClass]="{'ng-invalid ng-dirty' : validate && !filtersToSearch.rule}">
+            </p-dropdown>
+        </div>
+        <div class="flex flex-column">
+            <label class="mb-1">Tipo de Usuário</label>
+            <p-dropdown
+                [options]="[{ value: 'L', label: 'Lojista'},{ value:'I', label: 'Lojista (IA)' },{ value: 'R', label: 'Representante'}]"
+                optionLabel="label"
+                appendTo="body"
+                [showClear]="true"
+                placeholder="Selecione..."
+                emptyMessage="Nenhum registro encontrado!"
+                [(ngModel)]="filtersToSearch.user_type"
+                [ngClass]="{'ng-invalid ng-dirty' : validate && !filtersToSearch.user_type}"
+            ></p-dropdown>
+        </div>
+        <div class="flex flex-column">
+            <label class="mb-1">Senha inicial:</label>
+            <p-password styleClass="w-full" inputStyleClass="w-full" appendTo="body" promptLabel="Digite a senha"  weakLabel="Fraco" mediumLabel="Médio" strongLabel="Forte" [toggleMask]="true" [(ngModel)]="filtersToSearch.password" [ngClass]="{'ng-invalid ng-dirty' : validate && !filtersToSearch.password}"></p-password>
+        </div>
+    </div>
+    <div class="flex flex-row justify-content-end gap-1 mt-2">
+        <p-button label="Cancelar" severity="warning" icon="pi pi-ban" styleClass="p-button-sm" (onClick)="cancelMassive()"></p-button>
+        <p-button label="Executar" severity="primary" icon="pi pi-cog" styleClass="p-button-sm" [disabled]="selectedEntitiesToCreateUser.length==0" (onClick)="executeMassive()" [loading]="sendMassive"></p-button>
     </div>
 </p-sidebar>
