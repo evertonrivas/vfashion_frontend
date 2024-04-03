@@ -12,6 +12,7 @@ export class UserTypePipe implements PipeTransform {
     switch(eType){
       case 'A': vReturn = 'Administrador'; break;
       case 'L': vReturn = 'Lojista'; break;
+      case 'I': vReturn = "Lojista (IA)"; break;
       case 'R': vReturn = 'Representante'; break;
       case 'C': vReturn = 'Usuário do Sistema'; break;
       case 'V': vReturn = 'Vendedor'; break;
