@@ -241,8 +241,8 @@ export class KanbanComponent extends Common implements AfterContentInit{
     this.first[idStage] = evt.first;
     let opts:Options = {
       page: (evt.page+1),
-      query: query as string,
-      pageSize: 0
+      query: (query==null)?'':query as string,
+      pageSize: this.sysconfig.system.pageSize
     }
     this.customersOfStage[idStage] = {
       pagination:{
