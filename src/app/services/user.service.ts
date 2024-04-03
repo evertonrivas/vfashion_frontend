@@ -58,9 +58,14 @@ export class UserService extends MyHttp{
     });
   }
 
-  userMassive(users:User[]):Observable<boolean|ResponseError>{
+  userMassive(ids:number[],pwd:string,rule:string,user_type:string):Observable<boolean|ResponseError>{
     var url = this.sys_config.backend_cmm+"/users/massive-change";
-    return this.http.post<boolean>(url,users,{
+    return this.http.post<boolean>(url,{
+      ids: ids,
+      password: pwd,
+      rule: rule,
+      type: user_type
+    },{
       headers:this.getHeader(ContentType.json)
     });
   }
