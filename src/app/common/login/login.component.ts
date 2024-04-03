@@ -120,6 +120,7 @@ export class LoginComponent implements AfterContentInit{
         switch(this.app_token.level_access){
           case "A": this.route.navigate(["/admin"]); break;
           case "L": this.route.navigate(["/salesforce"]); break;
+          case "I": this.route.navigate(["/salesforce"]); break;
           case "R": this.route.navigate(["/selector"]); break;
         }
         this.loading = false;
