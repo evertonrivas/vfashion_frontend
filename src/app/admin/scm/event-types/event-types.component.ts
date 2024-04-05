@@ -7,13 +7,13 @@ import { SharedModule } from 'src/app/common/shared.module';
 import { FilterComponent } from "../../../common/filter/filter.component";
 import { CalendarService } from 'src/app/services/calendar.service';
 import { RequestResponse, ResponseError } from 'src/app/models/paginate.model';
-import { PaginatorState } from 'primeng/paginator';
 import { TagModule } from 'primeng/tag';
 import { SysService } from 'src/app/services/sys.service';
 import { FormComponent } from 'src/app/common/form/form.component';
 import { CalendarEventType } from 'src/app/models/calendar.model';
-import { FormField, FormRow } from 'src/app/models/field.model';
+import { FieldOption, FormField, FormRow } from 'src/app/models/field.model';
 import { FieldCase, FieldType } from 'src/app/models/system.enum';
+import { PaginatorState } from 'primeng/paginator';
 
 @Component({
     selector: 'app-event-types',
@@ -34,6 +34,7 @@ import { FieldCase, FieldType } from 'src/app/models/system.enum';
 })
 export class EventTypesComponent extends Common implements AfterViewInit{
   localObject!:CalendarEventType;
+  colors:FieldOption[] = [];
   constructor(route:Router,
     private svc:CalendarService,
     private cdr:ChangeDetectorRef,
@@ -83,6 +84,8 @@ export class EventTypesComponent extends Common implements AfterViewInit{
   onEditData(id:number = 0):void{
     //limpa o formulario
     this.formRows = [];
+    this.idToEdit = id;
+
     let fieldName:FormField = {
       label: "Nome",
       name: "name",
@@ -94,21 +97,79 @@ export class EventTypesComponent extends Common implements AfterViewInit{
       case: FieldCase.NONE,
       disabled: false
     };
-    this.idToEdit = id;
+
+    let fColor:FormField = {
+      label: "Cor",
+      name: "hex_color",
+      options: this.colors,
+      placeholder: "Selecione...",
+      type:FieldType.KCOLOR,
+      value: undefined,
+      required:true,
+      case: FieldCase.NONE,
+      disabled:false
+    }
+
+    let fBudget:FormField = {
+      label: "Faz orçamento",
+      name: "has_budget",
+      options: [{ value: 0, label:'Não' },{ value:1, label:'Sim' }],
+      placeholder: undefined,
+      type: FieldType.RADIO,
+      value: undefined,
+      required:true,
+      case: FieldCase.NONE,
+      disabled:false
+    }
+
+    let fCollection:FormField = {
+      label: "Controla Coleção",
+      name: "use_collection",
+      options: [{ value: 0, label:'Não'},{ value:1, label:'Sim' }],
+      placeholder: undefined,
+      type:FieldType.RADIO,
+      value:undefined,
+      required:true,
+      case: FieldCase.NONE,
+      disabled: false
+    }
+
+    let fMilestone:FormField = {
+      label: "É marco (milestone)?",
+      name: "is_milestone",
+      options: [{ value: 0, label:'Não' },{ value:1, label:'Sim' }],
+      placeholder: undefined,
+      type: FieldType.RADIO,
+      value: undefined,
+      required:true,
+      case: FieldCase.NONE,
+      disabled:false
+    }
 
     if(id>0){
       // busca os dados do registro para edicao
       this.serviceSub[2] = this.svc.loadEventType(id).subscribe({
         next: (data) =>{
           if ("name" in data){
-            this.localObject = data as CalendarEventType;
-            fieldName.value = this.localObject.name;
+            this.localObject  = data as CalendarEventType;
+            fieldName.value   = this.localObject.name;
+            fBudget.value     = this.localObject.has_budget;
+            fCollection.value = this.localObject.use_collection;
+            fMilestone.value  = this.localObject.is_milestone;
 
             //monta as linhas do forme e exibe o mesmo
             let row:FormRow = {
               fields: [fieldName]
             }
+            let row1:FormRow = {
+              fields: [fColor]
+            }
+            let row2:FormRow = {
+              fields: [fBudget,fCollection,fMilestone]
+            }
             this.formRows.push(row);
+            this.formRows.push(row1);
+            this.formRows.push(row2);
             this.formVisible = true;
             
           }else{
@@ -125,8 +186,16 @@ export class EventTypesComponent extends Common implements AfterViewInit{
       //monta as linhas do forme e exibe o mesmo
       let row:FormRow = {
         fields: [fieldName]
-      }  
+      }
+      let row1:FormRow = {
+        fields: [fColor]
+      }
+      let row2:FormRow = {
+        fields: [fBudget,fCollection,fMilestone]
+      }
       this.formRows.push(row);
+      this.formRows.push(row1);
+      this.formRows.push(row2);
       this.formVisible = true;
     }
   }

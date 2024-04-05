@@ -168,4 +168,12 @@ export class Common{
     showFilter():void{
         this.filterVisible = true;
     }
+
+    isDesktop() {
+        return window.innerWidth > 991;
+    }
+    
+    isMobile(){
+    return !this.isDesktop();
+    }
 }

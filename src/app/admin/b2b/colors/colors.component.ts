@@ -82,6 +82,8 @@ export class ColorsComponent extends Common implements AfterViewInit {
   onEditData(id:number = 0):void{
     //limpa o formulario
     this.formRows = [];
+    this.idToEdit = id;
+
     let fieldName:FormField = {
       label: "Nome",
       name: "name",
@@ -90,10 +92,33 @@ export class ColorsComponent extends Common implements AfterViewInit {
       type: FieldType.INPUT,
       value: undefined,
       required: true,
-      case: FieldCase.UPPER,
+      case: FieldCase.NONE,
       disabled: false
     };
-    this.idToEdit = id;
+
+    let fColor:FormField = {
+      label: "Nome de Origem",
+      name:"color",
+      options:undefined,
+      placeholder: "Digite o nome de origem...",
+      type:FieldType.INPUT,
+      value:undefined,
+      required:true,
+      case:FieldCase.NONE,
+      disabled:false
+    }
+
+    let fHexcode:FormField = {
+      label: "Cor",
+      name: "hexcode",
+      options: undefined,
+      placeholder:undefined,
+      type:FieldType.COLOR,
+      value:undefined,
+      required:true,
+      case:FieldCase.UPPER,
+      disabled:false
+    }
 
     if(id>0){
       //busca os dados do registro para edicao
@@ -102,12 +127,18 @@ export class ColorsComponent extends Common implements AfterViewInit {
           if ("name" in data){
             this.localObject = data as Color;
             fieldName.value = this.localObject.name;
+            fColor.value = this.localObject.color;
+            fHexcode.value = this.localObject.hexcode;
 
             //monta as linhas do forme e exibe o mesmo
             let row:FormRow = {
               fields: [fieldName]
             }
+            let row1:FormRow = {
+              fields: [fColor,fHexcode]
+            }
             this.formRows.push(row);
+            this.formRows.push(row1);
             this.formVisible = true;
             
           }else{
@@ -124,8 +155,12 @@ export class ColorsComponent extends Common implements AfterViewInit {
       //monta as linhas do forme e exibe o mesmo
       let row:FormRow = {
         fields: [fieldName]
-      }  
+      }
+      let row1:FormRow = {
+        fields: [fColor,fHexcode]
+      }
       this.formRows.push(row);
+      this.formRows.push(row1);
       this.formVisible = true;
     }
   }

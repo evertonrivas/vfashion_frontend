@@ -1,12 +1,12 @@
 <app-filter [fields]="filters" [(visible)]="filterVisible" [isTrash]="isTrash" (queryToFilter)="doFilter($event)"></app-filter>
-<app-form [(visible)]="formVisible" [rows]="formRows" title="Cadastro/Edição de Tipo de Evento" [registryId]="idToEdit" (objectToSave)="onDataSave($event)"></app-form>
+<app-form [(visible)]="formVisible" [rows]="formRows" title="Tipo de Evento" [registryId]="idToEdit" (objectToSave)="onDataSave($event)"></app-form>
 <p-toast></p-toast>
 <p-confirmDialog></p-confirmDialog>
 <p-panel>
     <ng-template pTemplate="header">
         <div class="flex flex-row w-full justify-content-between align-items-center">
             <div class="align-items-baseline">
-                <label class="p-panel-title">Manutenção de Tipos de Eventos</label>
+                <label class="p-panel-title">Tipos de Eventos</label>
             </div>
             <div class="flex flex-row gap-1">
                 <p-overlayPanel #pnlMassive>
@@ -35,7 +35,7 @@
                 <tr>
                     <th style="width: 50px!important;" class="text-center" pFrozenColumn><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
                     <th style="width: 50px!important;" class="text-center" pFrozenColumn>Ações</th>
-                    <th pSortableColumn="name">Nome <p-sortIcon field="name"></p-sortIcon></th>
+                    <th pSortableColumn="name" pFrozenColumn>Nome <p-sortIcon field="name"></p-sortIcon></th>
                     <th class="text-center" pSortableColumn="hex_color">Cor <p-sortIcon field="hex_color"></p-sortIcon></th>
                     <th class="text-center" pSortableColumn="has_budget">Faz orçamento?<p-sortIcon field="has_budget"></p-sortIcon></th>
                     <th class="text-center" pSortableColumn="use_collection">Controla Coleção?<p-sortIcon field="use_collection"></p-sortIcon></th>
@@ -45,11 +45,11 @@
             </ng-template>
             <ng-template pTemplate="body" let-item>
                 <tr>
-                    <td class="text-center"><p-tableCheckbox [value]="item"></p-tableCheckbox></td>
-                    <td>
+                    <td class="text-center" pFrozenColumn><p-tableCheckbox [value]="item"></p-tableCheckbox></td>
+                    <td pFrozenColumn>
                         <p-button [text]="true" icon="pi pi-pencil" pTooltip="Editar" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="onEditData(item.id)"></p-button>
                     </td>
-                    <td>{{item.name}}</td>
+                    <td pFrozenColumn>{{item.name}}</td>
                     <td class="text-center uppercase"><p-tag [style]="{'background-color': item.hex_color}">{{item.hex_color}}</p-tag></td>
                     <td class="text-center"><i [class]="item.has_budget?'pi pi-check':''"></i></td>
                     <td class="text-center"><i [class]="item.use_collection?'pi pi-check':''"></i></td>

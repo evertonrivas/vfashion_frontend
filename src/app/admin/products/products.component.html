@@ -1,12 +1,12 @@
 <app-filter [fields]="filters" [(visible)]="filterVisible" [isTrash]="isTrash" (queryToFilter)="doFilter($event)"></app-filter>
-<app-form [(visible)]="formVisible" [rows]="formRows" title="Cadastro/Edição de Produto" [registryId]="idToEdit" (objectToSave)="onDataSave($event)"></app-form>
+<app-form [(visible)]="formVisible" [rows]="formRows" title="Produto" [registryId]="idToEdit" (objectToSave)="onDataSave($event)"></app-form>
 <p-toast></p-toast>
 <p-confirmDialog></p-confirmDialog>
 <p-panel>
     <ng-template pTemplate="header">
         <div class="flex flex-row w-full justify-content-between align-items-center">
             <div class="align-items-baseline">
-                <label class="p-panel-title">Manutenção de Produtos</label>
+                <label class="p-panel-title">Produtos</label>
             </div>
             <div class="flex flex-row gap-1">
                 <p-overlayPanel #pnlMassive>
@@ -45,12 +45,12 @@
             </ng-template>
             <ng-template pTemplate="body" let-item>
                 <tr>
-                    <td class="text-center"><p-tableCheckbox [value]="item"></p-tableCheckbox></td>
-                    <td>
+                    <td class="text-center" pFrozenColumn><p-tableCheckbox [value]="item"></p-tableCheckbox></td>
+                    <td pFrozenColumn>
                         <p-button [text]="true" icon="pi pi-pencil" pTooltip="Editar" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="onEditData(item.id)"></p-button>
                         <!-- <p-button [text]="true" icon="pi pi-prod-grid icon-small" pTooltip="Editar Grade" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="editData(item.id)"></p-button> -->
                     </td>
-                    <td>{{item.refCode}}</td>
+                    <td pFrozenColumn>{{item.refCode}}</td>
                     <td>{{item.name}}</td>
                     <td>{{item.model_description}}</td>
                     <td>{{item.type_description}}</td>

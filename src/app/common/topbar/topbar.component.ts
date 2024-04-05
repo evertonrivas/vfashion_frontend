@@ -44,6 +44,8 @@ export class TopbarComponent extends Common implements AfterContentInit,OnDestro
   totalMessages:number = 1;
   totalInCart:string = '0';
 
+  profileSidebarVisible:boolean = false;
+
   constructor(private svc:SecurityService,
     private msgSvc:MessageService,
     private chatSvc:ChatService,
@@ -68,6 +70,10 @@ export class TopbarComponent extends Common implements AfterContentInit,OnDestro
 
   ngOnDestroy(): void {
     this.authSub.unsubscribe();
+  }
+
+  showProfileSidebar():void{
+    this.profileSidebarVisible = !this.profileSidebarVisible;
   }
 
   ngAfterContentInit(): void {

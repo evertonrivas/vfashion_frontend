@@ -2,7 +2,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SharedModule } from '../shared.module';
 import { CommonModule } from '@angular/common';
 import { FieldCase, FieldType } from 'src/app/models/system.enum';
-import { FormField, FormRow } from 'src/app/models/field.model';
+import { FormRow } from 'src/app/models/field.model';
+import { ColorPickerModule } from 'primeng/colorpicker';
 import { PasswordModule } from 'primeng/password';
 
 @Component({
@@ -11,7 +12,8 @@ import { PasswordModule } from 'primeng/password';
   imports: [
     CommonModule,
     SharedModule,
-    PasswordModule
+    PasswordModule,
+    ColorPickerModule
   ],
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss'

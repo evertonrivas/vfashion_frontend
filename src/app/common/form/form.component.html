@@ -1,7 +1,7 @@
-<p-dialog [(visible)]="visible" styleClass="w-6" (onHide)="clearFields()" [header]="title" [modal]="true">
+<p-dialog [(visible)]="visible" styleClass="md:w-6 w-30rem" (onHide)="clearFields()" [header]="title" [modal]="true">
     <!-- <h5 class="text-center">{{title}}</h5> -->
     <ng-container>
-        <div class="flex flex-row w-full mb-2 gap-2" *ngFor="let row of rows">
+        <div class="flex flex-column w-full md:flex-row mb-2 gap-2" *ngFor="let row of rows">
             <div class="flex flex-column w-full" *ngFor="let field of row.fields">
                 <label *ngIf="field.type!=fieldType.CHECK && field.type!=fieldType.HIDDEN && field.type!=fieldType.PASSWD" class="mb-1">{{field.label}}</label>
                 <input *ngIf="field.type==fieldType.INPUT" pInputText [placeholder]="field.placeholder!=undefined?field.placeholder:''" [(ngModel)]="field.value" [ngClass]="field.case==fieldCase.UPPER?'uppercase':(field.case==fieldCase.LOWER?'lowercase':'')" [disabled]="field.disabled" [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}">
@@ -47,6 +47,29 @@
                     emptyMessage="Nenhum registro encontrado!"
                     [disabled]="field.disabled"
                     [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}"></p-multiSelect>
+                <div *ngIf="field.type==fieldType.COLOR" class="flex-1 flex flex-row gap-1 vertical-align-middle">
+                    <p-colorPicker [(ngModel)]="field.value" styleClass="mt-2" appendTo="body"></p-colorPicker>
+                    <input pInputText [(ngModel)]="field.value" [ngClass]="'w-full uppercase ' + (field.case==fieldCase.UPPER?'uppercase':(field.case==fieldCase.LOWER?'lowercase':''))">
+                </div>
+                <p-dropdown *ngIf="field.type==fieldType.KCOLOR"
+                    [options]="field.options"
+                    optionLabel="label"
+                    appendTo="body" 
+                    [showClear]="true" 
+                    [filter]="false"
+                    styleClass="w-full"
+                    [(ngModel)]="field.value"
+                    [placeholder]="field.placeholder!=undefined?field.placeholder:''"
+                    emptyMessage="Nenhum registro encontrado!"
+                    [disabled]="field.disabled"
+                    [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}">
+                    <ng-template pTemplate="selectedItem">
+                        <div [style]="{'background-color': field.value.option}">{{field.value.label}}</div>
+                    </ng-template>
+                    <ng-template pTemplate="item" let-color>
+                        <div [style]="{'background-color': color.option}">{{color.label}}</div>
+                    </ng-template>
+                </p-dropdown>
                 <p-checkbox *ngIf="field.type==fieldType.CHECK" [(ngModel)]="field.value" [binary]="true" [label]="field.label" [disabled]="field.disabled" [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}"></p-checkbox>
                 <div class="flex flex-row gap-2 mt-2" *ngIf="field.type==fieldType.RADIO">
                     <div class="flex" *ngFor="let opt of field.options">

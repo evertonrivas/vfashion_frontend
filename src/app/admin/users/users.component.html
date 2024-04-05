@@ -1,12 +1,12 @@
 <app-filter [fields]="filters" [(visible)]="filterVisible" [isTrash]="isTrash" (queryToFilter)="doFilter($event)"></app-filter>
-<app-form [(visible)]="formVisible" [rows]="formRows" title="Edição de Usuário" [registryId]="idToEdit" (objectToSave)="onDataSave($event)"></app-form>
+<app-form [(visible)]="formVisible" [rows]="formRows" title="Usuário" [registryId]="idToEdit" (objectToSave)="onDataSave($event)"></app-form>
 <p-toast></p-toast>
 <p-confirmDialog></p-confirmDialog>
 <p-panel>
     <ng-template pTemplate="header">
         <div class="flex flex-row w-full justify-content-between align-items-center">
             <div class="align-items-baseline">
-                <label class="p-panel-title">Manutenção de Usuários</label>
+                <label class="p-panel-title">Usuários</label>
             </div>
             <div class="flex flex-row gap-1">
                 <p-button icon="pi pi-plus" [severity]="'success'" styleClass="p-button-sm" pTooltip="Novo registro" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="onEditData()"></p-button>
@@ -37,12 +37,12 @@
             </ng-template>
             <ng-template pTemplate="body" let-item>
                 <tr>
-                    <td class="text-center"><p-tableCheckbox [value]="item"></p-tableCheckbox></td>
-                    <td>
+                    <td class="text-center" pFrozenColumn><p-tableCheckbox [value]="item"></p-tableCheckbox></td>
+                    <td pFrozenColumn>
                         <p-button [text]="true" icon="pi pi-pencil" pTooltip="Editar" tooltipPosition="top" tooltipStyleClass="text-sm" (onClick)="onEditData(item.id)"></p-button>
                         <p-button [text]="true" icon="pi pi-lock-open" pTooltip="Redefinir Senha" tooltipPosition="left" (onClick)="resetUserPassword(item.id,item.username)"></p-button>
                     </td>
-                    <td>{{item.username}}</td>
+                    <td pFrozenColumn>{{item.username}}</td>
                     <td>{{item.type | userType }}</td>
                     <td>{{item.active==true?"Sim":"Não" }}</td>
                 </tr>

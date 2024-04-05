@@ -30,7 +30,12 @@
             <i class="material-symbols-outlined">picture_as_pdf</i>
         </button> -->
     </ng-container>
-    <div #topbarmenu class="layout-topbar-menu">
+
+    <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button" (click)="showProfileSidebar()">
+        <i class="pi pi-ellipsis-v"></i>
+    </button>
+
+    <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active':profileSidebarVisible}">
         <p-overlayPanel #p_module>
             <ng-template pTemplate="content">
                 <div class="flex flex-column w-full">
@@ -44,22 +49,26 @@
             </ng-template>
         </p-overlayPanel>
         <button class="p-link layout-topbar-button" *ngIf="level_access==levels.ADMIN" pTooltip="Trocar módulo" tooltipPosition="bottom" tooltipStyleClass="text-xs"  (click)="p_module.toggle($event)">
-            <i class="material-symbols-outlined">
-                deployed_code
-            </i>
+            <i class="material-symbols-outlined">deployed_code</i>
+            <span>Trocar módulo</span>
         </button>
         <ng-container *ngIf="module==modules.B2B" >
             <button class="p-link layout-topbar-button" pTooltip="Histórico" tooltipPosition="bottom" tooltipStyleClass="text-xs" [routerLink]="[modulePath+'/history']">
                 <i class="material-symbols-outlined">work_history</i>
+                <span>Histórico</span>
             </button>
             <button *ngIf="level_access==levels.ISTORE" class="p-link layout-topbar-button" pTooltip="Sugestão de pedido usando I.A" tooltipPosition="bottom" tooltipStyleClass="text-xs" [routerLink]="[modulePath+'/order']">
                 <i class="material-symbols-outlined">network_intelligence_update</i>
+                <span>Sugestão I.A</span>
             </button>
             <button class="p-link layout-topbar-button" pTooltip="Devoluções" tooltipPosition="bottom" tooltipStyleClass="text-xs" [routerLink]="[modulePath+'/return']">
                 <i class="material-symbols-outlined">box</i>
+                <span>Calendar</span>
+                <span>Devoluções</span>
             </button>
             <button class="p-link layout-topbar-button" pTooltip="Produtos do Pedido" tooltipPosition="bottom" tooltipStyleClass="text-xs" (click)="onCart()">
                 <i class="material-symbols-outlined" pBadge [value]="totalInCart" severity="warning" styleClass="text-xs">shopping_cart</i>
+                <span>Pedido</span>
             </button>
         </ng-container>
         <p-overlayPanel #msgs>
@@ -73,9 +82,11 @@
         </button> -->
         <button class="p-link layout-topbar-button" pTooltip="Editar Perfil" [routerLink]="[modulePath+'/profile']" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">person</i>
+            <span>Perfil</span>
         </button>
         <button class="p-link layout-topbar-button" pTooltip="Sair do Sistema" (click)="onLogoff()" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">logout</i>
+            <span>Sair</span>
         </button>
     </div>
 </div>

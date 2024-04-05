@@ -11,7 +11,9 @@ import { FilterComponent } from "../../common/filter/filter.component";
 import { FieldCase, FieldType } from 'src/app/models/system.enum';
 import { FormComponent } from 'src/app/common/form/form.component';
 import { Entity } from 'src/app/models/entity.model';
-import { FormField, FormRow } from 'src/app/models/field.model';
+import { FieldOption, FormField, FormRow } from 'src/app/models/field.model';
+import { LocationService } from 'src/app/services/location.service';
+import { Country, StateRegion } from 'src/app/models/place.model';
 
 @Component({
     selector: 'app-entities',
@@ -36,7 +38,8 @@ export class EntitiesComponent extends Common implements AfterViewInit{
     private svc:EntitiesService,
     private cdr:ChangeDetectorRef,
     private msg:MessageService,
-    private cnf:ConfirmationService){
+    private cnf:ConfirmationService,
+    private lsvc:LocationService){
     super(route);
   }
 
@@ -95,57 +98,112 @@ export class EntitiesComponent extends Common implements AfterViewInit{
       options:[{value:'C',label:'Cliente'},{value:'R',label:'Representante'},{value:'S',label:'Fornecedor'}],
       value:undefined
     });
+
+    //primeiro buscar pais e dentro do pais buscar estado
+    let cOpt:FieldOption[] = [];
+    this.lsvc.listCountries({ page:1, pageSize:1, query:'can:list-all 1'}).subscribe({
+      next:(data) =>{
+        (data as Country[]).forEach((c) =>{
+          cOpt.push({
+            value: c.id,
+            label: c.name
+          });
+        });
+
+        this.filters.push({
+          label:"País",
+          placeholder:"Selecione...",
+          type:FieldType.COMBO,
+          filter_name: "id_country",
+          filter_prefix: "is",
+          name:"country",
+          options: cOpt,
+          value: undefined
+        });
+
+        this.loadStateRegion();
+      }
+    });
+  }
+
+  loadStateRegion(idCountry:number = 0):void{
+    let sOpt:FieldOption[] = [];
+    this.lsvc.listStageRegions({ page:1, pageSize:1 , query:'can:list-all 1||is:order-by acronym||is:order asc'+(idCountry>0?"||id_country "+idCountry.toString():"") }).subscribe({
+      next:(data) =>{
+        (data as StateRegion[]).forEach((s) =>{
+          sOpt.push({
+            value: s.id,
+            label: s.acronym+" - "+s.name
+          });
+        });
+
+        this.filters.push({
+          label:"Estado",
+          placeholder: "Selecione...",
+          type: FieldType.COMBO,
+          filter_name: "id_state_region",
+          filter_prefix:"is",
+          name:"state_region",
+          options: sOpt,
+          value: undefined
+        });
+      }
+    });
   }
 
   onEditData(id:number = 0):void{
-    //limpa o formulario
-    this.formRows = [];
-    let fieldName:FormField = {
-      label: "Nome",
-      name: "name",
-      options: undefined,
-      placeholder: "Digite o nome...",
-      type: FieldType.INPUT,
-      value: undefined,
-      required: true,
-      case: FieldCase.UPPER,
-      disabled: false
-    };
-    this.idToEdit = id;
 
-    if(id>0){
-      //busca os dados do registro para edicao
-      this.serviceSub[2] = this.svc.loadEntity(id).subscribe({
-        next: (data) =>{
-          if ("name" in data){
-            this.localObject = data as Entity;
-            fieldName.value = this.localObject.name;
+    //produzir formulario proprio adequado, ou transformar o do CRM em common
 
-            //monta as linhas do forme e exibe o mesmo
-            let row:FormRow = {
-              fields: [fieldName]
-            }
-            this.formRows.push(row);
-            this.formVisible = true;
+
+    // //limpa o formulario
+    // this.formRows = [];
+    // let fieldName:FormField = {
+    //   label: "Nome",
+    //   name: "name",
+    //   options: undefined,
+    //   placeholder: "Digite o nome...",
+    //   type: FieldType.INPUT,
+    //   value: undefined,
+    //   required: true,
+    //   case: FieldCase.UPPER,
+    //   disabled: false
+    // };
+    // this.idToEdit = id;
+
+    // if(id>0){
+    //   //busca os dados do registro para edicao
+    //   this.serviceSub[2] = this.svc.loadEntity(id).subscribe({
+    //     next: (data) =>{
+    //       if ("name" in data){
+    //         this.localObject = data as Entity;
+    //         fieldName.value = this.localObject.name;
+
+    //         //monta as linhas do forme e exibe o mesmo
+    //         let row:FormRow = {
+    //           fields: [fieldName]
+    //         }
+    //         this.formRows.push(row);
+    //         this.formVisible = true;
             
-          }else{
-            this.msg.clear();
-            this.msg.add({
-              summary:"Falha...",
-              detail: "Ocorreu um erro ao tentar carregar o registro",
-              severity:"error"
-            });
-          }
-        }
-      });
-    }else{
-      //monta as linhas do forme e exibe o mesmo
-      let row:FormRow = {
-        fields: [fieldName]
-      }  
-      this.formRows.push(row);
-      this.formVisible = true;
-    }
+    //       }else{
+    //         this.msg.clear();
+    //         this.msg.add({
+    //           summary:"Falha...",
+    //           detail: "Ocorreu um erro ao tentar carregar o registro",
+    //           severity:"error"
+    //         });
+    //       }
+    //     }
+    //   });
+    // }else{
+    //   //monta as linhas do forme e exibe o mesmo
+    //   let row:FormRow = {
+    //     fields: [fieldName]
+    //   }  
+    //   this.formRows.push(row);
+    //   this.formVisible = true;
+    // }
   }
 
   onDataSave(data:any):void{

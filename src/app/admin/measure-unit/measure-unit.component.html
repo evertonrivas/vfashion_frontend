@@ -1,12 +1,12 @@
 <app-filter [fields]="filters" [(visible)]="filterVisible" [isTrash]="isTrash" (queryToFilter)="doFilter($event)"></app-filter>
-<app-form [(visible)]="formVisible" [rows]="formRows" title="Cadastro/Edição de Etapa de Devolução" [registryId]="idToEdit" (objectToSave)="onDataSave($event)"></app-form>
+<app-form [(visible)]="formVisible" [rows]="formRows" title="Unidade de Medida" [registryId]="idToEdit" (objectToSave)="onDataSave($event)"></app-form>
 <p-toast></p-toast>
 <p-confirmDialog></p-confirmDialog>
 <p-panel>
     <ng-template pTemplate="header">
         <div class="flex flex-row w-full justify-content-between align-items-center">
             <div class="align-items-baseline">
-                <label class="p-panel-title">Manutenção de Etapas de Unidade(s) de Medida</label>
+                <label class="p-panel-title">Unidade(s) de Medidas</label>
             </div>
             <div class="flex flex-row gap-1">
                 <p-overlayPanel #pnlMassive>
@@ -34,17 +34,17 @@
         >
             <ng-template pTemplate="header">
                 <tr>
-                    <th style="width: 50px!important;" class="text-center"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
-                    <th style="width: 50px!important;">Ações</th>
-                    <th pSortableColumn="description">Descrição <p-sortIcon field="description"></p-sortIcon></th>
+                    <th style="width: 50px!important;" class="text-center" pFrozenColumn><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+                    <th style="width: 50px!important;" pFrozenColumn>Ações</th>
+                    <th pSortableColumn="description" pFrozenColumn>Descrição <p-sortIcon field="description"></p-sortIcon></th>
                     <th pSortableColumn="code">Código <p-sortIcon field="code"></p-sortIcon></th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-item>
                 <tr>
-                    <td class="text-center"><p-tableCheckbox [value]="item"></p-tableCheckbox></td>
-                    <td><p-button [text]="true" icon="pi pi-pencil" pTooltip="Editar" tooltipPosition="top" tooltipStyleClass="text-sm" (onClick)="onEditData(item.id)"></p-button></td>
-                    <td>{{item.description}} </td>
+                    <td class="text-center" pFrozenColumn><p-tableCheckbox [value]="item"></p-tableCheckbox></td>
+                    <td pFrozenColumn><p-button [text]="true" icon="pi pi-pencil" pTooltip="Editar" tooltipPosition="top" tooltipStyleClass="text-sm" (onClick)="onEditData(item.id)"></p-button></td>
+                    <td pFrozenColumn>{{item.description}} </td>
                     <td>{{item.code}} </td>
                 </tr>
             </ng-template>
