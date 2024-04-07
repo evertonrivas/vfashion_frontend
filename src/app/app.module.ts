@@ -7,7 +7,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LOCALE_ID,DEFAULT_CURRENCY_CODE } from '@angular/core';
-import * as sys_config from 'src/assets/config.json';
+import { environment as sys_config } from 'src/environments/environment';
 import ptBr from '@angular/common/locales/pt';
 
 registerLocaleData(ptBr)
@@ -28,15 +28,15 @@ registerLocaleData(ptBr)
   },
   {
     provide: LOCALE_ID,
-    useValue: ((sys_config as any).default).locale.language
+    useValue: sys_config.locale.language
   },{
     provide: DEFAULT_CURRENCY_CODE,
-    useValue: ((sys_config as any).default).locale.currency_code
+    useValue: sys_config.locale.currency_code
   },{
     provide: DATE_PIPE_DEFAULT_OPTIONS,
     useValue:{
-      dateFormat: ((sys_config as any).default).locale.date_format,
-      timezone: ((sys_config as any).default).locale.timezone
+      dateFormat: sys_config.locale.date_format,
+      timezone: sys_config.locale.timezone
     }
   }
   ],

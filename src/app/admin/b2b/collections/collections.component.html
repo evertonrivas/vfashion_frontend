@@ -44,7 +44,7 @@
                     <td class="text-center" pFrozenColumn><p-tableCheckbox [value]="item"></p-tableCheckbox></td>
                     <td pFrozenColumn><p-button [text]="true" icon="pi pi-pencil" pTooltip="Editar" tooltipPosition="top" tooltipStyleClass="text-sm" (onClick)="onEditData(item.id)"></p-button></td>
                     <td>{{item.name}}</td>
-                    <td>{{item.brand}}</td>
+                    <td>{{item.brand.name}}</td>
                 </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">

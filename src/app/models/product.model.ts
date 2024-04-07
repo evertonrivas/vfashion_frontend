@@ -43,7 +43,8 @@ export interface B2bBrand{
 export interface ProductCollection{
     id: number,
     name: string,
-    table_prices: string[]|null
+    brand: B2bBrand|undefined,
+    table_prices:any[]|undefined
 }
 
 export interface ProductCategory{

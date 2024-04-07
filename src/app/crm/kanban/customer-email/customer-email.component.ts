@@ -7,7 +7,6 @@ import { Common } from 'src/app/classes/common';
 import { EntityContact } from 'src/app/models/entity.model';
 import { ResponseError } from 'src/app/models/paginate.model';
 import { EmailService } from 'src/app/services/email.service';
-import * as sys_config from 'src/assets/config.json';
 
 @Component({
   selector: 'app-customer-email',
@@ -32,7 +31,7 @@ export class CustomerEmailComponent extends Common{
   subject:string = '';
   content:string = '';
   attachments:string[] = [];
-  url_upload:string = ((sys_config as any).default).backend_cmm+'/upload/temp'
+  url_upload:string = this.sysconfig.backend_cmm+'/upload/temp'
 
   constructor(
     private svc:EmailService,

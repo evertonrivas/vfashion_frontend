@@ -128,7 +128,7 @@ export class CollectionsComponent extends Common implements AfterViewInit, OnDes
       type: FieldType.INPUT,
       value: undefined,
       required: true,
-      case: FieldCase.UPPER,
+      case: FieldCase.NONE,
       disabled: false
     };
     this.idToEdit = id;
@@ -157,7 +157,7 @@ export class CollectionsComponent extends Common implements AfterViewInit, OnDes
 
         fieldBrand.options = opts;
       }
-    })
+    });
 
     if(id>0){
       //busca os dados do registro para edicao
@@ -165,7 +165,9 @@ export class CollectionsComponent extends Common implements AfterViewInit, OnDes
         next: (data) =>{
           if ("name" in data){
             this.localObject = data as ProductCollection;
-            fieldName.value = this.localObject.name;
+            fieldName.value  = this.localObject.name;
+            fieldBrand.value = (fieldBrand.options as FieldOption[]).find(o => o.value==this.localObject.brand?.id);
+
 
             //monta as linhas do forme e exibe o mesmo
             let row:FormRow = {

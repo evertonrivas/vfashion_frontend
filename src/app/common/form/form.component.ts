@@ -29,10 +29,54 @@ export class FormComponent {
   fieldCase = FieldCase;
   dataToSave:string = "";
   sended:boolean = false;
+  kcolors:any[] = [];
 
   constructor(){
-
-  }
+    this.kcolors.push({
+      value: '0',
+      label: 'Pastel Rainbow',
+      items: [
+          { value: '#BAE1FF', label: '#BAE1FF'}, //azul
+          { value: '#BAFFC9', label: '#BAFFC9'}, //verde
+          { value: '#FFFFBA', label: '#FFFFBA'}, //amarelo
+          { value: '#FFDFBA', label: '#FFDFBA'}, //laranja
+          { value: '#FFB3DA', label: '#FFB3DA'} //vermelho
+      ]
+    });
+    this.kcolors.push({
+        value: '1',
+        label: 'WarmPastel',
+        items:[
+            { value:'#F3EFDA', label: '#F3EFDA'}, //#f3efda
+            { value:'#F8EECE', label: '#F8EECE'}, //#f8eece
+            { value:'#F3E5DA', label: '#F3E5DA'}, //#f3e5da
+            { value:'#F3DADA', label: '#F3DADA'}, //#f3dada
+            { value:'#F3F1DA', label: '#F3F1DA'} //#f3f1da
+        ]
+    });
+    this.kcolors.push({
+        value: '2',
+        label: 'SetsunaLight',
+        items: [
+            { value: '#B8E4F8', label: '#B8E4F8'}, //#b8e4f8
+            { value: '#B8DDF8', label: '#B8DDF8'}, //#b8ddf8
+            { value: '#C3F8F8', label: '#C3F8F8'}, //#c3b8f8
+            { value: '#D5B8F8', label: '#D5B8F8'}, //#d5b8f8
+            { value: '#EAF5FA', label: '#EAF5FA'}, //#eaf5fa
+        ]
+    });
+    this.kcolors.push({
+        value: '3',
+        label:'Watermelon',
+        items: [
+            { value: '#A8E6CF', label: '#A8E6CF'}, //#a8e6cf
+            { value: '#DCEDC1', label: '#DCEDC1'}, //#dcedc1
+            { value: '#FFD3B6', label: '#FFD3B6'}, //#ffd3b6
+            { value: '#FFAAA5', label: '#FFAAA5'}, //#ffaaa5
+            { value: '#FF8B94', label: '#FF8B94'}, //#ff8b94
+        ]
+    });
+  } 
 
   onDateChanged():void{
 
@@ -40,6 +84,14 @@ export class FormComponent {
 
   doSave():void{
     this.sended = true;
+
+    this.rows.forEach((r) =>{
+      r.fields.forEach((f) =>{
+        if(f.type==this.fieldType.KCOLOR){
+          console.log(f.value);
+        }
+      });
+    });
 
     if(this.isValidated()){
       this.visible = false;
@@ -49,12 +101,12 @@ export class FormComponent {
       this.rows.forEach((r) =>{
         r.fields.forEach((f) =>{
           if (f.case==FieldCase.UPPER){
-            this.dataToSave += ',"'+f.name+'":"'+String(f.type==FieldType.COMBO?f.value.value:((f.type==FieldType.PASSWD?f.value[0]:f.value))).toUpperCase()+'"'
+            this.dataToSave += ',"'+f.name+'":"'+String(f.type==FieldType.COMBO?f.value.value:((f.type==FieldType.PASSWD?f.value[0]:(f.type==FieldType.KCOLOR?f.value.value:f.value)))).toUpperCase()+'"'
           }else if(f.case==FieldCase.LOWER){
-            this.dataToSave += ',"'+f.name+'":"'+String(f.type==FieldType.COMBO?f.value.value:((f.type==FieldType.PASSWD?f.value[0]:f.value))).toLowerCase()+'"'
+            this.dataToSave += ',"'+f.name+'":"'+String(f.type==FieldType.COMBO?f.value.value:((f.type==FieldType.PASSWD?f.value[0]:(f.type==FieldType.KCOLOR?f.value.value:f.value)))).toLowerCase()+'"'
           }
           else{
-            this.dataToSave += ',"'+f.name+'":"'+(f.type==FieldType.COMBO?f.value.value:((f.type==FieldType.PASSWD?f.value[0]:f.value)))+'"'
+            this.dataToSave += ',"'+f.name+'":"'+(f.type==FieldType.COMBO?f.value.value:((f.type==FieldType.PASSWD?f.value[0]:(f.type==FieldType.KCOLOR?f.value.value:f.value))))+'"'
           }
         });
       });

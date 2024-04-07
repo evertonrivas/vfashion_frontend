@@ -1,9 +1,11 @@
 import { Subscription } from "rxjs";
+import { isDevMode } from "@angular/core";
 import { Options, RequestResponse } from "../models/paginate.model";
 import { AccessLevel, FileType, ModuleName } from "../models/system.enum";
 import { Router } from "@angular/router";
-import * as sys_config from 'src/assets/config.json';
-import { FieldFilter, FormRow } from "../models/field.model";
+import { environment as sys_config } from "src/environments/environment";
+import { environment as sys_config_dev } from "src/environments/environment.development";
+import { FieldFilter, FieldOption, FormRow } from "../models/field.model";
 
 export class Common{
     filterVisible:boolean = false; //exibe ou nao os filtros do admin
@@ -11,7 +13,7 @@ export class Common{
     formRows:FormRow[] = []; //campos do formulario de cadastro
     idToEdit:number = 0;//id do registro que esta em edicao no form
     formVisible:boolean = false; //exibe ou oculta o formulario
-    sysconfig = ((sys_config as any).default); //arquivo de configuracoes do sistema
+    sysconfig = isDevMode()?sys_config_dev:sys_config; //arquivo de configuracoes do sistema
     module:ModuleName = ModuleName.NONE; // nome do module que estah em uso no sistema
     modulePath:string = ""; //url do caminho do modulo
     modules = ModuleName; //lista de modulos existentes

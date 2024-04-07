@@ -71,7 +71,7 @@ export class UserService extends MyHttp{
   }
 
   resetPassword(id:number):Observable<string|ResponseError>{
-    return this.http.get<string|ResponseError>(this.sys_config.backend+'/users/set-new-password/'+id.toString(),{
+    return this.http.get<string|ResponseError>(this.sys_config.backend_cmm+'/users/set-new-password/'+id.toString(),{
       headers:this.getHeader()
     });
   }

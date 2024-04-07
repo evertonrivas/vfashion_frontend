@@ -54,9 +54,14 @@ export class CalendarService extends MyHttp{
 
   saveEventType(event:CalendarEventType):Observable<boolean|ResponseError>{
     let data = {
+      id: event.id,
       name: event.name,
       hex_color: event.hex_color,
-      has_budget: event.has_budget
+      has_budget: event.has_budget,
+      is_milestone: event.is_milestone,
+      use_collection: event.use_collection,
+      children: [],
+      parent: []
     }
 
     return this.http.post<boolean|ResponseError>(this.sys_config.backend_scm+'/event-type/'+(event.id!=0?event.id.toString():''),data,{

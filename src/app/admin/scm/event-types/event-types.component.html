@@ -50,7 +50,7 @@
                         <p-button [text]="true" icon="pi pi-pencil" pTooltip="Editar" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="onEditData(item.id)"></p-button>
                     </td>
                     <td pFrozenColumn>{{item.name}}</td>
-                    <td class="text-center uppercase"><p-tag [style]="{'background-color': item.hex_color}">{{item.hex_color}}</p-tag></td>
+                    <td class="text-center uppercase"><p-tag [style]="{'background-color': item.hex_color, 'color':'#000000'}">{{item.hex_color}}</p-tag></td>
                     <td class="text-center"><i [class]="item.has_budget?'pi pi-check':''"></i></td>
                     <td class="text-center"><i [class]="item.use_collection?'pi pi-check':''"></i></td>
                     <td class="text-center"><i [class]="item.is_milestone?'pi pi-check':''"></i></td>

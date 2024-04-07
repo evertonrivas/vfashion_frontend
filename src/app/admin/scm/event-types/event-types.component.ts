@@ -34,7 +34,6 @@ import { PaginatorState } from 'primeng/paginator';
 })
 export class EventTypesComponent extends Common implements AfterViewInit{
   localObject!:CalendarEventType;
-  colors:FieldOption[] = [];
   constructor(route:Router,
     private svc:CalendarService,
     private cdr:ChangeDetectorRef,
@@ -101,7 +100,7 @@ export class EventTypesComponent extends Common implements AfterViewInit{
     let fColor:FormField = {
       label: "Cor",
       name: "hex_color",
-      options: this.colors,
+      options: undefined,
       placeholder: "Selecione...",
       type:FieldType.KCOLOR,
       value: undefined,
@@ -156,6 +155,8 @@ export class EventTypesComponent extends Common implements AfterViewInit{
             fBudget.value     = this.localObject.has_budget;
             fCollection.value = this.localObject.use_collection;
             fMilestone.value  = this.localObject.is_milestone;
+            fColor.value      = {value: this.localObject.hex_color, label: this.localObject.hex_color}
+            //{value: '#FFFFBA', label: '#FFFFBA'}
 
             //monta as linhas do forme e exibe o mesmo
             let row:FormRow = {

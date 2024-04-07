@@ -51,11 +51,12 @@
                     <p-colorPicker [(ngModel)]="field.value" styleClass="mt-2" appendTo="body"></p-colorPicker>
                     <input pInputText [(ngModel)]="field.value" [ngClass]="'w-full uppercase ' + (field.case==fieldCase.UPPER?'uppercase':(field.case==fieldCase.LOWER?'lowercase':''))">
                 </div>
-                <p-dropdown *ngIf="field.type==fieldType.KCOLOR"
-                    [options]="field.options"
+                <p-dropdown panelStyleClass="kcolor" *ngIf="field.type==fieldType.KCOLOR"
+                    [options]="kcolors"
                     optionLabel="label"
                     appendTo="body" 
-                    [showClear]="true" 
+                    [showClear]="true"
+                    [group]="true"
                     [filter]="false"
                     styleClass="w-full"
                     [(ngModel)]="field.value"
@@ -64,10 +65,13 @@
                     [disabled]="field.disabled"
                     [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}">
                     <ng-template pTemplate="selectedItem">
-                        <div [style]="{'background-color': field.value.option}">{{field.value.label}}</div>
+                        <div [style]="{'background-color': field.value.label}">&nbsp;</div>
+                    </ng-template>
+                    <ng-template pTemplate="group" let-group>
+                        {{group.label}}
                     </ng-template>
                     <ng-template pTemplate="item" let-color>
-                        <div [style]="{'background-color': color.option}">{{color.label}}</div>
+                        <div [style]="{'background-color': color.value, 'padding':'0.75rem 1.05rem' }">&nbsp;</div>
                     </ng-template>
                 </p-dropdown>
                 <p-checkbox *ngIf="field.type==fieldType.CHECK" [(ngModel)]="field.value" [binary]="true" [label]="field.label" [disabled]="field.disabled" [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}"></p-checkbox>

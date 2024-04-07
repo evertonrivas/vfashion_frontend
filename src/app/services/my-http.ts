@@ -1,5 +1,7 @@
+import { isDevMode } from "@angular/core";
 import { HttpClient, HttpHandler, HttpHeaders, HttpParams } from "@angular/common/http";
-import * as configData from 'src/assets/config.json';
+import { environment as sys_config } from "src/environments/environment";
+import { environment as sys_config_dev } from "src/environments/environment.development";
 import { Options } from "../models/paginate.model";
 
 export enum ContentType {
@@ -10,7 +12,7 @@ export enum ContentType {
 }
 
 export class MyHttp {
-    sys_config:any = (configData as any).default;
+    sys_config = isDevMode()?sys_config_dev:sys_config;
     constructor(protected http:HttpClient){
 
     }
