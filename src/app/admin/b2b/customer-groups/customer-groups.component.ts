@@ -7,12 +7,21 @@ import { SharedModule } from 'src/app/common/shared.module';
 import { FilterComponent } from "../../../common/filter/filter.component";
 import { PaginatorState } from 'primeng/paginator';
 import { FormComponent } from 'src/app/common/form/form.component';
-import { RequestResponse, ResponseError } from 'src/app/models/paginate.model';
+import { Options, RequestResponse, ResponseError } from 'src/app/models/paginate.model';
 import { FieldOption, FormField, FormRow } from 'src/app/models/field.model';
 import { FieldCase, FieldType } from 'src/app/models/system.enum';
 import { EntitiesService } from 'src/app/services/entities.service';
 import { CustomerGroup, Entity } from 'src/app/models/entity.model';
+import { City, StateRegion } from 'src/app/models/place.model';
+import { LocationService } from 'src/app/services/location.service';
 
+export interface filterParams{
+  rule:any|undefined
+  state_region: StateRegion|undefined
+  password:string|undefined,
+  city:City|undefined,
+  user_type: any|undefined
+}
 
 @Component({
     selector: 'app-customer-groups',
@@ -32,8 +41,36 @@ import { CustomerGroup, Entity } from 'src/app/models/entity.model';
 })
 export class CustomerGroupsComponent extends Common implements AfterViewInit{
   localObject!:CustomerGroup;
+  showCustomers:boolean = false;
+  filtering:boolean = false;
+  validate:boolean = false;
+  sendCustomer:boolean = false;
+  loadingCustomers:boolean = false;
+
+  entitiesToAddInGroup:Entity[] = [];
+  selectedEntitiesToAddInGroup:Entity[] = [];
+  filtersToSearch:filterParams = {
+    rule: undefined,
+    state_region: undefined,
+    password: undefined,
+    city: undefined,
+    user_type: undefined
+  };
+  states:StateRegion[] = [];
+  cities:City[] = [];
+  customersInGroup:RequestResponse = {
+    pagination: {
+      registers: 0,
+      page: 0,
+      per_page: 0,
+      pages: 0,
+      has_next: false
+    },
+    data: []
+  };
   constructor(route:Router,
     private svc:EntitiesService,
+    private svcL:LocationService,
     private msg:MessageService,
     private cnf:ConfirmationService,
     private cdr:ChangeDetectorRef){
@@ -47,6 +84,11 @@ export class CustomerGroupsComponent extends Common implements AfterViewInit{
 
   ngAfterViewInit(): void {
     this.loadingData();
+    this.svcL.listStageRegions({page:1,pageSize:1,query:'can:list-all 1||order-by acronym||order asc'}).subscribe({
+      next:(data) =>{
+        this.states = data as StateRegion[];
+      }
+    });
     this.cdr.detectChanges();
   }
 
@@ -94,7 +136,8 @@ export class CustomerGroupsComponent extends Common implements AfterViewInit{
         (data as Entity[]).forEach((e) =>{
           opts.push({
             value: e.id,
-            label: e.name
+            label: e.name,
+            id:undefined
           });
         });
       }
@@ -114,7 +157,7 @@ export class CustomerGroupsComponent extends Common implements AfterViewInit{
     let fApprov:FormField = {
       label: "Requer Aprovação?",
       name:"need_approvement",
-      options:[{ value:0, label:'Não' },{ value:1, label:"Sim" }],
+      options:[{ value:0, label:'Não',id:undefined },{ value:1, label:"Sim",id:undefined }],
       placeholder:undefined,
       type:FieldType.RADIO,
       value:undefined,
@@ -241,6 +284,114 @@ export class CustomerGroupsComponent extends Common implements AfterViewInit{
   }
 
   onEditCustomers(id:number){
+    this.idToEdit = id;
+    this.showCustomers = true;
+  }
 
+  clearSearch(){
+    this.showCustomers = false;
+  }
+
+  getCities():void{
+    this.svcL.listCities({page:1,pageSize:1,query:"can:list-all 1||is:state_region "+this.filtersToSearch.state_region?.id}).subscribe({
+      next:(data) =>{
+        this.cities = data as City[];
+      }
+    })
+  }
+
+  searchToAdd():void{
+    this.filtering = true;
+    let nquery:string = "can:list-all 1||is:type C||";
+    if (this.filtersToSearch.city!=undefined){
+      nquery += "is:id_city "+this.filtersToSearch.city.id+"||";
+    }
+    if (this.filtersToSearch.state_region!=undefined){
+      nquery += "is:id_state_region "+this.filtersToSearch.state_region.id+"||";
+    }
+    this.svc.listEntity({ page:1, pageSize:1, query:nquery}).subscribe({
+      next:(data) =>{
+        this.filtering = false;
+        this.entitiesToAddInGroup = data as Entity[];
+      }
+    });
+  }
+
+  cancelMassive():void{
+    this.filtersToSearch = {
+      city:undefined,
+      password: undefined,
+      rule: undefined,
+      state_region: undefined,
+      user_type: undefined
+    }
+    this.entitiesToAddInGroup = [];
+    this.selectedEntitiesToAddInGroup = [];
+    this.showCustomers = false;
+  }
+
+  onAddToGroup():void{
+    let ids:number[] = [];
+      this.selectedEntitiesToAddInGroup.forEach((u) =>{
+        ids.push(u.id);
+      });
+
+      this.svc.addToCustomerGroup(this.idToEdit,{
+        ids:ids
+      }).subscribe({
+        next:(data) =>{
+          this.sendCustomer = false;
+          this.msg.clear();
+          if(typeof data==='boolean'){
+            this.msg.add({
+              severity:"success",
+              summary:"Sucesso!",
+              detail:"Cliente(s) adicionado(s) com sucesso!"
+            });
+            this.showCustomers = false;
+            this.loadingData();
+            this.cancelMassive();
+          }else{
+            this.msg.add({
+              key: 'systemToast',
+              severity: 'error',
+              summary: 'Ocorreu o seguinte erro no sistema!',
+              detail: (data as ResponseError).error_details
+            });
+          }
+        }
+      });
+  }
+
+  onViewCustomers(evt:PaginatorState = { page: 0, pageCount: 0},id:number){
+    if (id > 0){
+      this.loadingCustomers = true;
+      let options:Options = {
+        query : "is:id_group "+id.toString(),
+        page: (evt.page as number)+1,
+        pageSize: this.sysconfig.system.pageSize
+      }
+
+      this.serviceSub[2] = this.svc.listCustomerGroupCustomers(options).subscribe({
+        next: (data) =>{
+          this.customersInGroup = data as RequestResponse;
+          this.cdr.detectChanges();
+          this.loadingCustomers = false;
+        }
+      });
+    }
+  }
+
+  onHideCustomers(){
+    this.customersInGroup = {
+      pagination: {
+        has_next: false,
+        page: 0,
+        pages: 0,
+        per_page: this.sysconfig.system.pageSize,
+        registers: 0
+      },
+      data: []
+    }
   }
 }

@@ -1,6 +1,7 @@
 import { HttpHeaders } from '@angular/common/http';
 import { AfterViewInit, ChangeDetectorRef, Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { FileUploadEvent } from 'primeng/fileupload';
 import { Common } from 'src/app/classes/common';
 import { Order, OrderHistory, OrderProduct } from 'src/app/models/order.model';
 import { Reason } from 'src/app/models/reason.model';
@@ -8,6 +9,10 @@ import { B2bOrderService } from 'src/app/services/b2b.order.service';
 import { B2bReturnService } from 'src/app/services/b2b.return.service';
 
 export interface canUploadProduct{
+  [index:number]:boolean
+}
+
+export interface uploadedProductPicture{
   [index:number]:boolean
 }
 
@@ -26,9 +31,8 @@ export class ReturnComponent extends Common implements AfterViewInit{
   selectedOrderProducts:OrderProduct[] = [];
   uploadHeaders:HttpHeaders = new HttpHeaders()
     .set("Authorization",localStorage.getItem('token_type')+" "+localStorage.getItem('token_access'));
-  upload_max:number = this.sysconfig.company.max_upload_files as number;
-  url_upload:string = this.sysconfig.backend_cmm+'/upload/return/';
   selectedProduct:canUploadProduct = {};
+  disableUpload:uploadedProductPicture = {};
   selectedReason:reasonProduct = {};
   allReasons:Reason[] = [];
   constructor(route:Router,
@@ -57,7 +61,7 @@ export class ReturnComponent extends Common implements AfterViewInit{
 
   loadOrder():void{
     if (this.selectedOrder!=undefined){
-      this.svcOrd.loadOrder(parseInt(this.selectedOrder.id_order)).subscribe({
+      this.svcOrd.loadOrder(this.selectedOrder.id_order_number).subscribe({
         next: (data) =>{
           if('id' in data){
             this.localOrder = data as Order;
@@ -110,6 +114,12 @@ export class ReturnComponent extends Common implements AfterViewInit{
     evt.forEach((p) =>{
       let id_product = p.id_product+p.id_color+p.id_size;
       this.selectedProduct[id_product] = false;
+      this.disableUpload[id_product] = false;
     });
+  }
+
+  lockPicture(id_product:number,id_color:number,id_size:number){
+    this.disableUpload[id_product+id_color+id_size] = true;
+    console.log("Passou aqui");
   }
 }

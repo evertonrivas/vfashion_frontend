@@ -219,6 +219,9 @@ export class CheckoutComponent extends Common implements AfterViewInit{
             //apenas informacoes minimas
             this.productToCart = {
               id: p_idProduct,
+              id_type:0,
+              id_grid:0,
+              id_model:0,
               prodCode:ct.ref,
               barCode:null,
               refCode: ct.ref,
@@ -227,7 +230,7 @@ export class CheckoutComponent extends Common implements AfterViewInit{
               observation:null,
               ncm:null,
               price: ct.price_un,
-              measure_unit:'UN',
+              id_measure_unit:0,
               structure:'S',
               date_created: new Date().toISOString().substring(0,10),
               date_updated:null,

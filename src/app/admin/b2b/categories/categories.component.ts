@@ -124,7 +124,8 @@ export class CategoriesComponent extends Common implements AfterViewInit, OnDest
         (data as ProductCategory[]).forEach((pc) =>{
           opts.push({
             value: pc.id,
-            label: pc.name as string
+            label: pc.name as string,
+            id:undefined
           });
         });
 

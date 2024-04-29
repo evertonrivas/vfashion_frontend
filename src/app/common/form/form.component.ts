@@ -2,9 +2,13 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SharedModule } from '../shared.module';
 import { CommonModule } from '@angular/common';
 import { FieldCase, FieldType } from 'src/app/models/system.enum';
-import { FormRow } from 'src/app/models/field.model';
+import { FieldOption, FormRow } from 'src/app/models/field.model';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { PasswordModule } from 'primeng/password';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-form',
@@ -13,7 +17,10 @@ import { PasswordModule } from 'primeng/password';
     CommonModule,
     SharedModule,
     PasswordModule,
-    ColorPickerModule
+    ColorPickerModule,
+    IconFieldModule,
+    InputIconModule,
+    InputTextareaModule
   ],
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss'
@@ -29,7 +36,10 @@ export class FormComponent {
   fieldCase = FieldCase;
   dataToSave:string = "";
   sended:boolean = false;
+  selectedImageOption:any;
   kcolors:any[] = [];
+  uploadHeaders:HttpHeaders = new HttpHeaders()
+    .set("Authorization",localStorage.getItem('token_type')+" "+localStorage.getItem('token_access'));
 
   constructor(){
     this.kcolors.push({
@@ -97,16 +107,25 @@ export class FormComponent {
       this.visible = false;
       this.visibleChange.emit(this.visible);
 
+      let value:string|undefined = undefined;
+
       this.dataToSave = '{"id":"'+this.registryId.toString()+'"';
       this.rows.forEach((r) =>{
         r.fields.forEach((f) =>{
+          if (f.type==this.fieldType.COMBO || f.type==this.fieldType.KCOLOR){
+            value = f.value.value!=undefined?f.value.value:undefined
+          }else if(f.type==this.fieldType.PASSWD){
+            value = f.value[0]
+          }else{
+            value = f.value!=undefined?f.value:undefined
+          }
           if (f.case==FieldCase.UPPER){
-            this.dataToSave += ',"'+f.name+'":"'+String(f.type==FieldType.COMBO?f.value.value:((f.type==FieldType.PASSWD?f.value[0]:(f.type==FieldType.KCOLOR?f.value.value:f.value)))).toUpperCase()+'"'
+            this.dataToSave += ',"'+f.name+'":'+(value!=undefined?'"'+value?.toString().toUpperCase()+'"':null)
           }else if(f.case==FieldCase.LOWER){
-            this.dataToSave += ',"'+f.name+'":"'+String(f.type==FieldType.COMBO?f.value.value:((f.type==FieldType.PASSWD?f.value[0]:(f.type==FieldType.KCOLOR?f.value.value:f.value)))).toLowerCase()+'"'
+            this.dataToSave += ',"'+f.name+'":'+(value!=undefined?'"'+value?.toString().toLowerCase()+'"':null)
           }
           else{
-            this.dataToSave += ',"'+f.name+'":"'+(f.type==FieldType.COMBO?f.value.value:((f.type==FieldType.PASSWD?f.value[0]:(f.type==FieldType.KCOLOR?f.value.value:f.value))))+'"'
+            this.dataToSave += ',"'+f.name+'":'+(value!=undefined?'"'+value.toString()+'"':null)
           }
         });
       });
@@ -134,5 +153,15 @@ export class FormComponent {
   clearFields():void{
     this.visible = false;
     this.visibleChange.emit(this.visible);
+  }
+
+  setOnlyCheckbox(optId:number|undefined,options:FieldOption[]|undefined){
+    options?.forEach((o) =>{
+      if(o.id==optId){
+        o.value = true;
+      }else{
+        o.value = false;
+      }
+    });
   }
 }

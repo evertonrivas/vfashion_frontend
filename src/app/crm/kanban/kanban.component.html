@@ -165,11 +165,12 @@
         [url]="url_upload"
         name="files[]"
         [withCredentials]="true"
-        [fileLimit]="upload_max"
+        [fileLimit]="sysconfig.system.max_upload_files"
         [headers]="uploadHeaders"
         invalidFileLimitMessageSummary="Número máximo de arquivos excedido."
         invalidFileLimitMessageDetail="Máximo permitido: {0}"
-        (onUpload)="uploadDone()"></p-fileUpload>
+        (onUpload)="uploadDone()"
+        ></p-fileUpload>
 </p-sidebar>
  
 <p-dialog [(visible)]="emailVisible" [style]="{'width':'70vw'}" [modal]="true" [draggable]="false">
@@ -178,7 +179,7 @@
             <span class="w-full text-center align-baseline">Envio de e-mail para: {{infoCustomer.name}}</span>
         </div>
     </ng-template>
-    <app-customer-email #cstEmail [emailToList]="cstEmail.emailToList" [uploadHeaders]="uploadHeaders" [uploadMax]="upload_max" [massiveEmail]="massiveEmail" (messageToShow)="showMessage($event)"></app-customer-email>
+    <app-customer-email #cstEmail [emailToList]="cstEmail.emailToList" [uploadHeaders]="uploadHeaders" [uploadMax]="sysconfig.system.max_upload_files" [massiveEmail]="massiveEmail" (messageToShow)="showMessage($event)"></app-customer-email>
 </p-dialog>
 
 <p-dialog header="Importação de Registros" [(visible)]="importVisible" [style]="{'width': '70vw'}" [modal]="true" [draggable]="false">
@@ -199,7 +200,7 @@
         [url]="url_upload"
         name="files[]"
         [withCredentials]="true"
-        [fileLimit]="upload_max"
+        [fileLimit]="sysconfig.system.max_upload_files"
         [headers]="uploadHeaders"
         [multiple]="false"
         accept=".csv"

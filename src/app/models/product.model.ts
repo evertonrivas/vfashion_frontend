@@ -14,6 +14,9 @@ export interface Color{
 
 export interface Product {
     id: number,
+    id_type:number,
+    id_model:number,
+    id_grid:number,
     prodCode:string,
     barCode:string|null,
     refCode:string,
@@ -22,7 +25,7 @@ export interface Product {
     observation:string|null,
     ncm:string|null,
     price: number,
-    measure_unit:string,
+    id_measure_unit:number,
     structure:string,
     date_created:string,
     date_updated:string|null,

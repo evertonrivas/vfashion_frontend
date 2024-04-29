@@ -42,7 +42,6 @@ export class KanbanComponent extends Common implements AfterContentInit{
   first:number[] = [];
   globalSearchInput:string|null = null;
   url_upload:string = '';
-  upload_max:number = this.sysconfig.company.max_upload_files as number;
   uploadHeaders:HttpHeaders = new HttpHeaders()
     .set("Authorization",localStorage.getItem('token_type')+" "+localStorage.getItem('token_access'));
 

@@ -112,7 +112,7 @@ export class EventTypesComponent extends Common implements AfterViewInit{
     let fBudget:FormField = {
       label: "Faz orçamento",
       name: "has_budget",
-      options: [{ value: 0, label:'Não' },{ value:1, label:'Sim' }],
+      options: [{ value: 0, label:'Não',id:undefined },{ value:1, label:'Sim',id:undefined }],
       placeholder: undefined,
       type: FieldType.RADIO,
       value: undefined,
@@ -124,7 +124,7 @@ export class EventTypesComponent extends Common implements AfterViewInit{
     let fCollection:FormField = {
       label: "Controla Coleção",
       name: "use_collection",
-      options: [{ value: 0, label:'Não'},{ value:1, label:'Sim' }],
+      options: [{ value: 0, label:'Não',id:undefined},{ value:1, label:'Sim',id:undefined }],
       placeholder: undefined,
       type:FieldType.RADIO,
       value:undefined,
@@ -136,7 +136,7 @@ export class EventTypesComponent extends Common implements AfterViewInit{
     let fMilestone:FormField = {
       label: "É marco (milestone)?",
       name: "is_milestone",
-      options: [{ value: 0, label:'Não' },{ value:1, label:'Sim' }],
+      options: [{ value: 0, label:'Não',id:undefined },{ value:1, label:'Sim',id:undefined }],
       placeholder: undefined,
       type: FieldType.RADIO,
       value: undefined,

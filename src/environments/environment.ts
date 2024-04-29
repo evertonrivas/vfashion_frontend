@@ -10,8 +10,13 @@ export const environment = {
         logo_mini: "logo-venda-fashion-mini.png",
         instagram: "https://instagram.com/company_page",
         facebook: "https://facebook.com/company_page",
-        linkedin: "https://linkedin.com/in/company_page",
-        "max_upload_files":7
+        linkedin: "https://linkedin.com/in/company_page"
+    },
+    system:{
+        pageSize: 50,
+        max_upload_files: 7,
+        max_upload_images: 4,
+        use_url_images:true
     },
     locale: {
         language: "pt",
@@ -20,9 +25,6 @@ export const environment = {
         timezone: "-0300"
     },
     recaptcha: {
-        "siteKey" : "6Le7VGUlAAAAAMUwZDKXC-lhfBV9l_dHEMvxCVdV"
+        siteKey : "6Le7VGUlAAAAAMUwZDKXC-lhfBV9l_dHEMvxCVdV"
     },
-    system:{
-        pageSize: 50
-    }
 };

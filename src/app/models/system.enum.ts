@@ -27,19 +27,23 @@ export enum FileType {
 }
 
 export enum FieldType{
-    HIDDEN = 0,
-    INPUT  = 1,
-    DATE   = 2,
-    PERIOD = 3,
-    RADIO  = 4,
-    CHECK  = 5,
-    COMBO  = 6,
-    NUMBER = 7,
-    MCOMBO = 8,
-    TEXT   = 9,
-    COLOR  = 10,
-    KCOLOR = 11,
-    PASSWD = 12
+    HIDDEN  = 0,
+    INPUT   = 1,
+    DATE    = 2,
+    PERIOD  = 3,
+    RADIO   = 4,
+    CHECK   = 5,
+    COMBO   = 6,
+    NUMBER  = 7,
+    MCOMBO  = 8,
+    TEXT    = 9,
+    COLOR   = 10,
+    KCOLOR  = 11,
+    PASSWD  = 12,
+    BARCODE = 13,
+    MONEY   = 14,
+    URL     = 15,
+    IMGURL  = 16
 }
 
 export enum FieldCase{

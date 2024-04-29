@@ -16,6 +16,7 @@ export class HistoryComponent extends Common implements AfterViewInit{
   showIntegrationTrack:boolean = false;
   selectedOrder:OrderHistory = {
     id_order: '',
+    id_order_number:0,
     id_customer: 0,
     customer_name: '',
     id_payment_condition: 0,

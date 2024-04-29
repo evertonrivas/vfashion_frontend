@@ -78,3 +78,24 @@
         </p-paginator>
     </ng-template>
 </p-panel>
+
+<p-dialog header="Envio de Imagens" [(visible)]="showDialogUpload" (onHide)="cancelUpload()">
+    <p-fileUpload #upl
+        [multiple]="true" 
+        cancelLabel="Cancelar" 
+        chooseLabel="Escolher arquivo(s)" 
+        uploadLabel="Anexar"
+        chooseStyleClass="p-button-outlined p-button-sm"
+        cancelStyleClass="p-button-outlined p-button-sm"
+        uploadStyleClass="p-button-outlined p-button-sm"
+        [url]="url_upload"
+        name="files[]"
+        [withCredentials]="true"
+        [fileLimit]="sysconfig.system.max_upload_images"
+        accept="image/*"
+        [headers]="uploadHeaders"
+        invalidFileLimitMessageSummary="Número máximo de arquivos excedido."
+        invalidFileLimitMessageDetail="Máximo permitido: {0}"
+        (onUpload)="uploadDone()"
+        ></p-fileUpload>
+</p-dialog>

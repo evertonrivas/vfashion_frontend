@@ -1,11 +1,7 @@
 import { Component } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { DropdownModule } from 'primeng/dropdown';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { InputTextModule } from 'primeng/inputtext';
-import { PanelModule } from 'primeng/panel';
-import { ToastModule } from 'primeng/toast';
+import { SharedModule } from '../shared.module';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-profile',
@@ -13,12 +9,8 @@ import { ToastModule } from 'primeng/toast';
   styleUrls: ['./profile.component.scss'],
   standalone:true,
   imports:[
-    PanelModule,
-    ButtonModule,
-    InputTextModule,
-    InputNumberModule,
-    DropdownModule,
-    ToastModule
+    SharedModule,
+    CommonModule
   ],
   providers:[
     MessageService

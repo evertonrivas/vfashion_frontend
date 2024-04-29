@@ -131,4 +131,17 @@ export class EntitiesService extends MyHttp {
       }
     });
   }
+
+  addToCustomerGroup(id:number,data:any):Observable<boolean|ResponseError>{
+    return this.http.put<boolean|ResponseError>(this.sys_config.backend_b2b+'/customer-group/'+id.toString(),data,{
+      headers: this.getHeader(ContentType.json)
+    });
+  }
+
+  listCustomerGroupCustomers(opt:Options):Observable<CustomerGroup|RequestResponse|ResponseError>{
+    return this.http.get<CustomerGroup|RequestResponse|ResponseError>(this.sys_config.backend_b2b+'/customer-group/customers/',{
+      headers: this.getHeader(),
+      params: this.getParams(opt)
+    });
+  }
 }

@@ -24,7 +24,7 @@
         </div>
     </ng-template>
     <ng-template pTemplate="content">
-        <p-table [value]="this.response.data"
+        <p-table [value]="response.data"
             styleClass="p-datatable-striped"
             dataKey="id"
             [loading]="loading"
@@ -34,7 +34,7 @@
             <ng-template pTemplate="header">
                 <tr>
                     <th style="width: 50px!important;" class="text-center" pFrozenColumn><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
-                    <th style="width: 150px!important;" class="text-center" pFrozenColumn>Ações</th>
+                    <th style="width: 180px!important;" class="text-center" pFrozenColumn>Ações</th>
                     <th pSortableColumn="name">Nome <p-sortIcon field="name"></p-sortIcon></th>
                     <th pSortableColumn="representative">Representante <p-sortIcon field="representative"></p-sortIcon></th>
                     <th pSortableColumn="need_approvement">Requer Aprovação? <p-sortIcon field="need_approvement"></p-sortIcon></th>
@@ -45,7 +45,43 @@
                     <td class="text-center" pFrozenColumn><p-tableCheckbox [value]="item"></p-tableCheckbox></td>
                     <td pFrozenColumn>
                         <p-button [text]="true" icon="pi pi-pencil" pTooltip="Editar" tooltipPosition="top" tooltipStyleClass="text-sm" (onClick)="onEditData(item.id)"></p-button>
-                        <p-button [text]="true" icon="pi pi-customer-group icon-small" pTooltip="Gerenciar Clientes" tooltipPosition="top" tooltipStyleClass="text-sm" (onClick)="onEditCustomers(item.id)"></p-button>
+                        <p-button [text]="true" icon="pi pi-customer-group icon-small" pTooltip="Adicionar Clientes" tooltipPosition="top" tooltipStyleClass="text-sm" (onClick)="onEditCustomers(item.id)"></p-button>
+                        <p-button [text]="true" icon="pi pi-eye" pTooltip="Ver Clientes" tooltipPosition="top" tooltipStyleClass="text-sm" (onClick)="customerView.toggle($event)"></p-button>
+                        <p-overlayPanel #customerView (onShow)="onViewCustomers({page:0,pageCount:0},item.id)" styleClass="w-30rem" (onHide)="onHideCustomers()">
+                            <p-table styleClass="p-datatable-sm p-datatable-striped"
+                            [value]="customersInGroup.data"
+                            [loading]="loadingCustomers"
+                            [scrollable]="true"
+                            scrollHeight="200px">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th>Cliente</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-item>
+                                    <tr>
+                                        <td>{{item.name}}</td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="emptymessage">
+                                    <tr>
+                                        <td class="text-center">Nenhum cliente encontrado!</td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                            <p-paginator *ngIf="customersInGroup.pagination.registers > 0"
+                                (onPageChange)="onViewCustomers($event,item.id)"
+                                [first]="0"
+                                [rows]="customersInGroup.pagination.per_page"
+                                [totalRecords]="customersInGroup.pagination.registers"
+                                styleClass="text-xs mt-2 mb-2"
+                                [showCurrentPageReport]="true"
+                                currentPageReportTemplate="{first} - {last} de {totalRecords}"
+                                [showPageLinks]="false"
+                                [showFirstLastIcon]="false"
+                                >
+                            </p-paginator>
+                        </p-overlayPanel>
                     </td>
                     <td>{{item.name}}</td>
                     <td>{{item.id_representative!=null?item.representative:'SEM REPRESENTAÇÃO'}}</td>
@@ -72,9 +108,78 @@
         </p-paginator>
     </ng-template>
 </p-panel>
-<p-sidebar styleClass="w-30rem">
+<p-sidebar styleClass="w-30rem" [(visible)]="showCustomers" position="right" (onHide)="clearSearch()">
     <ng-template pTemplate="header">Clientes</ng-template>
     <ng-template pTemplate="content">
-
+        <div class="flex flex-row gap-1 mb-2">
+            <div class="flex flex-column">
+                <label class="mb-1">Estado/UF</label>
+                <p-dropdown
+                    [options]="states"
+                    [filter]="true"
+                    filterBy="name,acronym"
+                    appendTo="body"
+                    [showClear]="true"
+                    styleClass="w-full"
+                    placeholder="Selecione..."
+                    emptyMessage="Nenhum registro encontrado!"
+                    [(ngModel)]="filtersToSearch.state_region"
+                    (ngModelChange)="getCities()"
+                    >
+                    <ng-template pTemplate="selectedItem">
+                        {{filtersToSearch.state_region?.acronym}} - {{filtersToSearch.state_region?.name}}
+                    </ng-template>
+                    <ng-template pTemplate="item" let-item>
+                        {{item.acronym}} - {{item.name}}
+                    </ng-template>
+                </p-dropdown>
+            </div>
+            <div class="flex flex-column w-full">
+                <label class="mb-1">Cidade</label>
+                <p-dropdown
+                    [options]="cities"
+                    [filter]="true"
+                    filterBy="name,acronym"
+                    appendTo="body"
+                    [showClear]="true"
+                    styleClass="w-full"
+                    placeholder="Selecione..."
+                    emptyMessage="Nenhum registro encontrado!"
+                    [(ngModel)]="filtersToSearch.city">
+                    <ng-template pTemplate="selectedItem">
+                        {{filtersToSearch.city?.name}}
+                    </ng-template>
+                    <ng-template pTemplate="item" let-item>
+                        {{item.name}}
+                    </ng-template>
+                </p-dropdown>
+            </div>
+        </div>
+        <div class="flex flex-row mb-2">
+            <p-button icon="pi pi-search icon-xsmall" label="Filtrar" (onClick)="searchToAdd();" styleClass="p-button-sm" [loading]="filtering"></p-button>
+        </div>
+        <p-table [value]="entitiesToAddInGroup" [loading]="filtering" [(selection)]="selectedEntitiesToAddInGroup" dataKey="id" styleClass="p-datatable-striped" [scrollable]="true" scrollHeight="350px">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+                    <th>Nome</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+                <tr>
+                    <td><p-tableCheckbox [value]="item"></p-tableCheckbox></td>
+                    <td>{{item.name}}</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="2" class="text-center">Nenhum registro existente!</td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <div class="flex flex-row justify-content-end gap-1 mt-2">
+            <p-button label="Cancelar" severity="warning" icon="pi pi-ban" styleClass="p-button-sm" (onClick)="cancelMassive()"></p-button>
+            <p-button label="Executar" severity="primary" icon="pi pi-cog" styleClass="p-button-sm" [disabled]="selectedEntitiesToAddInGroup.length==0" (onClick)="onAddToGroup()" [loading]="sendCustomer"></p-button>
+        </div>
     </ng-template>
 </p-sidebar>

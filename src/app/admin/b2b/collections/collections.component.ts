@@ -99,7 +99,8 @@ export class CollectionsComponent extends Common implements AfterViewInit, OnDes
         (data as Brand[]).forEach((b) =>{
           opts.push({
             value: b.id,
-            label: b.name as string
+            label: b.name as string,
+            id:undefined
           });
         });
 
@@ -151,7 +152,8 @@ export class CollectionsComponent extends Common implements AfterViewInit, OnDes
         (data as Brand[]).forEach((b) =>{
           opts.push({
             value: b.id,
-            label: b.name
+            label: b.name,
+            id:undefined
           })
         });
 

@@ -133,19 +133,24 @@ export class UsersComponent extends Common implements AfterViewInit{
       filter_prefix:"is",
       options:[{
         value: "A",
-        label:"Administrador"
+        label:"Administrador",
+        id:undefined
       },{
         value: "L",
-        label:"Lojista"
+        label:"Lojista",
+        id:undefined
       },{
         value:"R",
-        label:"Representante"
+        label:"Representante",
+        id:undefined
       },{
         value:"V",
-        label:"Vendedor"
+        label:"Vendedor",
+        id:undefined
       },{
         value:"C",
-        label:"Usuário da Empresa"
+        label:"Usuário da Empresa",
+        id:undefined
       }],
       value:undefined,
       type: FieldType.COMBO
@@ -159,10 +164,12 @@ export class UsersComponent extends Common implements AfterViewInit{
       filter_prefix:"is",
       options:[{
         value:true,
-        label:"Sim"
+        label:"Sim",
+        id:undefined
       },{
         value:false,
-        label:"Não"
+        label:"Não",
+        id:undefined
       }],
       value:undefined,
       type:FieldType.RADIO
@@ -192,11 +199,11 @@ export class UsersComponent extends Common implements AfterViewInit{
       type: FieldType.COMBO,
       value: undefined,
       options: [
-        { value:'A', label:'Administrador' },
-        { value:'L', label:'Lojista' },
-        { value:'I', label:'Lojista (IA)' },
-        { value:'R', label:'Representante' },
-        { value:'U', label:'Usuário da Empresa' }
+        { value:'A', label:'Administrador',id:undefined },
+        { value:'L', label:'Lojista',id:undefined },
+        { value:'I', label:'Lojista (IA)',id:undefined },
+        { value:'R', label:'Representante',id:undefined },
+        { value:'U', label:'Usuário da Empresa',id:undefined }
       ],
       required: true,
       case: FieldCase.UPPER,
@@ -209,7 +216,7 @@ export class UsersComponent extends Common implements AfterViewInit{
       placeholder: undefined,
       type: FieldType.RADIO,
       value: undefined,
-      options: [{ value:'0', label:'Não' },{ value:'1', label:'Sim' }],
+      options: [{ value:'0', label:'Não',id:undefined },{ value:'1', label:'Sim',id:undefined }],
       required: true,
       case: FieldCase.NONE,
       disabled: false
@@ -231,7 +238,8 @@ export class UsersComponent extends Common implements AfterViewInit{
         (data as Entity[]).forEach((e) =>{
           fEntity.options?.push({
             value: e.id.toString(),
-            label: (e.type=='C'?'CLIENTE - ':(e.type=='R'?'REPRESENTANTE - ':'FORNECEDOR - ')) + e.name
+            label: (e.type=='C'?'CLIENTE - ':(e.type=='R'?'REPRESENTANTE - ':'FORNECEDOR - ')) + e.name,
+            id:undefined
           });
         });
       },

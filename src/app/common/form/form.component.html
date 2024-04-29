@@ -5,6 +5,21 @@
             <div class="flex flex-column w-full" *ngFor="let field of row.fields">
                 <label *ngIf="field.type!=fieldType.CHECK && field.type!=fieldType.HIDDEN && field.type!=fieldType.PASSWD" class="mb-1">{{field.label}}</label>
                 <input *ngIf="field.type==fieldType.INPUT" pInputText [placeholder]="field.placeholder!=undefined?field.placeholder:''" [(ngModel)]="field.value" [ngClass]="field.case==fieldCase.UPPER?'uppercase':(field.case==fieldCase.LOWER?'lowercase':'')" [disabled]="field.disabled" [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}">
+                <textarea *ngIf="field.type==fieldType.TEXT" rows="5" pInputTextarea [(ngModel)]="field.value"  [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}" class="w-full"></textarea>
+                <p-iconField iconPosition="right" *ngIf="field.type==fieldType.BARCODE" class="w-full">
+                    <p-inputIcon styleClass="pi pi-barcode"/>
+                    <input class="w-full" pInputText [placeholder]="field.placeholder!=undefined?field.placeholder:''" [(ngModel)]="field.value" [ngClass]="field.case==fieldCase.UPPER?'uppercase':(field.case==fieldCase.LOWER?'lowercase':'')" [disabled]="field.disabled" [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}">
+                </p-iconField>
+                <ng-container *ngIf="field.type==fieldType.IMGURL">
+                    <div class="flex flex-row gap-1" *ngFor="let option of field.options">
+                        <p-iconField iconPosition="right" class="w-full mb-1">
+                            <p-inputIcon styleClass="pi pi-link"/>
+                            <input class="w-full" pInputText [placeholder]="field.placeholder!=undefined?field.placeholder:''" [(ngModel)]="option.label" [ngClass]="field.case==fieldCase.UPPER?'uppercase':(field.case==fieldCase.LOWER?'lowercase':'')" [disabled]="field.disabled" [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !option.value}">
+                        </p-iconField>
+                        <p-checkbox [(ngModel)]="option.value" [binary]="true" (ngModelChange)="setOnlyCheckbox(option.id,field.options)"></p-checkbox>
+                    </div>
+                </ng-container>
+                <p-inputNumber *ngIf="field.type==fieldType.MONEY" mode="currency" currency="BRL" locale="pt-BR" class="w-full" [placeholder]="field.placeholder!=undefined?field.placeholder:''" [(ngModel)]="field.value" [ngClass]="field.case==fieldCase.UPPER?'uppercase':(field.case==fieldCase.LOWER?'lowercase':'')" [disabled]="field.disabled" [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}"></p-inputNumber>
                 <p-inputNumber *ngIf="field.type==fieldType.NUMBER" [(ngModel)]="field.value" [showButtons]="true" [min]="0" styleClass="w-full" [disabled]="field.disabled" [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}"></p-inputNumber>
                 <p-calendar *ngIf="field.type==fieldType.DATE" dateFormat="dd/mm/yyyy" [disabled]="field.disabled" [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}"></p-calendar>
                 <p-calendar *ngIf="field.type==fieldType.PERIOD" 

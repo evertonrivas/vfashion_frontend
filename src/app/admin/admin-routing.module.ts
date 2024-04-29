@@ -26,6 +26,7 @@ import { ReasonsComponent } from './fpr/reasons/reasons.component';
 import { EventTypesComponent } from './scm/event-types/event-types.component';
 import { PaymentComponent } from './b2b/payment/payment.component';
 import { MeasureUnitComponent } from './measure-unit/measure-unit.component';
+import { ProfileComponent } from '../common/profile/profile.component';
 
 const routes: Routes = [{ 
   path: '', 
@@ -33,6 +34,9 @@ const routes: Routes = [{
   children:[{
     path: 'dashboard',
     component: DashboardComponent
+  },{
+    path: 'profile',
+    component: ProfileComponent
   },{
     path: 'configurations',
     component: ConfigComponent

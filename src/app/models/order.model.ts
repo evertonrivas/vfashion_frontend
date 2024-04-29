@@ -51,6 +51,7 @@ export interface TrackOrder{
 
 export interface OrderHistory{
     id_order:string,
+    id_order_number:number,
     id_customer:number,
     customer_name:string,
     id_payment_condition: number,

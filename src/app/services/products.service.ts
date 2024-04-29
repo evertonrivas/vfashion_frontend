@@ -33,8 +33,8 @@ export class ProductsService extends MyHttp{
     });
   }
 
-  listGrid(opt:Options):Observable<RequestResponse|ResponseError>{
-    return this.http.get<RequestResponse|ResponseError>(this.sys_config.backend_cmm+'/products-grid/',{
+  listGrid(opt:Options):Observable<RequestResponse|ProductGrid[]|ResponseError>{
+    return this.http.get<RequestResponse|ProductGrid[]|ResponseError>(this.sys_config.backend_cmm+'/products-grid/',{
       headers: this.getHeader(),
       params: this.getParams(opt)
     });

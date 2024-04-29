@@ -110,7 +110,7 @@ export class FunnelsComponent extends Common implements AfterViewInit{
     let fType:FormField = {
       label: "Tipo",
       name: "type",
-      options: [{ value: 'P', label: 'Prospecção' }, { value: 'V', label: 'Vendas' }],
+      options: [{ value: 'P', label: 'Prospecção',id:undefined }, { value: 'V', label: 'Vendas',id:undefined }],
       placeholder: "Selecione...",
       type: FieldType.COMBO,
       value: undefined,
@@ -122,7 +122,7 @@ export class FunnelsComponent extends Common implements AfterViewInit{
     let fDefault:FormField = {
       label: "Padrão?",
       name: "is_default",
-      options: [{ value: true, label: 'Sim' }, { value: false, label: 'Não' }],
+      options: [{ value: true, label: 'Sim',id:undefined }, { value: false, label: 'Não',id:undefined }],
       placeholder: undefined,
       type: FieldType.RADIO,
       value: undefined,

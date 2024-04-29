@@ -1,6 +1,7 @@
 import { FieldType,FieldCase } from "./system.enum";
 
 export interface FieldOption{
+    id: number|undefined
     value: any,
     label: string
 }

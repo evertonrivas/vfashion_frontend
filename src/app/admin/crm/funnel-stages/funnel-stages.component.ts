@@ -98,7 +98,8 @@ export class FunnelStagesComponent extends Common implements AfterViewInit{
         (data as Funnel[]).forEach((f) =>{
           opts.push({
             value: f.id,
-            label: f.name
+            label: f.name,
+            id:undefined
           });
         });
 

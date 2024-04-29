@@ -95,7 +95,7 @@ export class EntitiesComponent extends Common implements AfterViewInit{
       filter_name: "type",
       filter_prefix: "is",
       name:"type",
-      options:[{value:'C',label:'Cliente'},{value:'R',label:'Representante'},{value:'S',label:'Fornecedor'}],
+      options:[{value:'C',label:'Cliente',id:undefined},{value:'R',label:'Representante',id:undefined},{value:'S',label:'Fornecedor',id:undefined}],
       value:undefined
     });
 
@@ -106,7 +106,8 @@ export class EntitiesComponent extends Common implements AfterViewInit{
         (data as Country[]).forEach((c) =>{
           cOpt.push({
             value: c.id,
-            label: c.name
+            label: c.name,
+            id:undefined
           });
         });
 
@@ -133,7 +134,8 @@ export class EntitiesComponent extends Common implements AfterViewInit{
         (data as StateRegion[]).forEach((s) =>{
           sOpt.push({
             value: s.id,
-            label: s.acronym+" - "+s.name
+            label: s.acronym+" - "+s.name,
+            id:undefined
           });
         });
 
