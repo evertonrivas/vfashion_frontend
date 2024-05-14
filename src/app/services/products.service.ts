@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient,HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Product, ProductGrid } from 'src/app/models/product.model';
+import { Product, ProductGrid, ProductGridDistribution } from 'src/app/models/product.model';
 import { ContentType, MyHttp } from './my-http';
 import { Options, RequestResponse, ResponseError } from '../models/paginate.model';
 import { Order } from '../models/order.model';
@@ -33,6 +33,16 @@ export class ProductsService extends MyHttp{
     });
   }
 
+  delete(ids:number[],toTrash:boolean):Observable<boolean|ResponseError>{
+    return this.http.delete<boolean|ResponseError>(this.sys_config.backend_cmm+"/products/",{
+      headers: this.getHeader(ContentType.json),
+      body: {
+        toTrash: toTrash,
+        ids: ids
+      }
+    });
+  }
+
   listGrid(opt:Options):Observable<RequestResponse|ProductGrid[]|ResponseError>{
     return this.http.get<RequestResponse|ProductGrid[]|ResponseError>(this.sys_config.backend_cmm+'/products-grid/',{
       headers: this.getHeader(),
@@ -52,11 +62,40 @@ export class ProductsService extends MyHttp{
     });
   }
 
-  delete(ids:number[],toTrash:boolean):Observable<boolean|ResponseError>{
-    return this.http.delete<boolean|ResponseError>(this.sys_config.backend_cmm+"/products/",{
+  deleteGrid(ids:number[],toTrash:boolean):Observable<boolean|ResponseError>{
+    return this.http.delete<boolean|ResponseError>(this.sys_config.backend_cmm+"/products-grid/",{
       headers: this.getHeader(ContentType.json),
       body: {
         toTrash: toTrash,
+        ids: ids
+      }
+    });
+  }
+
+
+  listGridDistribution(idGrid:number,opt:Options):Observable<RequestResponse|ProductGridDistribution[]|ResponseError>{
+    return this.http.get<RequestResponse|ProductGridDistribution[]|ResponseError>(this.sys_config.backend_cmm+'/products-grid/distribution/'+idGrid.toString(),{
+      headers: this.getHeader(),
+      params: this.getParams(opt)
+    });
+  }
+
+  loadGridDistribution(idGrid:number):Observable<ProductGridDistribution|ResponseError>{
+    return this.http.get<ProductGridDistribution|ResponseError>(this.sys_config.backend_cmm+'/products-grid/distribution/'+idGrid.toString(),{
+      headers: this.getHeader()
+    });
+  }
+
+  saveGridDistribution(idGrid:number,data:any):Observable<number|boolean|ResponseError>{
+    return this.http.post<number|boolean|ResponseError>(this.sys_config.backend_cmm+'/products-grid/distribution/'+idGrid.toString(),data,{
+      headers: this.getHeader(ContentType.json)
+    });
+  }
+
+  deleteGridDistribution(idGrid:number,ids:number[]):Observable<boolean|ResponseError>{
+    return this.http.delete<boolean|ResponseError>(this.sys_config.backend_cmm+"/products-grid/",{
+      headers: this.getHeader(ContentType.json),
+      body: {
         ids: ids
       }
     });
