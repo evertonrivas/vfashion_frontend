@@ -201,6 +201,10 @@ body{
     @include use-md-icon('grid_view')
 }
 
+.pi-prod-grid-edit{
+    @include use-md-icon-normal('grid_4x4')
+}
+
 .pi-order-finish{
     @include use-md-icon('order_approve')
 }
