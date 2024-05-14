@@ -1,4 +1,4 @@
-<p-dialog [(visible)]="visible" styleClass="md:w-6 w-30rem" (onHide)="clearFields()" [header]="title" [modal]="true">
+<p-dialog [(visible)]="visible" styleClass="md:w-6 w-30rem" (onHide)="clearFields()" [header]="title" [modal]="true" [closable]="false">
     <!-- <h5 class="text-center">{{title}}</h5> -->
     <ng-container>
         <div class="flex flex-column w-full md:flex-row mb-2 gap-2" *ngFor="let row of rows">
