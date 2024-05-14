@@ -18,6 +18,7 @@ export class Common{
     modulePath:string = ""; //url do caminho do modulo
     modules = ModuleName; //lista de modulos existentes
     response:RequestResponse; //resposta padrao para os servicos
+    disabledNew:boolean = false; //habilita ou desabilita a edicao ou novo registro no admin
     options:Options = {
         page: 1,
         pageSize: this.sysconfig.system.pageSize,
