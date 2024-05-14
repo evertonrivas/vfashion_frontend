@@ -47,6 +47,8 @@ export class CustomerGroupsComponent extends Common implements AfterViewInit{
   sendCustomer:boolean = false;
   loadingCustomers:boolean = false;
 
+  all_repres:Entity[] = [];
+
   entitiesToAddInGroup:Entity[] = [];
   selectedEntitiesToAddInGroup:Entity[] = [];
   filtersToSearch:filterParams = {
@@ -87,6 +89,13 @@ export class CustomerGroupsComponent extends Common implements AfterViewInit{
     this.svcL.listStageRegions({page:1,pageSize:1,query:'can:list-all 1||order-by acronym||order asc'}).subscribe({
       next:(data) =>{
         this.states = data as StateRegion[];
+      }
+    });
+    this.disabledNew = true;
+    this.svc.listEntity({page:1,pageSize:1,query:"can:list-all 1||is:type R"}).subscribe({
+      next: (data) =>{
+        this.all_repres = data as Entity[];
+        this.disabledNew = false;
       }
     });
     this.cdr.detectChanges();
@@ -131,16 +140,12 @@ export class CustomerGroupsComponent extends Common implements AfterViewInit{
     };
 
     let opts:FieldOption[] = [];
-    this.svc.listEntity({page:1,pageSize:1,query:"can:list-all 1||is:type R"}).subscribe({
-      next: (data) =>{
-        (data as Entity[]).forEach((e) =>{
-          opts.push({
-            value: e.id,
-            label: e.name,
-            id:undefined
-          });
-        });
-      }
+    this.all_repres.forEach((r) =>{
+      opts.push({
+        value: r.id,
+        label: r.name,
+        id: undefined
+      });
     })
     let fRepr:FormField = {
       label:"Representante",
@@ -174,7 +179,10 @@ export class CustomerGroupsComponent extends Common implements AfterViewInit{
             this.localObject = data as CustomerGroup;
             fieldName.value = this.localObject.name;
             fApprov.value   = this.localObject.need_approvement==true?1:0;
-            fRepr.value     = this.localObject.id_representative;
+            fRepr.value     = fRepr.options?.find(v => v.value==this.localObject.id_representative);
+            // console.log(fRepr.value);
+            // console.log(fRepr.options);
+            // console.log(this.localObject.id_representative);
 
             //monta as linhas do forme e exibe o mesmo
             let row:FormRow = {
@@ -233,7 +241,7 @@ export class CustomerGroupsComponent extends Common implements AfterViewInit{
         }else{
           this.msg.add({
             summary:"Falha...",
-            detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+            detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
             severity:"error"
           });
         }
@@ -270,7 +278,7 @@ export class CustomerGroupsComponent extends Common implements AfterViewInit{
             }else{
               this.msg.add({
                 summary:"Falha...",
-                detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+                detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
                 severity:"error"
               });
             }
