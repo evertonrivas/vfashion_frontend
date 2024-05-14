@@ -57,7 +57,7 @@ export class StepsComponent extends Common implements AfterViewInit{
   }
 
   onEditData(id:number = 0){
-
+    
   }
 
   onDataSave(data:any):void{
@@ -82,7 +82,7 @@ export class StepsComponent extends Common implements AfterViewInit{
     //     }else{
     //       this.msg.add({
     //         summary:"Falha...",
-    //         detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+    //         detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
     //         severity:"error"
     //       });
     //     }
@@ -119,7 +119,7 @@ export class StepsComponent extends Common implements AfterViewInit{
     //         }else{
     //           this.msg.add({
     //             summary:"Falha...",
-    //             detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+    //             detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
     //             severity:"error"
     //           });
     //         }

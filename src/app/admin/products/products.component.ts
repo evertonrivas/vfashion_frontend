@@ -536,7 +536,7 @@ export class ProductsComponent extends Common implements AfterViewInit {
         }else{
           this.msg.add({
             summary:"Falha...",
-            detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+            detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
             severity:"error"
           });
         }
@@ -573,7 +573,7 @@ export class ProductsComponent extends Common implements AfterViewInit {
             }else{
               this.msg.add({
                 summary:"Falha...",
-                detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+                detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
                 severity:"error"
               });
             }

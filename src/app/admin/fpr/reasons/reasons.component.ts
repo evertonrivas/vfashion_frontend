@@ -91,7 +91,7 @@ export class ReasonsComponent extends Common implements AfterViewInit{
       //busca os dados do registro para edicao
       this.serviceSub[2] = this.svc.loadReason(id).subscribe({
         next: (data) =>{
-          if ("name" in data){
+          if ("description" in data){
             this.localObject = data as Reason;
             fieldName.value = this.localObject.description;
 
@@ -144,7 +144,7 @@ export class ReasonsComponent extends Common implements AfterViewInit{
         }else{
           this.msg.add({
             summary:"Falha...",
-            detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+            detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
             severity:"error"
           });
         }
@@ -181,7 +181,7 @@ export class ReasonsComponent extends Common implements AfterViewInit{
             }else{
               this.msg.add({
                 summary:"Falha...",
-                detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+                detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
                 severity:"error"
               });
             }

@@ -193,7 +193,7 @@ export class CategoriesComponent extends Common implements AfterViewInit, OnDest
         }else{
           this.msg.add({
             summary:"Falha...",
-            detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+            detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
             severity:"error"
           });
         }
@@ -230,7 +230,7 @@ export class CategoriesComponent extends Common implements AfterViewInit, OnDest
             }else{
               this.msg.add({
                 summary:"Falha...",
-                detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+                detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
                 severity:"error"
               });
             }

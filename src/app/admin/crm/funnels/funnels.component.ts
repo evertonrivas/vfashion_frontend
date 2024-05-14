@@ -138,7 +138,7 @@ export class FunnelsComponent extends Common implements AfterViewInit{
           if ("name" in data){
             this.localObject = data as Funnel;
             fieldName.value = this.localObject.name;
-            fType.value     = this.localObject.type;
+            fType.value     = fType.options?.find(v => v.value==this.localObject.type);
             fDefault.value  = this.localObject.is_default;
 
             //monta as linhas do forme e exibe o mesmo
@@ -198,7 +198,7 @@ export class FunnelsComponent extends Common implements AfterViewInit{
         }else{
           this.msg.add({
             summary:"Falha...",
-            detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+            detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
             severity:"error"
           });
         }
@@ -235,7 +235,7 @@ export class FunnelsComponent extends Common implements AfterViewInit{
             }else{
               this.msg.add({
                 summary:"Falha...",
-                detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+                detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
                 severity:"error"
               });
             }
