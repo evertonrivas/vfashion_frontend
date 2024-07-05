@@ -24,6 +24,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { EditorModule } from 'primeng/editor';
 import { TopbarComponent } from '../common/topbar/topbar.component';
+import { ChipsModule } from 'primeng/chips';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { TopbarComponent } from '../common/topbar/topbar.component';
     FileUploadModule,
     AutoCompleteModule,
     EditorModule,
-    TopbarComponent
+    TopbarComponent,
+    ChipsModule
   ],
   providers:[
     provideNgxMask()
