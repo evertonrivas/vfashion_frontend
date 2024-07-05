@@ -1,5 +1,5 @@
 import { HttpHeaders } from '@angular/common/http';
-import { Component, Input,EventEmitter,Output } from '@angular/core';
+import { Component, Input,EventEmitter,Output, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Message } from 'primeng/api';
 import { FileUploadEvent } from 'primeng/fileupload';
@@ -13,7 +13,7 @@ import { EmailService } from 'src/app/services/email.service';
   templateUrl: './customer-email.component.html',
   styleUrls: ['./customer-email.component.scss']
 })
-export class CustomerEmailComponent extends Common{
+export class CustomerEmailComponent extends Common implements AfterViewInit{
   @Input() emailToList:EntityContact[] = [];
   @Input() uploadHeaders:HttpHeaders = new HttpHeaders();
   @Input() uploadMax:number = 0;
@@ -31,13 +31,18 @@ export class CustomerEmailComponent extends Common{
   subject:string = '';
   content:string = '';
   attachments:string[] = [];
-  url_upload:string = this.sysconfig.backend_cmm+'/upload/temp'
+  url_upload:string = this.sysconfig.backend_cmm+'/upload/temp';
+  moreThan4:string[] = ["Vários clientes selecionados..."];
 
   constructor(
     private svc:EmailService,
+    private cdr:ChangeDetectorRef,
     route:Router
   ){
     super(route);
+  }
+  ngAfterViewInit(): void {
+    this.cdr.detectChanges();
   }
 
   sendEmail(){

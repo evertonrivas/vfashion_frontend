@@ -8,7 +8,12 @@
             <div>{{contact.name}} &lt;{{contact.value}} &gt;</div>
         </ng-template>
     </p-dropdown>
-    <p-chips *ngIf="massiveEmail" [(ngModel)]="emailToList" field="value" class="p-fluid" [disabled]="true"></p-chips>
+    <ng-container *ngIf="emailToList.length <= 4">
+        <p-chips *ngIf="massiveEmail" placeholder="Teste" [(ngModel)]="emailToList" field="value" class="p-fluid" [disabled]="true"></p-chips>
+    </ng-container>
+    <ng-container *ngIf="emailToList.length > 4">
+        <p-chips class="p-fluid" [disabled]="true" placeholder="Teste total" [(ngModel)]="moreThan4"></p-chips>
+    </ng-container>
 </div>
 <div class="flex flex-column w-full mt-1">
     <label>Assunto</label>
