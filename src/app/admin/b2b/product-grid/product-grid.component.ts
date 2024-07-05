@@ -6,12 +6,26 @@ import { Common } from 'src/app/classes/common';
 import { SharedModule } from 'src/app/common/shared.module';
 import { FilterComponent } from "../../../common/filter/filter.component";
 import { PaginatorState } from 'primeng/paginator';
-import { RequestResponse, ResponseError } from 'src/app/models/paginate.model';
+import { Options, RequestResponse, ResponseError } from 'src/app/models/paginate.model';
 import { FieldCase, FieldType } from 'src/app/models/system.enum';
 import { ProductsService } from 'src/app/services/products.service';
 import { FormComponent } from 'src/app/common/form/form.component';
 import { FormField, FormRow } from 'src/app/models/field.model';
-import { ProductGrid } from 'src/app/models/product.model';
+import { Color, ProductGrid, ProductGridDistribution, Size } from 'src/app/models/product.model';
+import { ColorService } from 'src/app/services/color.service';
+import { SizeService } from 'src/app/services/size.service';
+
+interface sizes{
+  id_size:number,
+  size:string,
+  value:number
+}
+
+interface localDistribution{
+  [index:number]:{
+    value:number
+  }
+}
 
 @Component({
     selector: 'app-product-grid',
@@ -31,11 +45,23 @@ import { ProductGrid } from 'src/app/models/product.model';
 })
 export class ProductGridComponent extends Common implements AfterViewInit,OnDestroy{
   localObject!:ProductGrid;
+  localDistribution!:ProductGridDistribution;
+  formDistribution:localDistribution = {};
+  selectedColor!:Color;
+  loadingGrid:boolean = false;
+  showDistribution:boolean = false;
+  all_color:Color[] = [];
+  all_size:Size[] = [];
+  sizes:sizes[] = [];
+
+  distributionInGrid:ProductGridDistribution[] = [];
   constructor(route:Router,
     private cdr:ChangeDetectorRef,
     private msg:MessageService,
     private cnf:ConfirmationService,
-    private svc:ProductsService){
+    private svc:ProductsService,
+    private svcC:ColorService,
+    private svcS:SizeService){
     super(route)
   }
 
@@ -74,6 +100,28 @@ export class ProductGridComponent extends Common implements AfterViewInit,OnDest
         this.response = data as RequestResponse;
         this.cdr.detectChanges();
         this.loading = false;
+      }
+    });
+
+
+    //carga das cores
+    this.svcC.list({page:1,pageSize:1,query:'can:list-all 1'}).subscribe({
+      next: (data) =>{
+        this.all_color = data as Color[];
+      }
+    });
+
+    //carga dos tamanhos
+    this.svcS.list({page:1,pageSize:1,query:'can:list-all 1'}).subscribe({
+      next: (data) =>{
+        this.all_size = data as Size[];
+        this.all_size.forEach(s =>{
+          if(this.formDistribution[s.id] == undefined){
+            this.formDistribution[s.id] = {
+              value: 0
+            }
+          }
+        });
       }
     });
   }
@@ -115,7 +163,7 @@ export class ProductGridComponent extends Common implements AfterViewInit,OnDest
             this.localObject = data as ProductGrid;
             fieldName.value = this.localObject.name;
 
-            //monta as linhas do forme e exibe o mesmo
+            //monta as linhas do form e exibe o mesmo
             let row:FormRow = {
               fields: [fieldName]
             }
@@ -144,33 +192,33 @@ export class ProductGridComponent extends Common implements AfterViewInit,OnDest
 
   onDataSave(data:any):void{
     this.hasSended = true;
-    // this.serviceSub[3] = this.svc.save(this.idToEdit,data).subscribe({
-    //   next:(data) =>{
-    //     this.hasSended = false;
-    //     this.formVisible = false;
-    //     this.msg.clear();
-    //     if(typeof data ==='number'){
-    //       this.msg.add({
-    //         summary:"Sucesso...",
-    //         detail: "Registro criado com sucesso!",
-    //         severity:"success"
-    //       });
-    //     }else if(typeof data ==='boolean'){
-    //       this.msg.add({
-    //         summary:"Sucesso...",
-    //         detail: "Registro atualizado com sucesso!",
-    //         severity:"success"
-    //       });
-    //     }else{
-    //       this.msg.add({
-    //         summary:"Falha...",
-    //         detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
-    //         severity:"error"
-    //       });
-    //     }
-    //     this.loadingData();
-    //   }
-    // });
+    this.serviceSub[3] = this.svc.saveGrid(data).subscribe({
+      next:(data) =>{
+        this.hasSended = false;
+        this.formVisible = false;
+        this.msg.clear();
+        if(typeof data ==='number'){
+          this.msg.add({
+            summary:"Sucesso...",
+            detail: "Registro criado com sucesso!",
+            severity:"success"
+          });
+        }else if(typeof data ==='boolean'){
+          this.msg.add({
+            summary:"Sucesso...",
+            detail: "Registro atualizado com sucesso!",
+            severity:"success"
+          });
+        }else{
+          this.msg.add({
+            summary:"Falha...",
+            detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
+            severity:"error"
+          });
+        }
+        this.loadingData();
+      }
+    });
   }
 
   onDataDelete(pSendToTrash:boolean):void{
@@ -201,7 +249,7 @@ export class ProductGridComponent extends Common implements AfterViewInit,OnDest
             }else{
               this.msg.add({
                 summary:"Falha...",
-                detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+                detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
                 severity:"error"
               });
             }
@@ -212,5 +260,107 @@ export class ProductGridComponent extends Common implements AfterViewInit,OnDest
       rejectIcon:"pi pi-ban mr-1",
       rejectButtonStyleClass:"p-button-danger p-button-sm"
     });
+  }
+
+  onEditGrid(id:number,idColor:number = 0):void{
+    this.idToEdit = id;
+    if(idColor>0){
+      this.svc.loadGridDistribution(id,idColor).subscribe({
+        next:(data) =>{
+          this.localDistribution = data as ProductGridDistribution;
+          this.selectedColor = this.all_color.find(v => v.id== this.localDistribution.id_color) as Color;
+          this.localDistribution.sizes.forEach(s =>{
+            this.formDistribution[s.id_size].value = s.value
+          });
+        }
+      });
+    }else{
+      this.localDistribution = {
+        color:'',
+        id_color:0,
+        sizes: []
+      }
+    }
+    this.showDistribution = true;
+  }
+
+  onDeleteGrid(id:number,id_color:number = 0):void{
+    this.svc.deleteGridDistribution(id,id_color).subscribe({
+      next:(data) =>{
+        if(typeof data==='boolean'){
+          this.msg.add({
+            severity:"success",
+            summary:"Sucesso!",
+            detail:"Distribuição excluída com sucesso!"
+          });
+        }else{
+          this.msg.add({
+            summary:"Falha...",
+            detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
+            severity:"error"
+          });
+        }
+      }
+    });
+  }
+
+  onCancelEdit():void{
+    this.showDistribution = false;
+  }
+
+  onSaveGrid():void{
+    //atualiza os valores das cores
+    this.localDistribution.sizes.forEach(s =>{
+      s.value = this.formDistribution[s.id_size].value
+    });
+
+    this.svc.saveGridDistribution(this.idToEdit,this.localDistribution).subscribe({
+      next:(data) =>{
+        this.msg.clear();
+        if(typeof data ==='number'){
+          this.msg.add({
+            summary: 'Sucesso!',
+            severity: 'success',
+            detail: 'Distribuição adicionada com sucesso!'
+          });
+        }else if(typeof data === 'boolean'){
+          this.msg.add({
+            summary:'Sucesso!',
+            severity:'success',
+            detail:'Distribuição atualizada com sucesso!'
+          });
+        }else{
+          this.msg.add({
+            summary:"Falha...",
+            detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
+            severity:"error"
+          });
+        }
+      }
+    })
+  }
+
+  onViewGrid(evt:PaginatorState = { page: 0, pageCount: 0},id:number){
+    if (id > 0){
+      this.loadingGrid = true;
+      let options:Options = {
+        query : "is:id_group "+id.toString(),
+        page: (evt.page as number)+1,
+        pageSize: this.sysconfig.system.pageSize
+      }
+
+      this.serviceSub[2] = this.svc.listGridDistribution(id,options).subscribe({
+        next: (data) =>{
+          this.distributionInGrid = data as ProductGridDistribution[];
+          this.sizes = this.distributionInGrid[0].sizes;
+          this.cdr.detectChanges();
+          this.loadingGrid = false;
+        }
+      });
+    }
+  }
+
+  onHideGrid(){
+    this.distributionInGrid = [];
   }
 }
