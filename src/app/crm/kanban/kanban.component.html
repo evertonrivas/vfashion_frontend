@@ -124,7 +124,7 @@
                     </ng-container>
                     <!--Fimd do card de cliente-->
                     <p-paginator 
-                        *ngIf="customersOfStage[stage.id].pagination.registers>0" 
+                        *ngIf="customersOfStage[stage.id].pagination.registers > 0" 
                         (onPageChange)="loadCustomerState($event,stage.id,customersOfStage[stage.id].pagination.has_next)"
                         [first]="first[stage.id]"
                         [rows]="rows[stage.id]"
@@ -173,6 +173,7 @@
         ></p-fileUpload>
 </p-sidebar>
  
+<!--envio de email-->
 <p-dialog [(visible)]="emailVisible" [style]="{'width':'70vw'}" [modal]="true" [draggable]="false">
     <ng-template pTemplate="header">
         <div class="flex justify-content-end w-full mr-1">

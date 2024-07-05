@@ -245,7 +245,7 @@ export class KanbanComponent extends Common implements AfterContentInit{
     }
     this.customersOfStage[idStage] = {
       pagination:{
-        has_next: false,
+        has_next: has_next,
         page: 1,
         pages: 0,
         per_page: 25,
