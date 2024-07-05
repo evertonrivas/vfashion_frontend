@@ -13,7 +13,7 @@ export const environment = {
         linkedin: "https://linkedin.com/in/company_page"
     },
     system:{
-        pageSize: 50,
+        pageSize: 25,
         max_upload_files: 7,
         max_upload_images: 4,
         use_url_images:true
@@ -27,4 +27,5 @@ export const environment = {
     recaptcha: {
         siteKey : "6Le7VGUlAAAAAMUwZDKXC-lhfBV9l_dHEMvxCVdV"
     },
+    version: '1.0.0'
 };
