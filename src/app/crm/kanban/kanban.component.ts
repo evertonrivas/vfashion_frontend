@@ -27,8 +27,10 @@ export class KanbanComponent extends Common implements AfterContentInit{
   selectedFunnel:Funnel|null = null;
   stageToMove:FunnelStage = {
     id: 0,
+    id_funnel: 0,
     name: '',
     icon: '',
+    icon_color:'',
     color: '',
     order: 0,
     date_created: '',

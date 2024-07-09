@@ -207,6 +207,18 @@ export class EventFormComponent extends Common implements OnDestroy{
   closeForm():void{
     this.exsistentEvents = [];
     this.showParentEvents = false;
+
+    this.selectedEventType = undefined;
+    this.eventName = "";
+    this.eventStart = null;
+    this.eventEnd = null;
+    this.eventBudget = null;
+    this.eventParentEventId = 0;
+    this.eventCollectionId = 0;
+    this.eventTypes = [];
+    this.validPeriod = true;
+
+
     this.CloseModal.emit(true);
   }
 

@@ -37,10 +37,10 @@
     <ng-container *ngFor="let stage of stagesOfFunnel;let i=index">
         <!--Inicio do stagio de funil-->
         <div class="p-panel w-full" [ngClass]="i<stagesOfFunnel.length-1?'pr-2':''">
-            <div class="p-panel-header flex justify-content-between flex-grow-1 bg-{{stage.color}}-100">
+            <div class="p-panel-header flex justify-content-between flex-grow-1 " [ngStyle]="{'background-color': stage.color}">
                 <div class="flex flex-column vertical-align-middle">
-                    <span class="font-medium"><span class="material-symbols-outlined vertical-align-text-bottom text-{{stage.color}}-500 icon-small">{{stage.icon}}</span> {{stage.name}}</span>
-                    <a href="javascript:void(0)" class="text-sm text-800" (click)="checkAll(stage.id)"><span class="material-symbols-outlined text-{{stage.color}}-500 vertical-align-text-bottom icon-small">done_all</span> Marcar todos</a>
+                    <span class="font-medium"><span class="material-symbols-outlined vertical-align-text-bottom icon-small" [ngStyle]="{'color': stage.icon_color}">{{stage.icon}}</span> {{stage.name}}</span>
+                    <a href="javascript:void(0)" class="text-sm text-800" (click)="checkAll(stage.id)"><span class="material-symbols-outlined vertical-align-text-bottom icon-small" [ngStyle]="{'color': stage.icon_color}">done_all</span> Marcar todos</a>
                     <span class="text-xs ml-1">{{customersOfStage[stage.id].pagination.registers}} clientes</span>
                 </div>
                 <div class="flex flex-column justify-content-start vertical-align-top">

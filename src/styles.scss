@@ -265,6 +265,10 @@ body{
     @include use-md-icon-normal('barcode_scanner')
 }
 
+.pi-emoticon {
+    @include use-md-icon-normal('emoticon')
+}
+
 .kcolor .p-dropdown-items .p-dropdown-item {
     padding: 0px!important;
     margin-top: 2px;

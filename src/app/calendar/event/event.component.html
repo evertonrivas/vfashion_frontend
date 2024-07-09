@@ -2,6 +2,6 @@
     <span *ngIf="ComponentCollection!=null">{{ComponentBrand}}{{ComponentBrand!=null?':':''}}{{ComponentCollection}}</span>
     <span *ngIf="ComponentCollection==null">{{ComponentDateStart}} - {{ComponentDateEnd}}</span>
 </div>
-<div *ngIf="isMilestone" class="milestone-object shadow-sm text-center"[ngStyle]="{'backgroundColor': ComponentColor}" pTooltip="{{ComponentDateStart}}" tooltipPosition="top" tooltipStyleClass="text-xs">
+<div *ngIf="isMilestone" class="milestone-object shadow-sm text-center" [ngStyle]="{'backgroundColor': ComponentColor}" pTooltip="{{ComponentDateStart}}" tooltipPosition="top" tooltipStyleClass="text-xs">
 
 </div>

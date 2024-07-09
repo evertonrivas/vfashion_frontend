@@ -33,6 +33,7 @@ import { FormComponent } from 'src/app/common/form/form.component';
 })
 export class FunnelStagesComponent extends Common implements AfterViewInit{
   localObject!:FunnelStage;
+  allOptFunnel:FieldOption[]  = [];
   constructor(route:Router,
     private cdr:ChangeDetectorRef,
     private msg:MessageService,
@@ -101,6 +102,7 @@ export class FunnelStagesComponent extends Common implements AfterViewInit{
             label: f.name,
             id:undefined
           });
+          this.allOptFunnel.push({ id: f.id, value: f.id, label: f.name});
         });
 
         this.filters.push({
@@ -131,6 +133,50 @@ export class FunnelStagesComponent extends Common implements AfterViewInit{
       case: FieldCase.NONE,
       disabled: false
     };
+    let fieldFunnel:FormField = {
+      label:"Funil",
+      name:"id_funnel",
+      placeholder: "Selecione...",
+      type: FieldType.COMBO,
+      value: undefined,
+      options: this.allOptFunnel,
+      required:true,
+      case:FieldCase.NONE,
+      disabled:false
+    }
+    let fieldColor:FormField = {
+      label: "Cor",
+      name: "hex_color",
+      options: undefined,
+      placeholder: "Selecione...",
+      type:FieldType.KCOLOR,
+      value: undefined,
+      required:true,
+      case: FieldCase.NONE,
+      disabled:false
+    }
+    let fieldIcon: FormField = {
+      label:"Ícone",
+      name: "icon",
+      options: undefined,
+      placeholder: undefined,
+      type: FieldType.ICON,
+      value: undefined,
+      required: true,
+      case: FieldCase.NONE,
+      disabled: false
+    }
+    let fieldOrder:FormField = {
+      label: "Ordem",
+      name: "order",
+      options: undefined,
+      placeholder: undefined,
+      type: FieldType.NUMBER,
+      value: undefined,
+      required: true,
+      case: FieldCase.NONE,
+      disabled: false
+    }
     this.idToEdit = id;
 
     if(id>0){
@@ -140,12 +186,15 @@ export class FunnelStagesComponent extends Common implements AfterViewInit{
           if ("name" in data){
             this.localObject = data as FunnelStage;
             fieldName.value = this.localObject.name;
+            fieldFunnel.value = fieldFunnel.options?.find(v => v.value == this.localObject.id_funnel);
+            fieldColor.value = {value: this.localObject.color, label: this.localObject.color}
+            fieldIcon.value = this.localObject.icon;
+            fieldOrder.value = this.localObject.order;
 
             //monta as linhas do forme e exibe o mesmo
-            let row:FormRow = {
-              fields: [fieldName]
-            }
-            this.formRows.push(row);
+            this.formRows.push({ fields: [fieldName] });
+            this.formRows.push({ fields: [fieldFunnel] });
+            this.formRows.push({ fields: [fieldColor,fieldIcon,fieldOrder] });
             this.formVisible = true;
             
           }else{

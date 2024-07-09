@@ -38,52 +38,125 @@ export class FormComponent {
   sended:boolean = false;
   selectedImageOption:any;
   kcolors:any[] = [];
+  icons:string[] = [];
   uploadHeaders:HttpHeaders = new HttpHeaders()
     .set("Authorization",localStorage.getItem('token_type')+" "+localStorage.getItem('token_access'));
 
   constructor(){
+    //icones
+    this.icons.push("list_alt");
+    this.icons.push("phone_disabled");
+    this.icons.push("support_agent");
+    this.icons.push("event");
+    this.icons.push("order_approve");
+    this.icons.push("verified");
+    this.icons.push("home");
+    this.icons.push("token");
+    this.icons.push("heart_plus");
+    this.icons.push("person");
+    this.icons.push("group");
+    this.icons.push("thumb_up");
+    this.icons.push("groups");
+    this.icons.push("public");
+    this.icons.push("face");
+    this.icons.push("rocket_launch");
+    this.icons.push("workspace_premium");
+    this.icons.push("emoji_objects");
+    this.icons.push("eco");
+    this.icons.push("pets");
+    this.icons.push("military_tech");
+    this.icons.push("thumb_down");
+    this.icons.push("diversity_1");
+    this.icons.push("vaccines");
+    this.icons.push("psychology_alt");
+    this.icons.push("cruelty_free");
+    this.icons.push("medical_information");
+    this.icons.push("potted_plant");
+    this.icons.push("rainy");
+    this.icons.push("cookie");
+    this.icons.push("communication");
+    this.icons.push("male");
+    this.icons.push("clear_day");
+    this.icons.push("wind_power");
+    this.icons.push("stars");
+    this.icons.push("hotel_class");
+    this.icons.push("component_exchange");
+    this.icons.push("notifications");
+    this.icons.push("chat");
+    this.icons.push("alternate_email");
+    this.icons.push("call");
+    this.icons.push("mail");
+    this.icons.push("photo_camera");
+    this.icons.push("palette");
+    this.icons.push("payments");
+    this.icons.push("credit_card");
+    this.icons.push("paid");
+    this.icons.push("savings");
+    this.icons.push("shoppingmode");
+    this.icons.push("location_on");
+    this.icons.push("restaurant");
+    this.icons.push("handyman");
+    this.icons.push("home_work");
+    this.icons.push("local_florist");
+    this.icons.push("church");
+    this.icons.push("local_shipping");
+    this.icons.push("train");
+    this.icons.push("local_taxi");
+    this.icons.push("sailing");
+    this.icons.push("snowmobile");
+    this.icons.push("school");
+    this.icons.push("volunteer_activism");
+    this.icons.push("sports_esports");
+    this.icons.push("self_improvement");
+    this.icons.push("sports_soccer");
+    this.icons.push("hiking");
+    this.icons.push("architecture");
+    this.icons.push("surfing");
+    this.icons.push("skateboarding");
+    this.icons.push("kayaking");
+
     this.kcolors.push({
       value: '0',
       label: 'Pastel Rainbow',
       items: [
-          { value: '#BAE1FF', label: '#BAE1FF'}, //azul
-          { value: '#BAFFC9', label: '#BAFFC9'}, //verde
-          { value: '#FFFFBA', label: '#FFFFBA'}, //amarelo
-          { value: '#FFDFBA', label: '#FFDFBA'}, //laranja
-          { value: '#FFB3DA', label: '#FFB3DA'} //vermelho
+          { value: '#BAE1FF', label: '#BAE1FF' }, //azul
+          { value: '#BAFFC9', label: '#BAFFC9' }, //verde
+          { value: '#FFFFBA', label: '#FFFFBA' }, //amarelo
+          { value: '#FFDFBA', label: '#FFDFBA' }, //laranja
+          { value: '#FFB3DA', label: '#FFB3DA' } //vermelho
       ]
     });
     this.kcolors.push({
         value: '1',
         label: 'WarmPastel',
         items:[
-            { value:'#F3EFDA', label: '#F3EFDA'}, //#f3efda
-            { value:'#F8EECE', label: '#F8EECE'}, //#f8eece
-            { value:'#F3E5DA', label: '#F3E5DA'}, //#f3e5da
-            { value:'#F3DADA', label: '#F3DADA'}, //#f3dada
-            { value:'#F3F1DA', label: '#F3F1DA'} //#f3f1da
+            { value:'#F3EFDA', label: '#F3EFDA' }, //#f3efda
+            { value:'#F8EECE', label: '#F8EECE' }, //#f8eece
+            { value:'#F3E5DA', label: '#F3E5DA' }, //#f3e5da
+            { value:'#F3DADA', label: '#F3DADA' }, //#f3dada
+            { value:'#F3F1DA', label: '#F3F1DA' } //#f3f1da
         ]
     });
     this.kcolors.push({
         value: '2',
         label: 'SetsunaLight',
         items: [
-            { value: '#B8E4F8', label: '#B8E4F8'}, //#b8e4f8
-            { value: '#B8DDF8', label: '#B8DDF8'}, //#b8ddf8
-            { value: '#C3F8F8', label: '#C3F8F8'}, //#c3b8f8
-            { value: '#D5B8F8', label: '#D5B8F8'}, //#d5b8f8
-            { value: '#EAF5FA', label: '#EAF5FA'}, //#eaf5fa
+            { value: '#B8E4F8', label: '#B8E4F8' }, //#b8e4f8
+            { value: '#B8DDF8', label: '#B8DDF8' }, //#b8ddf8
+            { value: '#C3F8F8', label: '#C3F8F8' }, //#c3b8f8
+            { value: '#D5B8F8', label: '#D5B8F8' }, //#d5b8f8
+            { value: '#EAF5FA', label: '#EAF5FA' }, //#eaf5fa
         ]
     });
     this.kcolors.push({
         value: '3',
         label:'Watermelon',
         items: [
-            { value: '#A8E6CF', label: '#A8E6CF'}, //#a8e6cf
-            { value: '#DCEDC1', label: '#DCEDC1'}, //#dcedc1
-            { value: '#FFD3B6', label: '#FFD3B6'}, //#ffd3b6
-            { value: '#FFAAA5', label: '#FFAAA5'}, //#ffaaa5
-            { value: '#FF8B94', label: '#FF8B94'}, //#ff8b94
+            { value: '#A8E6CF', label: '#A8E6CF' }, //#a8e6cf
+            { value: '#DCEDC1', label: '#DCEDC1' }, //#dcedc1
+            { value: '#FFD3B6', label: '#FFD3B6' }, //#ffd3b6
+            { value: '#FFAAA5', label: '#FFAAA5' }, //#ffaaa5
+            { value: '#FF8B94', label: '#FF8B94' }, //#ff8b94
         ]
     });
   } 
@@ -95,13 +168,13 @@ export class FormComponent {
   doSave():void{
     this.sended = true;
 
-    this.rows.forEach((r) =>{
-      r.fields.forEach((f) =>{
-        if(f.type==this.fieldType.KCOLOR){
-          console.log(f.value);
-        }
-      });
-    });
+    // this.rows.forEach((r) =>{
+    //   r.fields.forEach((f) =>{
+    //     if(f.type==this.fieldType.KCOLOR){
+    //       console.log(f.value);
+    //     }
+    //   });
+    // });
 
     if(this.isValidated()){
       this.visible = false;

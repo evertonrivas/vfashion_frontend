@@ -10,8 +10,10 @@ export interface Funnel {
 
 export interface FunnelStage{
     id: number,
+    id_funnel:number,
     name:string,
     icon:string,
+    icon_color:string,
     color:string,
     order:number,
     date_created:string,

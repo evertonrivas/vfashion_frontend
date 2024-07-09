@@ -22,6 +22,17 @@
                 <p-inputNumber *ngIf="field.type==fieldType.MONEY" mode="currency" currency="BRL" locale="pt-BR" class="w-full" [placeholder]="field.placeholder!=undefined?field.placeholder:''" [(ngModel)]="field.value" [ngClass]="field.case==fieldCase.UPPER?'uppercase':(field.case==fieldCase.LOWER?'lowercase':'')" [disabled]="field.disabled" [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}"></p-inputNumber>
                 <p-inputNumber *ngIf="field.type==fieldType.NUMBER" [(ngModel)]="field.value" [showButtons]="true" [min]="0" styleClass="w-full" [disabled]="field.disabled" [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}"></p-inputNumber>
                 <p-calendar *ngIf="field.type==fieldType.DATE" dateFormat="dd/mm/yyyy" [disabled]="field.disabled" [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}"></p-calendar>
+                <p-overlayPanel #pnlIcons appendTo="body">
+                    <ng-template pTemplate="content">
+                        <div class="flex flex-wrap gap-1 w-21rem max-w-21rem">
+                            <i *ngFor="let icon of icons" class="material-symbols-outlined gap-1">{{icon}}</i>
+                        </div>
+                    </ng-template>
+                </p-overlayPanel>
+                <div class="flex flex-row gap-2 vertical-align-baseline">
+                    <p-button *ngIf="field.type==fieldType.ICON" icon="pi pi-emoticon" (onClick)="pnlIcons.toggle($event)"></p-button>
+                    <i *ngIf="field.type==fieldType.ICON" class="material-symbols-outlined">{{field.value}}</i>
+                </div>
                 <p-calendar *ngIf="field.type==fieldType.PERIOD" 
                     selectionMode="range" 
                     appendTo="body"
