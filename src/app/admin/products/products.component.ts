@@ -279,7 +279,8 @@ export class ProductsComponent extends Common implements AfterViewInit {
       value: undefined,
       required: true,
       case: FieldCase.UPPER,
-      disabled: false
+      disabled: false,
+      lockField: undefined
     };
 
     let fDesc:FormField = {
@@ -291,7 +292,8 @@ export class ProductsComponent extends Common implements AfterViewInit {
       value: undefined,
       case: FieldCase.NONE,
       disabled: false,
-      required: false
+      required: false,
+      lockField: undefined
     }
 
     let fCode:FormField = {
@@ -303,7 +305,8 @@ export class ProductsComponent extends Common implements AfterViewInit {
       value: undefined,
       case:FieldCase.UPPER,
       disabled:false,
-      required:true
+      required:true,
+      lockField:undefined
     }
 
     let fBar:FormField = {
@@ -315,7 +318,8 @@ export class ProductsComponent extends Common implements AfterViewInit {
       value: undefined,
       case: FieldCase.NONE,
       disabled: false,
-      required: false
+      required: false,
+      lockField:undefined
     }
 
     let fRef:FormField = {
@@ -327,7 +331,8 @@ export class ProductsComponent extends Common implements AfterViewInit {
       value: undefined,
       case: FieldCase.NONE,
       disabled: false,
-      required: true
+      required: true,
+      lockField:undefined
     }
 
     let fPrice:FormField = {
@@ -339,7 +344,8 @@ export class ProductsComponent extends Common implements AfterViewInit {
       value: undefined,
       case: FieldCase.NONE,
       disabled:false,
-      required:true
+      required:true,
+      lockField:undefined
     }
 
     let fType:FormField = {
@@ -351,7 +357,8 @@ export class ProductsComponent extends Common implements AfterViewInit {
       options: this.allOptType,
       required: true,
       case: FieldCase.NONE,
-      disabled: false
+      disabled: false,
+      lockField:undefined
     }
 
     let fModel:FormField = {
@@ -363,7 +370,8 @@ export class ProductsComponent extends Common implements AfterViewInit {
       options: this.allOptModel,
       required: true,
       case: FieldCase.NONE,
-      disabled: false
+      disabled: false,
+      lockField:undefined
     }
 
     let fGrid:FormField = {
@@ -375,7 +383,8 @@ export class ProductsComponent extends Common implements AfterViewInit {
       options: this.allOptGrid,
       required: true,
       case: FieldCase.NONE,
-      disabled: false
+      disabled: false,
+      lockField:undefined
     }
 
     let fMeasure:FormField = {
@@ -387,7 +396,8 @@ export class ProductsComponent extends Common implements AfterViewInit {
       options: this.allOptMeasure,
       required: true,
       case: FieldCase.NONE,
-      disabled: false
+      disabled: false,
+      lockField:undefined
     }
 
     let fObserve:FormField = {
@@ -399,7 +409,8 @@ export class ProductsComponent extends Common implements AfterViewInit {
       options: undefined,
       required: false,
       case: FieldCase.NONE,
-      disabled:false
+      disabled:false,
+      lockField:undefined
     }
 
     let fImages:FormField = {
@@ -411,7 +422,8 @@ export class ProductsComponent extends Common implements AfterViewInit {
       options:[],
       required: false,
       case: FieldCase.LOWER,
-      disabled:false
+      disabled:false,
+      lockField:undefined
     }
     for(let i:number = 0;i<this.sysconfig.system.max_upload_images;i++){
       

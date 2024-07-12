@@ -189,7 +189,8 @@ export class UsersComponent extends Common implements AfterViewInit{
       value: undefined,
       required: true,
       case:FieldCase.LOWER,
-      disabled: false
+      disabled: false,
+      lockField:undefined
     };
 
     let fLevel:FormField = {
@@ -207,7 +208,8 @@ export class UsersComponent extends Common implements AfterViewInit{
       ],
       required: true,
       case: FieldCase.UPPER,
-      disabled: false
+      disabled: false,
+      lockField:undefined
     }
 
     let fActive:FormField = {
@@ -219,7 +221,8 @@ export class UsersComponent extends Common implements AfterViewInit{
       options: [{ value:'0', label:'Não',id:undefined },{ value:'1', label:'Sim',id:undefined }],
       required: true,
       case: FieldCase.NONE,
-      disabled: false
+      disabled: false,
+      lockField:undefined
     }
 
     let fEntity:FormField = {
@@ -231,7 +234,8 @@ export class UsersComponent extends Common implements AfterViewInit{
       required: false,
       case:FieldCase.NONE,
       disabled: false,
-      options: []
+      options: [],
+      lockField:undefined
     }
     this.svcE.listEntity({page:1,pageSize:1,query:"can:list-all 1"}).subscribe({
       next: (data) =>{
@@ -257,7 +261,8 @@ export class UsersComponent extends Common implements AfterViewInit{
       required:true,
       case: FieldCase.NONE,
       disabled:false,
-      options: undefined
+      options: undefined,
+      lockField:undefined
     }
 
     if(id>0){

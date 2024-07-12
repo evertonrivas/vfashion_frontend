@@ -107,7 +107,8 @@ export class ProductTypeComponent extends Common implements AfterViewInit, OnDes
       value: undefined,
       required: true,
       case: FieldCase.UPPER,
-      disabled: false
+      disabled: false,
+      lockField: undefined
     };
     this.idToEdit = id;
 

@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Options, RequestResponse, ResponseError } from '../models/paginate.model';
 import { Observable } from 'rxjs';
 import { Order } from '../models/order.model';
-import { Reason } from '../models/reason.model';
+import { Reason, Step } from '../models/reason.model';
 
 @Injectable({
   providedIn: 'root'
@@ -56,6 +56,35 @@ export class B2bReturnService  extends MyHttp{
   getReturn(p_id_order:number):Observable<Order|ResponseError>{
     return this.http.get<Order|ResponseError>(this.sys_config.backend_fpr+'/returns/'+p_id_order.toString(),{
       headers: this.getHeader()
+    });
+  }
+
+  listSteps(opt:Options):Observable<RequestResponse|Step[]|ResponseError>{
+    return this.http.get<RequestResponse|Step[]|ResponseError>(this.sys_config.backend_fpr+'/steps/',{
+      headers: this.getHeader(),
+      params: this.getParams(opt)
+    });
+  }
+
+  loadStep(id:number):Observable<Step|ResponseError>{
+    return this.http.get<Step|ResponseError>(this.sys_config.backend_fpr+'/steps/'+id.toString(),{
+      headers: this.getHeader()
+    });
+  }
+
+  saveStep(data:any):Observable<number|boolean|ResponseError>{
+    return this.http.post<number|boolean|ResponseError>(this.sys_config.backend_fpr+'/steps/'+(data.id>0?data.id.toString():''),data,{
+      headers: this.getHeader(ContentType.json)
+    });
+  }
+
+  deleteSteps(ids:number[],toTrash:boolean):Observable<boolean|ResponseError>{
+    return this.http.delete<boolean|ResponseError>(this.sys_config.backend_fpr+"/steps/",{
+      headers: this.getHeader(ContentType.json),
+      body: {
+        toTrash: toTrash,
+        ids: ids
+      }
     });
   }
 }

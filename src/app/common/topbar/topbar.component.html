@@ -36,13 +36,14 @@
     </button>
 
     <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active':profileSidebarVisible}">
+        <div *ngIf="module==modules.ADM" class="mt-2 justify-content-end vertical-align-baseline pl-2"><a href="javascript:void(0)" [routerLink]="[modulePath+'/version/'+sysconfig.version]">v. {{sysconfig.version}}</a></div>
         <p-overlayPanel #p_module>
             <ng-template pTemplate="content">
                 <div class="flex flex-column w-full">
                     <span *ngIf="module!=modules.ADM" class="p-2"><a href="javascript:void(0);" [routerLink]="['/admin']">Adminstrativo</a></span>
                     <span *ngIf="module!=modules.B2B" class="p-2"><a href="javascript:void(0);" [routerLink]="['/salesforce']">B2B - Salesforce</a></span>
                     <span *ngIf="module!=modules.CRM" class="p-2"><a href="javascript:void(0);" [routerLink]="['/crm']">CRM - Funis</a></span>
-                    <span *ngIf="module!=modules.FPR" class="p-2"><a href="javascript:void(0);" [routerLink]="['/return']">FPR - Devoluções</a></span>
+                    <!-- <span *ngIf="module!=modules.FPR" class="p-2"><a href="javascript:void(0);" [routerLink]="['/return']">FPR - Devoluções</a></span> -->
                     <span *ngIf="module!=modules.SCM" class="p-2"><a href="javascript:void(0);" [routerLink]="['/calendar']">SCM - Calendário</a></span>
                     <!-- <span *ngIf="module!=modules.SCM" class="p-2"><a href="javascript:void(0);" [routerLink]="['/calendar']">MPG - Marketing</a></span> -->
                 </div>
@@ -61,10 +62,10 @@
                 <i class="material-symbols-outlined">network_intelligence_update</i>
                 <span>Sugestão I.A</span>
             </button>
-            <button class="p-link layout-topbar-button" pTooltip="Devoluções" tooltipPosition="bottom" tooltipStyleClass="text-xs" [routerLink]="[modulePath+'/return']">
+            <!-- <button class="p-link layout-topbar-button" pTooltip="Devoluções" tooltipPosition="bottom" tooltipStyleClass="text-xs" [routerLink]="[modulePath+'/return']">
                 <i class="material-symbols-outlined">deployed_code_update</i>
                 <span>Devoluções</span>
-            </button>
+            </button> -->
             <button class="p-link layout-topbar-button" pTooltip="Produtos do Pedido" tooltipPosition="bottom" tooltipStyleClass="text-xs" (click)="onCart()">
                 <i class="material-symbols-outlined" pBadge [value]="totalInCart" severity="warning" styleClass="text-xs">shopping_cart</i>
                 <span>Pedido</span>
@@ -75,6 +76,7 @@
                 Teste de mensagem
             </ng-template>
         </p-overlayPanel>
+        <!-- botao que serah habilitado no futuro -->
         <!-- <button class="p-link layout-topbar-button" pTooltip="Verificar mensagens" (click)="msgs.toggle($event)" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i *ngIf="module!=modules.B2B" class="material-symbols-outlined" pBadge value="{{totalMessages}}" severity="danger">mail</i>
             <i *ngIf="module==modules.B2B" class="material-symbols-outlined" pBadge severity="danger">mail</i>

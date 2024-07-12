@@ -6,27 +6,20 @@ import { GanttComponent } from './gantt/gantt.component';
 import { ProfileComponent } from '../common/profile/profile.component';
 import { FlimvComponent } from './flimv/flimv.component';
 import { ReportsComponent } from '../reports/reports.component';
+import { VersionComponent } from '../common/version/version.component';
 
 
 const routes: Routes = [{ 
   path: '', 
   component: CalendarComponent,
-  children:[{
-    path: 'dashboard',
-    component: DashboardComponent
-  },{
-    path: 'gantt',
-    component: GanttComponent
-  },{
-    path: 'profile',
-    component: ProfileComponent
-  },{
-    path:'flimv',
-    component: FlimvComponent
-  },{
-    path:'reports',
-    component: ReportsComponent
-  }]
+  children:[
+    { path: 'dashboard', component: DashboardComponent },
+    { path: 'version', component: VersionComponent },
+    { path: 'gantt', component: GanttComponent },
+    { path: 'profile', component: ProfileComponent },
+    { path:'flimv', component: FlimvComponent },
+    { path:'reports', component: ReportsComponent }
+  ]
 }];
 
 @NgModule({

@@ -103,7 +103,7 @@
                 <p-checkbox *ngIf="field.type==fieldType.CHECK" [(ngModel)]="field.value" [binary]="true" [label]="field.label" [disabled]="field.disabled" [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}"></p-checkbox>
                 <div class="flex flex-row gap-2 mt-2" *ngIf="field.type==fieldType.RADIO">
                     <div class="flex" *ngFor="let opt of field.options">
-                        <p-radioButton [name]="field.name" [value]="opt.value" [label]="opt.label" [(ngModel)]="field.value" [disabled]="field.disabled" [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}"></p-radioButton>
+                        <p-radioButton [name]="field.name" [value]="opt.value" [label]="opt.label" [(ngModel)]="field.value" [disabled]="field.disabled" [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}" (ngModelChange)="field.lockField!=undefined?onChangeLock($event,field.lockField,1):null"></p-radioButton>
                     </div>
                 </div>
                 <div class="flex flex-row gap-2 mt-2 w-full" *ngIf="field.type==fieldType.PASSWD">

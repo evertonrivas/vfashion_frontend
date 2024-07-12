@@ -94,7 +94,8 @@ export class EventTypesComponent extends Common implements AfterViewInit{
       value: undefined,
       required: true,
       case: FieldCase.NONE,
-      disabled: false
+      disabled: false,
+      lockField:undefined
     };
 
     let fColor:FormField = {
@@ -106,7 +107,8 @@ export class EventTypesComponent extends Common implements AfterViewInit{
       value: undefined,
       required:true,
       case: FieldCase.NONE,
-      disabled:false
+      disabled:false,
+      lockField:undefined
     }
 
     let fBudget:FormField = {
@@ -118,7 +120,8 @@ export class EventTypesComponent extends Common implements AfterViewInit{
       value: undefined,
       required:true,
       case: FieldCase.NONE,
-      disabled:false
+      disabled:false,
+      lockField:undefined
     }
 
     let fCollection:FormField = {
@@ -130,7 +133,8 @@ export class EventTypesComponent extends Common implements AfterViewInit{
       value:undefined,
       required:true,
       case: FieldCase.NONE,
-      disabled: false
+      disabled: false,
+      lockField:undefined
     }
 
     let fMilestone:FormField = {
@@ -142,7 +146,8 @@ export class EventTypesComponent extends Common implements AfterViewInit{
       value: undefined,
       required:true,
       case: FieldCase.NONE,
-      disabled:false
+      disabled:false,
+      lockField:undefined
     }
 
     if(id>0){

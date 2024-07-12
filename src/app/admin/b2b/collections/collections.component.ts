@@ -130,7 +130,8 @@ export class CollectionsComponent extends Common implements AfterViewInit, OnDes
       value: undefined,
       required: true,
       case: FieldCase.NONE,
-      disabled: false
+      disabled: false,
+      lockField: undefined
     };
     this.idToEdit = id;
 
@@ -143,7 +144,8 @@ export class CollectionsComponent extends Common implements AfterViewInit, OnDes
       value: undefined,
       required: true,
       case: FieldCase.NONE,
-      disabled: false
+      disabled: false,
+      lockField: undefined
     }
 
     this.serviceSub[4] = this.bsvc.list({page:1,pageSize:1,query:"can:list-all 1"}).subscribe({

@@ -7,6 +7,7 @@ import { HistoryComponent } from './history/history.component';
 import { OrderComponent } from './order/order.component';
 import { ReturnComponent } from './return/return.component';
 import { CheckoutComponent } from './checkout/checkout.component';
+import { VersionComponent } from '../common/version/version.component';
 
 const routes: Routes = [{ 
   path: '', 
@@ -16,7 +17,8 @@ const routes: Routes = [{
   { path: 'history', component: HistoryComponent },
   { path: 'order', component: OrderComponent },
   { path: 'return', component: ReturnComponent },
-  { path: 'checkout', component: CheckoutComponent}]
+  { path: 'checkout', component: CheckoutComponent},
+  { path: 'version/:id', component: VersionComponent}]
 }];
 
 @NgModule({

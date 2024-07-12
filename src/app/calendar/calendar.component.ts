@@ -13,7 +13,7 @@ export class CalendarComponent implements AfterContentInit{
   }
 
   ngAfterContentInit(): void {
-    this.route.navigate(["/calendar/dashboard"]);
+    this.route.navigate(["/calendar/gantt"]);
   }
 
 }

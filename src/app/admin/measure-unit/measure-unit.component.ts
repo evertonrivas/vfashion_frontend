@@ -95,7 +95,8 @@ export class MeasureUnitComponent extends Common implements AfterViewInit{
       value: undefined,
       required: true,
       case: FieldCase.UPPER,
-      disabled: false
+      disabled: false,
+      lockField: undefined
     };
 
     let fCode:FormField = {
@@ -107,7 +108,8 @@ export class MeasureUnitComponent extends Common implements AfterViewInit{
       value: undefined,
       case: FieldCase.UPPER,
       disabled: false,
-      required: true
+      required: true,
+      lockField: undefined
     }
 
     if(id>0){

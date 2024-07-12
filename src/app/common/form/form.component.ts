@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SharedModule } from '../shared.module';
 import { CommonModule } from '@angular/common';
 import { FieldCase, FieldType } from 'src/app/models/system.enum';
-import { FieldOption, FormRow } from 'src/app/models/field.model';
+import { FieldOption, FormField, FormRow } from 'src/app/models/field.model';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { PasswordModule } from 'primeng/password';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -163,6 +163,16 @@ export class FormComponent {
 
   onDateChanged():void{
 
+  }
+
+  onChangeLock(evt:EventEmitter<any>, field:FormField, value:any):void{
+    // console.log(evt);
+    if(evt==value){
+      field.disabled = true;
+      field.value = undefined;
+    }else{
+      field.disabled = false;
+    }
   }
 
   doSave():void{

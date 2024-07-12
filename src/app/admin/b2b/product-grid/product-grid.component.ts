@@ -151,7 +151,8 @@ export class ProductGridComponent extends Common implements AfterViewInit,OnDest
       value: undefined,
       required: true,
       case: FieldCase.UPPER,
-      disabled: false
+      disabled: false,
+      lockField: undefined
     };
     this.idToEdit = id;
 

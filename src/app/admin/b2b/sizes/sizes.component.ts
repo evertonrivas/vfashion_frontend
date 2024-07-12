@@ -89,7 +89,8 @@ export class SizesComponent extends Common implements AfterViewInit{
       value: undefined,
       required: true,
       case: FieldCase.NONE,
-      disabled: false
+      disabled: false,
+      lockField: undefined
     };
 
     let fOldSize:FormField = {
@@ -101,7 +102,8 @@ export class SizesComponent extends Common implements AfterViewInit{
       value: undefined,
       required: true,
       case: FieldCase.UPPER,
-      disabled: false
+      disabled: false,
+      lockField: undefined
     }
 
     let fNewSize:FormField = {
@@ -113,7 +115,8 @@ export class SizesComponent extends Common implements AfterViewInit{
       value: undefined,
       required: true,
       case: FieldCase.UPPER,
-      disabled: false
+      disabled: false,
+      lockField: undefined
     }
     
 

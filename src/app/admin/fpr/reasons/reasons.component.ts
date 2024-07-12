@@ -83,7 +83,8 @@ export class ReasonsComponent extends Common implements AfterViewInit{
       value: undefined,
       required: true,
       case: FieldCase.NONE,
-      disabled: false
+      disabled: false,
+      lockField: undefined
     };
     this.idToEdit = id;
 

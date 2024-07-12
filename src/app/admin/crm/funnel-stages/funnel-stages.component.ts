@@ -131,7 +131,8 @@ export class FunnelStagesComponent extends Common implements AfterViewInit{
       value: undefined,
       required: true,
       case: FieldCase.NONE,
-      disabled: false
+      disabled: false,
+      lockField: undefined
     };
     let fieldFunnel:FormField = {
       label:"Funil",
@@ -142,7 +143,8 @@ export class FunnelStagesComponent extends Common implements AfterViewInit{
       options: this.allOptFunnel,
       required:true,
       case:FieldCase.NONE,
-      disabled:false
+      disabled:false,
+      lockField: undefined
     }
     let fieldColor:FormField = {
       label: "Cor",
@@ -153,7 +155,8 @@ export class FunnelStagesComponent extends Common implements AfterViewInit{
       value: undefined,
       required:true,
       case: FieldCase.NONE,
-      disabled:false
+      disabled:false,
+      lockField: undefined
     }
     let fieldIcon: FormField = {
       label:"Ícone",
@@ -164,8 +167,10 @@ export class FunnelStagesComponent extends Common implements AfterViewInit{
       value: undefined,
       required: true,
       case: FieldCase.NONE,
-      disabled: false
+      disabled: false,
+      lockField: undefined
     }
+
     let fieldOrder:FormField = {
       label: "Ordem",
       name: "order",
@@ -175,7 +180,8 @@ export class FunnelStagesComponent extends Common implements AfterViewInit{
       value: undefined,
       required: true,
       case: FieldCase.NONE,
-      disabled: false
+      disabled: false,
+      lockField: undefined
     }
     this.idToEdit = id;
 

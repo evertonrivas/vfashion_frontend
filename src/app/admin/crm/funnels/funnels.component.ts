@@ -104,7 +104,8 @@ export class FunnelsComponent extends Common implements AfterViewInit{
       value: undefined,
       required: true,
       case: FieldCase.NONE,
-      disabled: false
+      disabled: false,
+      lockField: undefined
     };
 
     let fType:FormField = {
@@ -116,7 +117,8 @@ export class FunnelsComponent extends Common implements AfterViewInit{
       value: undefined,
       required: true,
       case: FieldCase.NONE,
-      disabled: false
+      disabled: false,
+      lockField: undefined
     };
 
     let fDefault:FormField = {
@@ -128,7 +130,8 @@ export class FunnelsComponent extends Common implements AfterViewInit{
       value: undefined,
       required: true,
       case: FieldCase.NONE,
-      disabled: false
+      disabled: false,
+      lockField: undefined
     };
 
     if(id>0){

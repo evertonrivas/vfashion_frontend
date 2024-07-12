@@ -126,7 +126,8 @@ export class PaymentComponent extends Common implements AfterViewInit, OnDestroy
       value: undefined,
       required: true,
       case: FieldCase.UPPER,
-      disabled: false
+      disabled: false,
+      lockField: undefined
     };
 
     let fInstallments:FormField = {
@@ -138,7 +139,8 @@ export class PaymentComponent extends Common implements AfterViewInit, OnDestroy
       required: true,
       placeholder: undefined,
       case: FieldCase.NONE,
-      disabled: false
+      disabled: false,
+      lockField: undefined
     }
 
     let fReceivedDays:FormField = {
@@ -150,7 +152,8 @@ export class PaymentComponent extends Common implements AfterViewInit, OnDestroy
       required: true,
       placeholder: undefined,
       case: FieldCase.NONE,
-      disabled: false
+      disabled: false,
+      lockField: undefined
     }
 
     if(id>0){

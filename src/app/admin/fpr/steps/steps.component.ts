@@ -7,6 +7,11 @@ import { SharedModule } from 'src/app/common/shared.module';
 import { FilterComponent } from "../../../common/filter/filter.component";
 import { PaginatorState } from 'primeng/paginator';
 import { FormComponent } from 'src/app/common/form/form.component';
+import { FormField } from 'src/app/models/field.model';
+import { FieldCase, FieldType } from 'src/app/models/system.enum';
+import { B2bReturnService } from 'src/app/services/b2b.return.service';
+import { RequestResponse, ResponseError } from 'src/app/models/paginate.model';
+import { Step } from 'src/app/models/reason.model';
 
 @Component({
     selector: 'app-steps',
@@ -25,7 +30,14 @@ import { FormComponent } from 'src/app/common/form/form.component';
     ]
 })
 export class StepsComponent extends Common implements AfterViewInit{
+  localObject:Step = {
+    id: 0,
+    name: '',
+    date_created: undefined,
+    date_updated: undefined
+  };
   constructor(route:Router,
+    private svc: B2bReturnService,
     private msg:MessageService,
     private cnf:ConfirmationService,
     private cdr:ChangeDetectorRef){
@@ -54,81 +66,146 @@ export class StepsComponent extends Common implements AfterViewInit{
         this.options.query = this.options.query.replace("trash 1||","");
       }
     }
+
+    this.serviceSub[0] = this.svc.listSteps(this.options).subscribe({
+      next: (data) =>{
+        this.response = data as RequestResponse;
+        this.cdr.detectChanges();
+        this.loading = false;
+      }
+    });
   }
 
-  onEditData(id:number = 0){
+  onEditData(id:number = 0):void{
+    //limpa o formulario
+    this.formRows = [];
+
+    let fieldName:FormField = {
+      label: "Nome",
+      name: "name",
+      options: undefined,
+      placeholder: "Digine o nome...",
+      type: FieldType.INPUT,
+      value: undefined,
+      required: true,
+      case: FieldCase.UPPER,
+      disabled: false,
+      lockField: undefined
+    }
     
+    let fieldFirst:FormField = {
+      label:"Primeiro Passo",
+      name: "first_step",
+      options: [{value : 0, label : 'Não', id : undefined },{ value : 1, label : 'Sim', id : undefined }],
+      placeholder: undefined,
+      type: FieldType.RADIO,
+      value: undefined,
+      required: true,
+      case: FieldCase.NONE,
+      disabled: false,
+      lockField: undefined
+    }
+
+    let fieldNext: FormField = {
+      label: "Próximo Passo",
+      name: "next_step",
+      options: [],
+      placeholder:"Selecione...",
+      type: FieldType.COMBO,
+      value: undefined,
+      required: false,
+      case: FieldCase.NONE,
+      disabled: false,
+      lockField: undefined
+    }
+
+    //define o campo que serah bloqueado no change
+    //do campo atual
+    fieldFirst.lockField = fieldNext;
+
+    this.idToEdit = id;
+    if(id > 0){
+      this.formVisible = true;
+    }else{
+      this.formRows.push({
+        fields: [fieldName]
+      });
+      this.formRows.push({
+        fields:[fieldFirst,fieldNext]
+      });
+      this.formVisible = true;
+    }
   }
 
   onDataSave(data:any):void{
     this.hasSended = true;
-    // this.serviceSub[3] = this.svc.save(this.idToEdit,data).subscribe({
-    //   next:(data) =>{
-    //     this.hasSended = false;
-    //     this.formVisible = false;
-    //     this.msg.clear();
-    //     if(typeof data ==='number'){
-    //       this.msg.add({
-    //         summary:"Sucesso...",
-    //         detail: "Registro criado com sucesso!",
-    //         severity:"success"
-    //       });
-    //     }else if(typeof data ==='boolean'){
-    //       this.msg.add({
-    //         summary:"Sucesso...",
-    //         detail: "Registro atualizado com sucesso!",
-    //         severity:"success"
-    //       });
-    //     }else{
-    //       this.msg.add({
-    //         summary:"Falha...",
-    //         detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
-    //         severity:"error"
-    //       });
-    //     }
-    //     this.loadingData();
-    //   }
-    // });
+    this.serviceSub[3] = this.svc.saveStep(data).subscribe({
+      next:(data) =>{
+        this.hasSended = false;
+        this.formVisible = false;
+        this.msg.clear();
+        if(typeof data ==='number'){
+          this.msg.add({
+            summary:"Sucesso...",
+            detail: "Registro criado com sucesso!",
+            severity:"success"
+          });
+        }else if(typeof data ==='boolean'){
+          this.msg.add({
+            summary:"Sucesso...",
+            detail: "Registro atualizado com sucesso!",
+            severity:"success"
+          });
+        }else{
+          this.msg.add({
+            summary:"Falha...",
+            detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
+            severity:"error"
+          });
+        }
+        this.loadingData();
+      }
+    });
   }
 
   onDataDelete(pSendToTrash:boolean):void{
-    // this.cnf.confirm({
-    //   header:"Confirmação de "+(pSendToTrash==true?"exclusão":"restauração"),
-    //   message:"Deseja realmente "+(pSendToTrash==true?"excluir":"restaurar")+" o(s) registro(s) marcado(s)?",
-    //   acceptLabel:"Sim",
-    //   acceptIcon:"pi pi-check mr-1",
-    //   acceptButtonStyleClass:"p-button-sm",
-    //   accept:() =>{
-    //     let ids:number[] = [];
-    //     this.tableSelected.forEach((v) =>{
-    //       ids.push((v as Reason).id);
-    //     });
-    //     this.serviceSub[3] = this.svc.deleteReason(ids,pSendToTrash).subscribe({
-    //       next: (data) =>{
-    //         this.msg.clear();
-    //         //carrega com base no botao de lixeira
-    //         this.loadingData({page:0,pageCount:0},this.isTrash);
-    //         //limpa os registros selecionados
-    //         this.tableSelected = [];
-    //         if (typeof data ==='boolean'){
-    //           this.msg.add({
-    //             severity:"success",
-    //             summary:"Sucesso!",
-    //             detail:"Registro(s) "+(pSendToTrash==true?"excluído":"restaurado")+"(s) com sucesso!"
-    //           });
-    //         }else{
-    //           this.msg.add({
-    //             summary:"Falha...",
-    //             detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
-    //             severity:"error"
-    //           });
-    //         }
-    //       }
-    //     });
-    //   },
-    //   rejectLabel:"Não",
-    //   rejectIcon:"pi pi-ban mr-1",
-    //   rejectButtonStyleClass:"p-button-danger p-button-sm"
-    // });
+    this.cnf.confirm({
+      header:"Confirmação de "+(pSendToTrash==true?"exclusão":"restauração"),
+      message:"Deseja realmente "+(pSendToTrash==true?"excluir":"restaurar")+" o(s) registro(s) marcado(s)?",
+      acceptLabel:"Sim",
+      acceptIcon:"pi pi-check mr-1",
+      acceptButtonStyleClass:"p-button-sm",
+      accept:() =>{
+        let ids:number[] = [];
+        this.tableSelected.forEach((v) =>{
+          ids.push((v as Step).id);
+        });
+        this.serviceSub[3] = this.svc.deleteSteps(ids,pSendToTrash).subscribe({
+          next: (data) =>{
+            this.msg.clear();
+            //carrega com base no botao de lixeira
+            this.loadingData({page:0,pageCount:0},this.isTrash);
+            //limpa os registros selecionados
+            this.tableSelected = [];
+            if (typeof data ==='boolean'){
+              this.msg.add({
+                severity:"success",
+                summary:"Sucesso!",
+                detail:"Registro(s) "+(pSendToTrash==true?"excluído":"restaurado")+"(s) com sucesso!"
+              });
+            }else{
+              this.msg.add({
+                summary:"Falha...",
+                detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
+                severity:"error"
+              });
+            }
+          }
+        });
+      },
+      rejectLabel:"Não",
+      rejectIcon:"pi pi-ban mr-1",
+      rejectButtonStyleClass:"p-button-danger p-button-sm"
+    });
   }
 }

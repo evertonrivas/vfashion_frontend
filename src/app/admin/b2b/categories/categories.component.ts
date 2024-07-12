@@ -103,7 +103,8 @@ export class CategoriesComponent extends Common implements AfterViewInit, OnDest
       value: undefined,
       required: true,
       case: FieldCase.UPPER,
-      disabled: false
+      disabled: false,
+      lockField: undefined
     };
 
     let fieldCat:FormField = {
@@ -115,7 +116,8 @@ export class CategoriesComponent extends Common implements AfterViewInit, OnDest
       required: false,
       options: [],
       case: FieldCase.NONE,
-      disabled: false
+      disabled: false,
+      lockField: undefined
     };
 
     this.serviceSub[4] = this.svc.list({page:1,pageSize:1,query:"can:list-all 1"}).subscribe({

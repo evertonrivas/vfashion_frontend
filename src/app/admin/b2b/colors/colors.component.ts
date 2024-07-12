@@ -93,7 +93,8 @@ export class ColorsComponent extends Common implements AfterViewInit {
       value: undefined,
       required: true,
       case: FieldCase.NONE,
-      disabled: false
+      disabled: false,
+      lockField: undefined
     };
 
     let fColor:FormField = {
@@ -105,7 +106,8 @@ export class ColorsComponent extends Common implements AfterViewInit {
       value:undefined,
       required:true,
       case:FieldCase.NONE,
-      disabled:false
+      disabled:false,
+      lockField: undefined
     }
 
     let fHexcode:FormField = {
@@ -117,7 +119,8 @@ export class ColorsComponent extends Common implements AfterViewInit {
       value:undefined,
       required:true,
       case:FieldCase.UPPER,
-      disabled:false
+      disabled:false,
+      lockField: undefined
     }
 
     if(id>0){

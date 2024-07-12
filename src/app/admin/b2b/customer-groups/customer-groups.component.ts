@@ -136,7 +136,8 @@ export class CustomerGroupsComponent extends Common implements AfterViewInit{
       value: undefined,
       required: true,
       case: FieldCase.NONE,
-      disabled: false
+      disabled: false,
+      lockField: undefined
     };
 
     let opts:FieldOption[] = [];
@@ -156,7 +157,8 @@ export class CustomerGroupsComponent extends Common implements AfterViewInit{
       value: undefined,
       required:true,
       case: FieldCase.NONE,
-      disabled:false
+      disabled:false,
+      lockField: undefined
     }
 
     let fApprov:FormField = {
@@ -168,7 +170,8 @@ export class CustomerGroupsComponent extends Common implements AfterViewInit{
       value:undefined,
       required:true,
       case:FieldCase.NONE,
-      disabled:false
+      disabled:false,
+      lockField: undefined
     }
 
     if(id>0){
