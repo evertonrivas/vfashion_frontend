@@ -3,13 +3,13 @@
 <div class="card p-3 flex flex-wrap align-items-center justify-content-between vertical-align-middle mb-2">
     <div><p-dropdown #funSel [options]="response.data" optionLabel="name" [(ngModel)]="selectedFunnel" styleClass="p-inputtext-sm" (onChange)="changeFunnel($event)"></p-dropdown></div>
     <div class="flex flex-row justify-content-end vertical-align-super">
-        <p-button icon="pi pi-plus-circle" styleClass="p-button-rounded  p-button-text" pTooltip="Novo Cliente" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="showCustomerInfo(0,false)"></p-button>
-        <p-button icon="pi pi-minus-circle" styleClass="p-button-rounded p-button-text" pTooltip="Remover selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="delCustomersSelected()"></p-button>
+        <p-button icon="pi pi-plus-circle" [rounded]="true" [text]="true" pTooltip="Novo Cliente" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="showCustomerInfo(0,false)"></p-button>
+        <p-button icon="pi pi-minus-circle" [rounded]="true" [text]="true" pTooltip="Remover selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="delCustomersSelected()"></p-button>
         <div style="border-right: 1px solid #ced4da;min-height: 100%; width: 5px;"></div>
 
-        <p-button icon="pi pi-sync" styleClass="p-button-rounded p-button-text p-button-warning" pTooltip="Recarregar Funil" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="getFunnels('can:list_all true')"></p-button>
-        <p-button styleClass="p-button-rounded p-button-text p-button-warning" pTooltip="Enviar e-mail para selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="showEmailSendMassive()"><span class="material-symbols-outlined text-lg">stacked_email</span></p-button>
-        <p-button styleClass="p-button-rounded p-button-text p-button-warning" pTooltip="Mover selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="opStages.toggle($event)"><span class="material-symbols-outlined text-lg">move_group</span></p-button>
+        <p-button [text]="true" [rounded]="true" severity="warning" pTooltip="Recarregar Funil" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="getFunnels('can:list_all true')"><span class="material-symbols-outlined text-lg">autorenew</span></p-button>
+        <p-button [text]="true" [rounded]="true" severity="warning" pTooltip="Enviar e-mail para selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="showEmailSendMassive()"><span class="material-symbols-outlined text-lg">stacked_email</span></p-button>
+        <p-button [text]="true" severity="warning" [rounded]="true" pTooltip="Mover selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="opStages.toggle($event)"><span class="material-symbols-outlined text-lg">move_group</span></p-button>
         <p-overlayPanel #opStages>
             <ng-template pTemplate="content">
                 <div class="flex flex-column">
