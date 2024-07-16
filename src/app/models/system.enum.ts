@@ -4,7 +4,9 @@ export enum ModuleName{
     B2B = 2,
     SCM = 3,
     FPR = 4,
-    FCM = 5, //prefer futuro modulo financeiro
+    FCM = 5, // futuro modulo financeiro
+    MPG = 6, // futuro modulo de marketing
+    REPR = 7, // simboliza o modulo do representante
     NONE = -1
   }
 
@@ -68,6 +70,24 @@ export enum DataSearch{
     START_WITH = 1,
     ENDS_WITH  = 2,
     EXACT      = 3
+}
+
+
+export enum DevolutionStatus{
+    SAVED         = 0, //help
+    PENDING       = 1, //warning
+    APPROVED_ALL  = 2, //primary
+    APPROVED_PART = 3, //success
+    REJECTED      = 4  //error
+}
+
+export enum OrderStatus {
+    ANALIZING    = 0,
+    SENDED       = 1,
+    PROCESSING   = 2,
+    TRANSPORTING = 3,
+    FINISHED     = 4,
+    REJECTED     = 5
 }
 
 export enum CustomerAction{
