@@ -269,6 +269,10 @@ body{
     @include use-md-icon-normal('emoticon')
 }
 
+.pi-verify {
+    @include use-md-icon-normal('checklist')
+}
+
 .kcolor .p-dropdown-items .p-dropdown-item {
     padding: 0px!important;
     margin-top: 2px;
