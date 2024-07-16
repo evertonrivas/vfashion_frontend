@@ -121,7 +121,7 @@ export class LoginComponent implements AfterContentInit{
           case "A": this.route.navigate(["/admin"]); break;
           case "L": this.route.navigate(["/salesforce"]); break;
           case "I": this.route.navigate(["/salesforce"]); break;
-          case "R": this.route.navigate(["/selector"]); break;
+          case "R": this.route.navigate(["/representative"]); break;
         }
         this.loading = false;
       },
