@@ -71,10 +71,12 @@ export class Common{
             this.module = ModuleName.ADM;
         }else if(url_parts[0]=="crm"){
             this.module = ModuleName.CRM;
-        }else if(url_parts[0]=="return"){
+        }else if(url_parts[0]=="devolution"){
             this.module = ModuleName.FPR;
         }else if(url_parts[0]=="salesforce"){
             this.module = ModuleName.B2B;
+        }else if(url_parts[0]=="representative"){
+            this.module = ModuleName.REPR;
         }
 
         this.modulePath = "/"+url_parts[0];

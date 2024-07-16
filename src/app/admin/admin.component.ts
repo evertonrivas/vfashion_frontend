@@ -66,14 +66,14 @@ export class AdminComponent extends Common implements OnInit, AfterViewInit{
                     // { label: 'Campos dinâmicos', icon: 'pi pi-fw pi-fields', routerLink: ['/uikit/misc'] }
                 ]
             },
-            // {
-            //     label: 'FPR - Devoluções',
-            //     items: [
-            //         //{ label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: [this.modulePath+'/fpr/configurations'], queryParams: { place: this.modules.FPR }  },
-            //         { label: 'Etapas', icon: 'pi pi-fw pi-steps icon-small', routerLink: [this.modulePath+'/fpr/steps'] },
-            //         { label: 'Motivos', icon: 'pi pi-fw pi-reasons icon-small', routerLink:[this.modulePath+'/fpr/reasons']}
-            //     ]
-            // },
+            {
+                label: 'FPR - Devoluções',
+                items: [
+                    //{ label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: [this.modulePath+'/fpr/configurations'], queryParams: { place: this.modules.FPR }  },
+                    // { label: 'Etapas', icon: 'pi pi-fw pi-steps icon-small', routerLink: [this.modulePath+'/fpr/steps'] },
+                    { label: 'Motivos', icon: 'pi pi-fw pi-reasons icon-small', routerLink:[this.modulePath+'/fpr/reasons']}
+                ]
+            },
             { 
                 label: 'SCM - Calendário',
                 items:[

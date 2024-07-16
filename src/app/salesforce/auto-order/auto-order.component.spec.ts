@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ReturnComponent } from './return.component';
+import { AutoOrderComponent } from './auto-order.component';
 
-describe('ReturnComponent', () => {
-  let component: ReturnComponent;
-  let fixture: ComponentFixture<ReturnComponent>;
+describe('AutoOrderComponent', () => {
+  let component: AutoOrderComponent;
+  let fixture: ComponentFixture<AutoOrderComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ReturnComponent]
+      declarations: [AutoOrderComponent]
     });
-    fixture = TestBed.createComponent(ReturnComponent);
+    fixture = TestBed.createComponent(AutoOrderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

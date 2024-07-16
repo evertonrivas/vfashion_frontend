@@ -8,8 +8,8 @@ import { SidebarModule } from 'primeng/sidebar';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { GridComponent } from './grid/grid.component';
 import { HistoryComponent } from './history/history.component';
-import { OrderComponent } from './order/order.component';
-import { ReturnComponent } from './return/return.component';
+import { AutoOrderComponent } from './auto-order/auto-order.component';
+import { DevolutionComponent } from './devolution/devolution.component';
 import { ImageModule } from 'primeng/image';
 import { CheckboxModule } from 'primeng/checkbox';
 import { TopbarComponent } from '../common/topbar/topbar.component';
@@ -18,6 +18,7 @@ import { DataViewModule } from 'primeng/dataview';
 import { TagModule } from 'primeng/tag';
 import { TimelineModule } from 'primeng/timeline';
 import { FileUploadModule } from 'primeng/fileupload';
+import { OrderStatusPipe } from "../pipes/order-status.pipe";
 
 
 @NgModule({
@@ -25,8 +26,8 @@ import { FileUploadModule } from 'primeng/fileupload';
     SalesforceComponent,
     GridComponent,
     HistoryComponent,
-    OrderComponent,
-    ReturnComponent,
+    AutoOrderComponent,
+    DevolutionComponent,
     CheckoutComponent
   ],
   imports: [
@@ -41,7 +42,8 @@ import { FileUploadModule } from 'primeng/fileupload';
     DataViewModule,
     TagModule,
     TimelineModule,
-    FileUploadModule
-  ]
+    FileUploadModule,
+    OrderStatusPipe
+]
 })
 export class SalesforceModule { }

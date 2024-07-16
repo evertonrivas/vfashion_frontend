@@ -6,9 +6,9 @@ import { PaginatorState } from 'primeng/paginator';
 import { Common } from 'src/app/classes/common';
 import { SharedModule } from 'src/app/common/shared.module';
 import { RequestResponse, ResponseError } from 'src/app/models/paginate.model';
-import { B2bReturnService } from 'src/app/services/b2b.return.service';
+import { B2bDevolutionService } from 'src/app/services/b2b.devolution.service';
 import { FilterComponent } from "../../../common/filter/filter.component";
-import { Reason } from 'src/app/models/reason.model';
+import { Reason } from 'src/app/models/devolution.model';
 import { FormField, FormRow } from 'src/app/models/field.model';
 import { FieldCase, FieldType } from 'src/app/models/system.enum';
 import { FormComponent } from 'src/app/common/form/form.component';
@@ -32,7 +32,7 @@ import { FormComponent } from 'src/app/common/form/form.component';
 export class ReasonsComponent extends Common implements AfterViewInit{
   localObject!:Reason;
   constructor(route:Router, 
-    private svc:B2bReturnService,
+    private svc:B2bDevolutionService,
     private cdr:ChangeDetectorRef,
     private msg:MessageService,
     private cnf:ConfirmationService){

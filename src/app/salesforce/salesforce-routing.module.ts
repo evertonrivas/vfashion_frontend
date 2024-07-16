@@ -4,8 +4,8 @@ import { SalesforceComponent } from './salesforce.component';
 import { ProfileComponent } from '../common/profile/profile.component';
 import { GridComponent } from './grid/grid.component';
 import { HistoryComponent } from './history/history.component';
-import { OrderComponent } from './order/order.component';
-import { ReturnComponent } from './return/return.component';
+import { AutoOrderComponent } from './auto-order/auto-order.component';
+import { DevolutionComponent } from './devolution/devolution.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { VersionComponent } from '../common/version/version.component';
 
@@ -15,8 +15,8 @@ const routes: Routes = [{
   children:[{ path: 'profile', component: ProfileComponent },
   { path: 'grid', component: GridComponent },
   { path: 'history', component: HistoryComponent },
-  { path: 'order', component: OrderComponent },
-  { path: 'return', component: ReturnComponent },
+  { path: 'order', component: AutoOrderComponent },
+  { path: 'devolution', component: DevolutionComponent },
   { path: 'checkout', component: CheckoutComponent},
   { path: 'version/:id', component: VersionComponent}]
 }];

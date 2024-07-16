@@ -1,6 +1,8 @@
 import { Paginate } from "./paginate.model"
+import { OrderStatus } from "./system.enum"
 
 export interface OrderProduct{
+    id_order_product: string,
     id_product:number,
     name:string,
     id_color:number,
@@ -27,7 +29,7 @@ export interface Order{
     total_itens:number,
     installments: number,
     installments_value: number,
-    integrated: boolean,
+    status: OrderStatus,
     integration_number: number|undefined,
     track_code: string|undefined,
     track_company: string|undefined,
@@ -60,7 +62,7 @@ export interface OrderHistory{
     total_itens:number,
     installments: number,
     installment_value:number,
-    integrated:boolean,
+    status:OrderStatus,
     integration_number:number|null,
     invoice_number:number|null,
     track:TrackOrder|null,

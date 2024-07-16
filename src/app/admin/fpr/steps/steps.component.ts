@@ -9,9 +9,9 @@ import { PaginatorState } from 'primeng/paginator';
 import { FormComponent } from 'src/app/common/form/form.component';
 import { FormField } from 'src/app/models/field.model';
 import { FieldCase, FieldType } from 'src/app/models/system.enum';
-import { B2bReturnService } from 'src/app/services/b2b.return.service';
+import { B2bDevolutionService } from 'src/app/services/b2b.devolution.service';
 import { RequestResponse, ResponseError } from 'src/app/models/paginate.model';
-import { Step } from 'src/app/models/reason.model';
+import { Step } from 'src/app/models/devolution.model';
 
 @Component({
     selector: 'app-steps',
@@ -37,7 +37,7 @@ export class StepsComponent extends Common implements AfterViewInit{
     date_updated: undefined
   };
   constructor(route:Router,
-    private svc: B2bReturnService,
+    private svc: B2bDevolutionService,
     private msg:MessageService,
     private cnf:ConfirmationService,
     private cdr:ChangeDetectorRef){

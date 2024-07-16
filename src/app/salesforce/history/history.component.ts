@@ -4,6 +4,7 @@ import { PaginatorState } from 'primeng/paginator';
 import { Common } from 'src/app/classes/common';
 import { OrderHistory } from 'src/app/models/order.model';
 import { RequestResponse } from 'src/app/models/paginate.model';
+import { OrderStatus } from 'src/app/models/system.enum';
 import { B2bOrderService } from 'src/app/services/b2b.order.service';
 
 @Component({
@@ -25,7 +26,7 @@ export class HistoryComponent extends Common implements AfterViewInit{
     total_itens: 0,
     installments: 0,
     installment_value: 0,
-    integrated: false,
+    status: OrderStatus.SENDED,
     integration_number: null,
     invoice_number: null,
     track: null,
@@ -46,7 +47,7 @@ export class HistoryComponent extends Common implements AfterViewInit{
       next: (data) =>{
         this.response = data as RequestResponse;
         (this.response.data as OrderHistory[]).forEach((oh) =>{
-          if(oh.integrated==true){
+          if(oh.status==OrderStatus.TRANSPORTING){
             this.showIntegration = true;
             if(oh.track!=null){
               this.showIntegrationTrack = true;
@@ -60,5 +61,20 @@ export class HistoryComponent extends Common implements AfterViewInit{
   showTrack(p_idOrder:string):void{
     this.selectedOrder = (this.response.data as OrderHistory[]).find((oh) => oh.id_order==p_idOrder) as OrderHistory;
     this.showDialog = true;
+  }
+
+  getSeverity(status:number):"success" | "secondary" | "info" | "warning" | "danger" | "contrast" | undefined{
+    if(status==OrderStatus.SENDED){
+      return "warning";
+    }else if(status==OrderStatus.PROCESSING){
+      return "info";
+    }else if(status==OrderStatus.TRANSPORTING){
+      return "secondary";
+    }else if(status==OrderStatus.REJECTED){
+      return "danger";
+    }else if(status==OrderStatus.ANALIZING){
+      return "contrast";
+    }
+    return "success";
   }
 }

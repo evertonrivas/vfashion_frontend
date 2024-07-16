@@ -4,12 +4,13 @@ import { HttpClient } from '@angular/common/http';
 import { Options, RequestResponse, ResponseError } from '../models/paginate.model';
 import { Observable } from 'rxjs';
 import { Order } from '../models/order.model';
-import { Reason, Step } from '../models/reason.model';
+import { Devolution, Reason, Step } from '../models/devolution.model';
+import { DevolutionStatus } from '../models/system.enum';
 
 @Injectable({
   providedIn: 'root'
 })
-export class B2bReturnService  extends MyHttp{
+export class B2bDevolutionService  extends MyHttp{
 
   constructor(http:HttpClient) { 
     super(http);
@@ -44,18 +45,33 @@ export class B2bReturnService  extends MyHttp{
     });
   }
 
-  saveReturn(p_id_order:number,p_id_product:[number]):Observable<Boolean|ResponseError>{
-    return this.http.post<Boolean|ResponseError>(this.sys_config.backend_fpr+'/return/',{
-      "id_order": p_id_order,
-      "id_products": p_id_product
-    },{
+  saveDevolution(p_devolution:Devolution):Observable<Boolean|ResponseError>{
+    return this.http.post<Boolean|ResponseError>(this.sys_config.backend_fpr+'/devolution/',
+      JSON.stringify(p_devolution),{
+      headers: this.getHeader(ContentType.json)
+    });
+  }
+
+  getDevolution(p_id_order:number):Observable<Devolution|ResponseError>{
+    return this.http.get<Devolution|ResponseError>(this.sys_config.backend_fpr+'/devolution/'+p_id_order.toString(),{
       headers: this.getHeader()
     });
   }
 
-  getReturn(p_id_order:number):Observable<Order|ResponseError>{
-    return this.http.get<Order|ResponseError>(this.sys_config.backend_fpr+'/returns/'+p_id_order.toString(),{
-      headers: this.getHeader()
+  deleteDevolution(ids:number[],toTrash:boolean):Observable<boolean|ResponseError>{
+    return this.http.delete<boolean|ResponseError>(this.sys_config.backend_fpr+"/devolution/",{
+      headers: this.getHeader(ContentType.json),
+      body: {
+        toTrash: toTrash,
+        ids: ids
+      }
+    });
+  }
+
+  listDevolution(opt:Options):Observable<Devolution[]|RequestResponse|ResponseError>{
+    return this.http.get<Devolution[]|RequestResponse|ResponseError>(this.sys_config.backend_fpr+"/devolution/",{
+      headers: this.getHeader(),
+      params:this.getParams(opt)
     });
   }
 

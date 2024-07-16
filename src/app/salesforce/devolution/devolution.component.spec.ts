@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ReturnComponent } from './return.component';
+import { DevolutionComponent } from './devolution.component';
 
 describe('ReturnComponent', () => {
-  let component: ReturnComponent;
-  let fixture: ComponentFixture<ReturnComponent>;
+  let component: DevolutionComponent;
+  let fixture: ComponentFixture<DevolutionComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ReturnComponent]
+      declarations: [DevolutionComponent]
     });
-    fixture = TestBed.createComponent(ReturnComponent);
+    fixture = TestBed.createComponent(DevolutionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
