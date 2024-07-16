@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { CnpjCpfPipe } from 'src/app/pipes/cnpj-cpf.pipe';
 import { EntityTypePipe } from 'src/app/pipes/entity-type.pipe';
 import { NameCutPipe } from 'src/app/pipes/name-cut.pipe';
@@ -33,6 +33,8 @@ import { SidebarModule } from 'primeng/sidebar';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { ToggleButtonModule } from 'primeng/togglebutton';
+import { OrderStatusPipe } from '../pipes/order-status.pipe';
+import { DevolutionStatusPipe } from '../pipes/devolution-status.pipe';
 
 @NgModule({
   declarations: [
@@ -48,6 +50,7 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
   imports: [
     CommonModule,
     FormsModule,
+    OrderStatusPipe,
     ButtonModule,
     CalendarModule,
     CheckboxModule,
@@ -71,18 +74,21 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
     ToastModule,
     TooltipModule,
     MultiSelectModule,
-    ToggleButtonModule
+    ToggleButtonModule,
+    DevolutionStatusPipe,
+    DatePipe
   ],
   exports:[
     CnpjCpfPipe,
     UserTypePipe,
     NameCutPipe,
+    OrderStatusPipe,
     ShortMoneyPipe,
     EntityTypePipe,
     TranslatePipe,
     CustomerActionPipe,
     CepPipe,
-
+    DevolutionStatusPipe,
     ButtonModule,
     CalendarModule,
     CheckboxModule,
@@ -106,7 +112,8 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
     ToastModule,
     TooltipModule,
     MultiSelectModule,
-    ToggleButtonModule
+    ToggleButtonModule,
+    DatePipe
   ]
 })
 export class SharedModule { }
