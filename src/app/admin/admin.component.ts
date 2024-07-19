@@ -60,7 +60,7 @@ export class AdminComponent extends Common implements OnInit, AfterViewInit{
             {
                 label: 'CRM - Funis',
                 items: [
-                    // { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: [this.modulePath+'/crm/configurations'], queryParams: { place: this.modules.CRM }  },
+                    { label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: [this.modulePath+'/crm/config'], queryParams: { place: this.modules.CRM }  },
                     { label: 'Funis', icon: 'pi pi-fw pi-funnel icon-small', routerLink: [this.modulePath+'/crm/funnels'] },
                     { label: 'Estágios dos Funis', icon: 'pi pi-fw pi-stages icon-small', routerLink: [this.modulePath+'/crm/funnel-stages']},
                     // { label: 'Campos dinâmicos', icon: 'pi pi-fw pi-fields', routerLink: ['/uikit/misc'] }

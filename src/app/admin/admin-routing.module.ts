@@ -21,6 +21,7 @@ import { TablePricesComponent } from './b2b/table-prices/table-prices.component'
 import { CategoriesComponent } from './b2b/categories/categories.component';
 import { FunnelsComponent } from './crm/funnels/funnels.component';
 import { FunnelStagesComponent } from './crm/funnel-stages/funnel-stages.component';
+import { ConfigComponent as CrmConfigComponent } from './crm/config/config.component';
 import { StepsComponent } from './fpr/steps/steps.component';
 import { ReasonsComponent } from './fpr/reasons/reasons.component';
 import { EventTypesComponent } from './scm/event-types/event-types.component';
@@ -60,6 +61,7 @@ const routes: Routes = [{
     },{
       path: 'crm',
       children:[
+        { path: 'config', component: CrmConfigComponent },
         { path: 'funnels', component: FunnelsComponent },
         { path: 'funnel-stages', component: FunnelStagesComponent }
       ]
