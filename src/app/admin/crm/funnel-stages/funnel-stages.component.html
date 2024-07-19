@@ -42,12 +42,12 @@
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-item>
-                <tr style="background-color: {{item.color}}">
+                <tr [ngStyle]="{'background-color': item.color}">
                     <td class="text-center" pFrozenColumn><p-tableCheckbox [value]="item"></p-tableCheckbox></td>
                     <td pFrozenColumn><p-button [text]="true" icon="pi pi-pencil" pTooltip="Editar" tooltipPosition="top" tooltipStyleClass="text-sm" (onClick)="onEditData(item.id)"></p-button></td>
                     <td pFrozenColumn>{{item.name}}</td>
                     <td>{{item.funnel}}</td>
-                    <td class="text-center"><span class="material-symbols-outlined vertical-align-text-bottom icon-small" style="color: {{item.icon_color}}">{{item.icon}}</span></td>
+                    <td class="text-center"><span class="material-symbols-outlined vertical-align-text-bottom icon-small" [ngStyle]="{ 'color': item.icon_color }">{{item.icon}}</span></td>
                     <td class="text-center">{{item.order}}</td>
                 </tr>
             </ng-template>

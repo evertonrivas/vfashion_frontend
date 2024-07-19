@@ -111,7 +111,7 @@ export class FunnelsComponent extends Common implements AfterViewInit{
     let fType:FormField = {
       label: "Tipo",
       name: "type",
-      options: [{ value: 'P', label: 'Prospecção',id:undefined }, { value: 'V', label: 'Vendas',id:undefined }],
+      options: [{ value: 'P', label: 'Prospecção',id:undefined }, { value: 'S', label: 'Vendas',id:undefined }],
       placeholder: "Selecione...",
       type: FieldType.COMBO,
       value: undefined,
