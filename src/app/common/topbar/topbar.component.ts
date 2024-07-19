@@ -42,7 +42,8 @@ export class TopbarComponent extends Common implements AfterContentInit,OnDestro
   idTimerLogged:any = 0;
   idTimerMessage:any = 0;
   totalMessages:number = 1;
-  totalInCart:string = '0';
+  totalInCart:number = 0;
+  totalDevolution:number = 0;
 
   profileSidebarVisible:boolean = false;
 
@@ -61,7 +62,7 @@ export class TopbarComponent extends Common implements AfterContentInit,OnDestro
         ).subscribe({
           next: (data) =>{
             if(typeof data ==='number'){
-              this.totalInCart = (data as number).toString();
+              this.totalInCart = data as number;
             }
           }
         });
@@ -89,10 +90,21 @@ export class TopbarComponent extends Common implements AfterContentInit,OnDestro
     ).subscribe({
       next: (data) =>{
         if(typeof data === 'number'){
-          this.totalInCart = (data as number).toString();
+          this.totalInCart = data as number;
         }
       }
     });
+
+    this.IndSvc.b2bTotalDevolution(
+      parseInt((localStorage.getItem("id_profile") as string)),
+      this.level_access as string
+    ).subscribe({
+      next: (data) =>{
+        if (typeof data ==='number'){
+          this.totalDevolution = data as number;
+        }
+      }
+    })
 
     this.chatSub = this.chatSvc.chatAnnounced$.subscribe({
       next(value) {

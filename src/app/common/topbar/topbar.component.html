@@ -15,18 +15,18 @@
         <button class="p-link layout-topbar-button" [routerLink]="[modulePath+'/flimv']" pTooltip="FLIMV" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">military_tech</i>
         </button>
-        <button class="p-link layout-topbar-button" [routerLink]="[modulePath+'/reports']" pTooltip="Relatórios" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+        <!-- <button class="p-link layout-topbar-button" [routerLink]="[modulePath+'/reports']" pTooltip="Relatórios" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">picture_as_pdf</i>
-        </button>
+        </button> -->
     </ng-container>
     <!-- Modulo CRM -->
     <ng-container *ngIf="module==modules.CRM">
         <button class="p-link layout-topbar-button" [routerLink]="[modulePath+'/kanban']" pTooltip="Kanban" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">view_kanban</i>
         </button>
-        <button class="p-link layout-topbar-button" [routerLink]="[modulePath+'/reports']" pTooltip="Relatórios" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+        <!-- <button class="p-link layout-topbar-button" [routerLink]="[modulePath+'/reports']" pTooltip="Relatórios" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">picture_as_pdf</i>
-        </button>
+        </button> -->
     </ng-container>
 
     <ng-container *ngIf="module==modules.FPR">
@@ -76,7 +76,7 @@
                 <label>Sugestão I.A</label>
             </button>
             <button class="p-link layout-topbar-button" pTooltip="Devoluções" tooltipPosition="bottom" tooltipStyleClass="text-xs" [routerLink]="[modulePath+'/devolution']">
-                <i class="material-symbols-outlined">deployed_code_update</i>
+                <i class="material-symbols-outlined" pBadge severity="info" styleClass="text-xs" [value]="totalDevolution" [badgeDisabled]="totalDevolution==0?true:false">deployed_code_update</i>
                 <label>Devoluções</label>
             </button>
             <button class="p-link layout-topbar-button" pTooltip="Produtos do Pedido" tooltipPosition="bottom" tooltipStyleClass="text-xs" (click)="onCart()">
