@@ -28,9 +28,13 @@
         </div>
         <div class="flex flex-column mb-2" *ngIf="selectedEventType!=null && selectedEventType.use_collection">
             <label class="mb-2">Coleção</label>
-            <p-dropdown appendTo="body" 
+            <p-dropdown
+                [options]="all_collections"
+                optionLabel="name"
+                appendTo="body" 
                 placeholder="Seleção de Coleção..." 
                 emptyMessage="Nenhuma coleção disponível"
+                [(ngModel)]="selectedCollection"
             ></p-dropdown>
         </div>
         <div class="flex flex-column mb-2" *ngIf="showParentEvents">

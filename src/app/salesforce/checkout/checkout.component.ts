@@ -371,7 +371,7 @@ export class CheckoutComponent extends Common implements AfterViewInit{
       customers,
       this.myTotalPayment,
       pay.installments,
-      (this.myTotalItens/pay.installments),
+      (this.myTotalPayment/pay.installments),
       this.myTotalItens
     ).subscribe({
       next: (data) =>{

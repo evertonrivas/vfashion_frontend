@@ -13,5 +13,6 @@ export class CrmComponent implements AfterContentInit {
   
   ngAfterContentInit(): void {
     this.route.navigate(["/crm/kanban"]);
+    // this.route.navigate(["/crm/reports"]);
   }
 }

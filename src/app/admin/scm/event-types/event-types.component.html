@@ -37,9 +37,10 @@
                     <th style="width: 50px!important;" class="text-center" pFrozenColumn>Ações</th>
                     <th pSortableColumn="name" pFrozenColumn>Nome <p-sortIcon field="name"></p-sortIcon></th>
                     <!-- <th class="text-center" pSortableColumn="hex_color">Cor <p-sortIcon field="hex_color"></p-sortIcon></th> -->
-                    <th class="text-center" pSortableColumn="has_budget">Faz orçamento?<p-sortIcon field="has_budget"></p-sortIcon></th>
-                    <th class="text-center" pSortableColumn="use_collection">Controla Coleção?<p-sortIcon field="use_collection"></p-sortIcon></th>
-                    <th class="text-center" pSortableColumn="is_milestone">É marco (milestone)?<p-sortIcon field="is_milestone"></p-sortIcon></th>
+                    <th class="text-center" pSortableColumn="has_budget">Faz orçamento?<p-sortIcon field="has_budget"></p-sortIcon> <i class="pi pi-info-circle ml-2" pTooltip="Ao informar positivo, disponibiliza um campo de orçamento no calendário" positionStyle="text-xs"></i></th>
+                    <th class="text-center" pSortableColumn="use_collection">Controla Coleção?<p-sortIcon field="use_collection"></p-sortIcon> <i class="pi pi-info-circle ml-2" pTooltip="Ao informar positivo, exibe as coleções no calendário e controla o prazo no Salesforce" positionStyle="text-xs"></i></th>
+                    <th class="text-center" pSortableColumn="is_milestone">É marco (milestone)?<p-sortIcon field="is_milestone"></p-sortIcon> <i class="pi pi-info-circle ml-2" pTooltip="Define o evento como um marco no calendário" positionStyle="text-xs"></i></th>
+                    <th class="text-center" pSortableColumn="create_funnel">Cria Funil?<p-sortIcon field="create_funnel"></p-sortIcon> <i class="pi pi-info-circle ml-2" pTooltip="Quando criado um no calendário, pergunta qual ação que deseja tomar em relação ao calendário (em construção)" positionStyle="text-xs"></i></th>
                     <th>Evento Pai</th>
                 </tr>
             </ng-template>
@@ -54,6 +55,7 @@
                     <td class="text-center"><i [class]="item.has_budget?'pi pi-check':''"></i></td>
                     <td class="text-center"><i [class]="item.use_collection?'pi pi-check':''"></i></td>
                     <td class="text-center"><i [class]="item.is_milestone?'pi pi-check':''"></i></td>
+                    <td class="text-center"><i [class]="item.create_funnel?'pi pi-check':''"></i></td>
                     <td>{{item.parent.name}}</td>
                 </tr>
             </ng-template>

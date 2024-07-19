@@ -17,6 +17,7 @@ export interface CalendarEventType{
     has_budget:boolean,
     use_collection:boolean,
     is_milestone:boolean,
+    create_funnel:boolean,
     children: CalendarEventType[],
     parent: CalendarEventType[]
 }

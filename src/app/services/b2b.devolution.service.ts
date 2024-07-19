@@ -46,7 +46,7 @@ export class B2bDevolutionService  extends MyHttp{
   }
 
   saveDevolution(p_devolution:Devolution):Observable<Boolean|ResponseError>{
-    return this.http.post<Boolean|ResponseError>(this.sys_config.backend_fpr+'/devolution/',
+    return this.http.post<Boolean|ResponseError>(this.sys_config.backend_fpr+'/devolution/'+(p_devolution.id > 0?p_devolution.id:''),
       JSON.stringify(p_devolution),{
       headers: this.getHeader(ContentType.json)
     });
@@ -65,6 +65,12 @@ export class B2bDevolutionService  extends MyHttp{
         toTrash: toTrash,
         ids: ids
       }
+    });
+  }
+
+  finishDevolution(p_id:number):Observable<boolean|ResponseError>{
+    return this.http.put<boolean|ResponseError>(this.sys_config.backend_fpr+"/devolution/"+p_id.toString(),{},{
+      headers: this.getHeader()
     });
   }
 

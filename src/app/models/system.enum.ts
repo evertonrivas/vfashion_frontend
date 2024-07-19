@@ -78,7 +78,8 @@ export enum DevolutionStatus{
     PENDING       = 1, //warning
     APPROVED_ALL  = 2, //primary
     APPROVED_PART = 3, //success
-    REJECTED      = 4  //error
+    REJECTED      = 4,  //error
+    FINISHED      = 5
 }
 
 export enum OrderStatus {
@@ -112,3 +113,7 @@ export enum AccessLevel{
     NONE   = ''
 }
 //A = Administrador, L = Lojista, R = Representante, V = Vendedor, C = Company User
+
+export enum CrmConfigKeys{
+    DEFAULT_FUNNEL_STAGES = 'DEFAULT_FUNNEL_STAGES'
+}

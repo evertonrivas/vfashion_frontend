@@ -150,6 +150,19 @@ export class EventTypesComponent extends Common implements AfterViewInit{
       lockField:undefined
     }
 
+    let fFunnel:FormField = {
+      label: "Cria Funil?",
+      name: "create_funnel",
+      options: [{ value: false, label:'Não',id:undefined },{ value:true, label:'Sim',id:undefined }],
+      placeholder: undefined,
+      type: FieldType.RADIO,
+      value: undefined,
+      required:true,
+      case: FieldCase.NONE,
+      disabled:false,
+      lockField:undefined
+    }
+
     if(id>0){
       // busca os dados do registro para edicao
       this.serviceSub[2] = this.svc.loadEventType(id).subscribe({
@@ -160,6 +173,7 @@ export class EventTypesComponent extends Common implements AfterViewInit{
             fBudget.value     = this.localObject.has_budget;
             fCollection.value = this.localObject.use_collection;
             fMilestone.value  = this.localObject.is_milestone;
+            fFunnel.value     = this.localObject.create_funnel;
             fColor.value      = {value: this.localObject.hex_color, label: this.localObject.hex_color}
             //{value: '#FFFFBA', label: '#FFFFBA'}
 
@@ -171,7 +185,7 @@ export class EventTypesComponent extends Common implements AfterViewInit{
               fields: [fColor]
             }
             let row2:FormRow = {
-              fields: [fBudget,fCollection,fMilestone]
+              fields: [fBudget,fCollection,fMilestone,fFunnel]
             }
             this.formRows.push(row);
             this.formRows.push(row1);
@@ -197,7 +211,7 @@ export class EventTypesComponent extends Common implements AfterViewInit{
         fields: [fColor]
       }
       let row2:FormRow = {
-        fields: [fBudget,fCollection,fMilestone]
+        fields: [fBudget,fCollection,fMilestone,fFunnel]
       }
       this.formRows.push(row);
       this.formRows.push(row1);

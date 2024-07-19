@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Funnel, FunnelStage } from '../models/crm.model';
 import { Entity } from '../models/entity.model';
 import { Options, RequestResponse, ResponseError } from '../models/paginate.model';
+import { Config as CrmConfig } from '../admin/crm/config/config.component';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,19 @@ export class CrmService  extends MyHttp{
 
   constructor(http:HttpClient) {
     super(http);
+  }
+
+  loadConfig():Observable<any|ResponseError>{
+    return this.http.get<any|ResponseError>(this.sys_config.backend_crm+'/config/',{
+      headers: this.getHeader()
+    });
+  }
+
+  saveConfig(cfg:CrmConfig):Observable<boolean|ResponseError>{
+    return this.http.post<boolean|ResponseError>(this.sys_config.backend_crm+'/config/',
+      JSON.stringify(cfg),{
+        headers: this.getHeader(ContentType.json)
+      });
   }
 
   getFunnels(opt:Options):Observable<Funnel[]|RequestResponse|ResponseError>{

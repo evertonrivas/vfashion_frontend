@@ -34,6 +34,7 @@ export class MilestoneFormComponent extends Common implements AfterViewInit, OnD
       hex_color: "",
       is_milestone: false,
       use_collection: false,
+      create_funnel: false,
       children: [],
       parent: []
     }
@@ -87,6 +88,7 @@ export class MilestoneFormComponent extends Common implements AfterViewInit, OnD
             hex_color: "",
             is_milestone: false,
             use_collection: false,
+            create_funnel:false,
             children: [],
             parent:[]
           };
@@ -130,6 +132,7 @@ export class MilestoneFormComponent extends Common implements AfterViewInit, OnD
       hex_color: "",
       is_milestone: false,
       use_collection: false,
+      create_funnel: false,
       children: [],
       parent: []
     }

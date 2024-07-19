@@ -6,6 +6,8 @@ import { CalendarEvent, CalendarEventData, CalendarEventType } from 'src/app/mod
 import { CalendarService } from 'src/app/services/calendar.service';
 import { MessageService } from 'primeng/api';
 import { Calendar } from 'primeng/calendar';
+import { CollectionService } from 'src/app/services/collection.service';
+import { ProductCollection } from 'src/app/models/product.model';
 
 
 @Component({
@@ -30,12 +32,15 @@ export class EventFormComponent extends Common implements OnDestroy{
   eventCollectionId:number = 0;
   eventTypes:CalendarEventType[] = [];
   validPeriod:boolean = true;
+  all_collections:ProductCollection[] = [];
+  selectedCollection!:ProductCollection;
 
   //trabalho com children
   showParentEvents:boolean = false;
   exsistentEvents:CalendarEvent[] = [];
 
   constructor(private svc:CalendarService,
+    private svcCol:CollectionService,
     route:Router,
     private msgSvc:MessageService){
     super(route);
@@ -58,13 +63,8 @@ export class EventFormComponent extends Common implements OnDestroy{
       },complete: () => {
           if(this.selectedEvent!=null){
 
-            //tratamento para tipo de evento
-            if(this.ddet!=null){
-              this.selectedEventType = this.selectedEvent.type;
-              this.ddet.selectedOption = this.selectedEventType;
-              //this.ddet.selectItem(new Event(''),this.selectedEventType);
-              this.ddet.onChange.emit();
-            }
+            this.selectedEventType = this.selectedEvent.type;
+            this.setSelectedEventType(this.selectedEventType);
 
             //tratamento para valor do orcamento
             if (this.selectedEvent.budget_value!=null){
@@ -152,6 +152,7 @@ export class EventFormComponent extends Common implements OnDestroy{
       is_milestone: false,
       use_collection: false,
       has_budget: false,
+      create_funnel: false,
       hex_color:"",
       children: [],
       parent:[]
@@ -164,6 +165,13 @@ export class EventFormComponent extends Common implements OnDestroy{
 
     //busca em tipos de eventos filhos
     if (selected==undefined){
+      // realiza a carga das colecoes
+      this.svcCol.list({page:1,pageSize:1,query:'can:list-all 1||'}).subscribe({
+        next: (data) =>{
+          this.all_collections = data as ProductCollection[];
+        }
+      });
+      
       this.eventTypes.find((evt) =>{
         selected = evt.children.find((v:any) =>{
           if(this.selectedEventType!=null){
@@ -177,10 +185,8 @@ export class EventFormComponent extends Common implements OnDestroy{
       });
     }
   
-    if ( selected!=undefined){
-
+    if ( selected==undefined && parentEventType!=undefined){
       if (parseInt(parentEventType.id.toString()) > 0){
-        console.log("Entrou para buscar evento pai");
         this.showParentEvents = true;
         //realizar aqui a carga de dados dos eventos conforme o tipo do evento pai
         let dt_start = '';
@@ -192,21 +198,39 @@ export class EventFormComponent extends Common implements OnDestroy{
         }).subscribe({
           next: (data) =>{
             this.exsistentEvents = data as CalendarEvent[];
-            console.log("entrou nos eventos existentes!");
           },
           complete: ()  => {
-            this.eventParentEventId = parentEventType.id
+            this.eventParentEventId = (this.exsistentEvents.find(v => v.id == this.selectedEvent?.id_parent) as CalendarEvent).id;
           },
         });
       }
+    }else if(selected!=undefined){
+      // realiza a carga das colecoes
+      this.svcCol.list({page:1,pageSize:1,query:'can:list-all 1||'}).subscribe({
+        next: (data) =>{
+          this.all_collections = data as ProductCollection[];
+        }
+      });
     }
-
-    //console.log(this.selectedEventType);
   }
 
   closeForm():void{
     this.exsistentEvents = [];
     this.showParentEvents = false;
+    this.all_collections = [];
+    this.selectedCollection = {
+      id:0,
+      name: "",
+      brand: {
+        id: 0,
+        brand:null,
+        name: null,
+        date_created: "",
+        date_updated: null,
+        id_brand: 0
+      },
+      table_prices: []
+    }
 
     this.selectedEventType = undefined;
     this.eventName = "";

@@ -53,6 +53,17 @@ export class DevolutionComponent extends Common implements AfterViewInit{
 
   //objetos da devolucao
   localDevolution!:Devolution;
+
+  //devolucao selecionada para visualizacao
+  selectedDevolution:Devolution = {
+    id: 0,
+    id_order: 0,
+    order_date: undefined,
+    status: undefined,
+    customer: undefined,
+    date: undefined,
+    items: []
+  };
   
   //define os produtos que foram selecionados por checkbox
   selectedProduct:canUploadProduct = {};
@@ -119,6 +130,7 @@ export class DevolutionComponent extends Common implements AfterViewInit{
         this.loading = false;
       }
     });
+    this.cdr.detectChanges();
   }
 
   loadOrder():void{
@@ -156,9 +168,28 @@ export class DevolutionComponent extends Common implements AfterViewInit{
   }
   
   onCancel():void{
+    this.selectedDevolution = {
+      id: 0,
+      id_order: 0,
+      customer: undefined,
+      date: undefined,
+      order_date: undefined,
+      status: undefined,
+      items:[]
+    }
     this.selectedOrder = undefined;
     this.localOrder    = undefined;
     this.showDialog    = false;
+    this.formVisible   = false;
+  }
+
+  onView(p_id:string):void{
+    this.svcRet.getDevolution(parseInt(p_id)).subscribe({
+      next:(data) =>{
+        this.selectedDevolution = data as Devolution;
+        this.formVisible = true;
+      }
+    });
   }
 
   onEdit(p_id:string):void{
@@ -208,9 +239,14 @@ export class DevolutionComponent extends Common implements AfterViewInit{
 
     this.selectedDevolutionProducts.forEach(p =>{
       itens.push({
+        id_devolution_item: '',
         id_product: p.id_product,
+        name_product:"",
         id_size: p.id_size,
+        name_size: "",
         id_color: p.id_color,
+        name_color: "",
+        reason: "",
         id_reason: this.selectedReason[p.id_order_product].id,
         quantity: this.selectedQuantity[p.id_order_product],
         picture_1: this.selectedFiles[p.id_order_product][0],
@@ -293,7 +329,35 @@ export class DevolutionComponent extends Common implements AfterViewInit{
       return "info";
     }else if(status==DevolutionStatus.REJECTED){
       return "danger";
+    }else if(status==DevolutionStatus.FINISHED){
+      return "contrast";
     }
     return "warning";
+  }
+
+  onOrderNumber(id:number):string{
+    return id.toString().padStart(10,"0");
+  }
+
+  onFinish():void{
+    this.svcRet.finishDevolution(this.selectedDevolution.id).subscribe({
+      next:(data) =>{
+        this.formVisible = false;
+        if(typeof data ==='boolean'){
+          this.msg.add({
+            summary:"Sucesso...",
+            detail: "Pedido finalizado com sucesso!",
+            severity:"success"
+          });
+          this.loadingData();
+        }else{
+          this.msg.add({
+            summary:"Falha...",
+            detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
+            severity:"error"
+          });
+        }
+      }
+    })
   }
 }

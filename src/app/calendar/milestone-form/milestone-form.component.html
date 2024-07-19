@@ -10,7 +10,7 @@
             <input pInputText type="text" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !eventName}" [(ngModel)]="eventName">
         </div>
         <div class="flex flex-column mb-2">
-            <label class="mb-2">De</label>
+            <label class="mb-2">Data</label>
             <p-calendar appendTo="body" [showIcon]="true" id="dtEvent" dateFormat="dd/mm/yy" class="p-inputtext-sm" [ngClass]="{'ng-invalid ng-dirty' : hasSended && selectedDate==null}" [(ngModel)]="selectedDate"></p-calendar>
         </div>
         <div class="flex flex-row justify-content-end gap-2">

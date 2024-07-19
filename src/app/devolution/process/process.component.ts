@@ -11,6 +11,10 @@ import { B2bDevolutionService } from 'src/app/services/b2b.devolution.service';
 import { SharedModule } from 'src/app/common/shared.module';
 import { Devolution } from 'src/app/models/devolution.model';
 
+export interface selectedStatus{
+  [index:string]:string
+}
+
 @Component({
   selector: 'app-process',
   standalone: true,
@@ -24,6 +28,7 @@ import { Devolution } from 'src/app/models/devolution.model';
   providers:[MessageService,ConfirmationService]
 })
 export class ProcessComponent extends Common implements AfterViewInit {
+  selectedStatus:selectedStatus = {};
   localDevolution:Devolution = {
     id: 0,
     id_order: 0,
@@ -33,6 +38,7 @@ export class ProcessComponent extends Common implements AfterViewInit {
     order_date: undefined,
     items: []
   };
+  devStatus = DevolutionStatus;
   constructor(route:Router,
     private svc:B2bDevolutionService,
     private msg:MessageService,
@@ -92,6 +98,49 @@ export class ProcessComponent extends Common implements AfterViewInit {
     this.serviceSub[1] = this.svc.getDevolution(id).subscribe({
       next:(data) =>{
         this.localDevolution = data as Devolution;
+        (this.localDevolution as Devolution).items.forEach(i =>{
+          if(this.selectedStatus[i.id_devolution_item]==undefined){
+            this.selectedStatus[i.id_devolution_item] = '';
+          }
+        });
+      }
+    });
+  }
+
+  onPublish():void{
+    this.hasSended = true;
+    let validated = true;
+    Object.keys(this.selectedStatus).forEach(k =>{
+      if(this.selectedStatus[k] == ''){
+        validated = false;
+      }
+    });
+
+    if(!validated){
+      return;
+    }
+    
+    this.localDevolution.items.forEach(i =>{
+      i.status = this.selectedStatus[i.id_devolution_item]=='Y'? true : false
+    });
+
+    this.svc.saveDevolution(this.localDevolution).subscribe({
+      next: (data) =>{
+        this.msg.clear();
+        if (typeof data === 'boolean'){
+          this.msg.add({
+            summary:"Sucesso...",
+            detail: "Registro atualizado com sucesso!",
+            severity:"success"
+          });
+          this.showDialog = false;
+        }else{
+          this.msg.add({
+            summary:"Falha...",
+            detail: "Ocorreu um erro ao tentar carregar o registro",
+            severity:"error"
+          });
+        }
       }
     });
   }

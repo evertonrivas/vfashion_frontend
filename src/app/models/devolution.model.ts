@@ -8,10 +8,15 @@ export interface Reason {
 }
 
 export interface DevolutionItem{
+    id_devolution_item: string,
     id_product: number,
+    name_product: string,
     id_color: number,
+    name_color: string,
     id_size: number,
+    name_size: string
     id_reason: number,
+    reason: string,
     quantity: number,
     status: boolean|undefined,
     picture_1: string,

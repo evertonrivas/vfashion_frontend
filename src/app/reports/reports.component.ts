@@ -47,8 +47,9 @@ export class ReportsComponent extends Common implements AfterViewInit{
       expandedIcon: 'pi pi-folder-open',
       expanded: true,
       children:[
-        { label: 'Por representante', data: 'vendas-representante.html', leaf: true },
         { label: 'Por Cliente', data: 'vendas-cliente.html', leaf: true },
+        { label: 'Por Coleção', data: 'vendas-colecao.html', leaf: true },
+        { label: 'Por Representante', data: 'vendas-representante.html', leaf: true },
       ]
     },{
       key: '2',
@@ -60,8 +61,8 @@ export class ReportsComponent extends Common implements AfterViewInit{
       children:[
         { label:'Ativos', data:'ativos.html', leaf:true },
         { label:'Inativos', data:'inativos.html', leaf:true },
-        { label:'Prospecção', data:'prospect.html', leaf:true },
-        { label: '-', data: undefined, leaf:true }
+        { label:'Histórico', data: 'history.html', leaf:true },
+        { label:'Prospecção', data:'prospect.html', leaf:true }
       ]
     },{
       key: '3',
@@ -71,7 +72,7 @@ export class ReportsComponent extends Common implements AfterViewInit{
       expandedIcon: 'pi pi-folder-open',
       expanded: false,
       children: [
-        { label: '' }
+        { label: 'Orçamento', data:'orcamento.html', leaf:true }
       ]
     }];
     this.cdr.detectChanges();

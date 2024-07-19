@@ -18,6 +18,7 @@ export class DevolutionStatusPipe implements PipeTransform {
         case DevolutionStatus.APPROVED_ALL: vReturn = "Totalmente aprovado"; break;
         case DevolutionStatus.APPROVED_PART: vReturn = "Parcialmente aprovado"; break;
         case DevolutionStatus.REJECTED: vReturn = "Reprovado"; break
+        case DevolutionStatus.FINISHED: vReturn = "Finalizado"; break;
       }
     }else{
       switch(eType){

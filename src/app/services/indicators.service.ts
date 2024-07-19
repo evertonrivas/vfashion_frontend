@@ -27,6 +27,13 @@ export class IndicatorsService extends MyHttp{
     });
   }
 
+  b2bTotalDevolution(idProfile:number,userType:string):Observable<number|ResponseError>{
+    return this.http.get<number|ResponseError>(this.sys_config.backend_fpr+'/devolution/indicator/'+idProfile.toString(),{
+      headers: this.getHeader(),
+      params: new HttpParams().set('userType',userType)
+    })
+  }
+
   //realiza a contagem total de entidades do calendario
   calendarCountEntity(type:EntityType):Observable<number|ResponseError>{
     return this.http.get<number|ResponseError>(this.sys_config.backend_cmm+'/legal-entities/count',{
