@@ -285,6 +285,10 @@ body{
     @include use-md-icon-normal('passkey')
 }
 
+.pi-upload{
+    @include use-md-icon-normal('upload')
+}
+
 .kcolor .p-dropdown-items .p-dropdown-item {
     padding: 0px!important;
     margin-top: 2px;
