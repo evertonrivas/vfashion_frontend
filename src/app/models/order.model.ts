@@ -3,6 +3,7 @@ import { OrderStatus } from "./system.enum"
 
 export interface OrderProduct{
     id_order_product: string,
+    refCode: string|undefined,
     id_product:number,
     name:string,
     id_color:number,
@@ -12,7 +13,8 @@ export interface OrderProduct{
     quantity:string,
     price:number,
     discount:number,
-    discount_percentage: number
+    discount_percentage: number,
+    stock_quantity: number
 }
 
 export interface Order{
@@ -25,6 +27,7 @@ export interface Order{
         id:number,
         name:string
     }|undefined,
+    date:string,
     total_value:number,
     total_itens:number,
     installments: number,

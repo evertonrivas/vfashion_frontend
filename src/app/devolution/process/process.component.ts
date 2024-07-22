@@ -83,6 +83,8 @@ export class ProcessComponent extends Common implements AfterViewInit {
       return "info";
     }else if(status==DevolutionStatus.REJECTED){
       return "danger";
+    }else if(status==DevolutionStatus.FINISHED){
+      return "contrast";
     }
     return "warning";
   }

@@ -29,6 +29,8 @@ import { PaymentComponent } from './b2b/payment/payment.component';
 import { MeasureUnitComponent } from './measure-unit/measure-unit.component';
 import { ProfileComponent } from '../common/profile/profile.component';
 import { VersionComponent } from '../common/version/version.component';
+import { ImportEntitiesComponent } from './import/import-entities/import-entities.component';
+import { ImportProductsComponent } from './import/import-products/import-products.component';
 
 const routes: Routes = [{ 
   path: '', 
@@ -77,6 +79,12 @@ const routes: Routes = [{
       children: [
         { path: 'configurations', component: ConfigSCM },
         { path: 'event-types', component: EventTypesComponent }
+      ]
+    },{
+      path: 'import',
+      children: [
+        { path: 'entities', component: ImportEntitiesComponent },
+        { path: 'products', component: ImportProductsComponent }
       ]
     }]
   }];

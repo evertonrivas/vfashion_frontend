@@ -44,14 +44,14 @@ export class IndicatorsService extends MyHttp{
 
    //realiza a contagem total de pedidos do calendario
    calendarCountOrder():Observable<number|ResponseError>{
-    return this.http.get<number|ResponseError>(this.sys_config.backend_b2b+'/orders/total',{
+    return this.http.get<number|ResponseError>(this.sys_config.backend_b2b+'/orders/total/',{
       headers: this.getHeader()
     });
    }
 
    //realiza a soma total dos valores de pedidos do calendario
    calendarValueOrder():Observable<number|ResponseError>{
-    return this.http.post<number|ResponseError>(this.sys_config.backend_b2b+'/orders/total',{
+    return this.http.post<number|ResponseError>(this.sys_config.backend_b2b+'/orders/total/',null,{
       headers: this.getHeader()
     });
    }
@@ -67,6 +67,30 @@ export class IndicatorsService extends MyHttp{
     return this.http.get<number|ResponseError>(this.sys_config.backend_cmm+'/users/count',{
       headers: this.getHeader(),
       params: new HttpParams().set("level",level.toString())
+    });
+   }
+
+   reprTotalCustomer(p_id:number):Observable<number|ResponseError>{
+    return this.http.get<number|ResponseError>(this.sys_config.backend_b2b+'/customer-group/representative-indicator/'+p_id.toString(),{
+      headers:this.getHeader()
+    });
+   }
+
+   reprTotalOrder(p_id:number):Observable<number|ResponseError>{
+    return this.http.post<number|ResponseError>(this.sys_config.backend_b2b+'/customer-group/representative-indicator/'+p_id.toString(),{},{
+      headers: this.getHeader()
+    });
+   }
+
+   reprCountOrder(p_id:number):Observable<number|ResponseError>{
+    return this.http.put<number|ResponseError>(this.sys_config.backend_b2b+'/customer-group/representative-indicator/'+p_id.toString(),{},{
+      headers: this.getHeader()
+    });
+   }
+
+   reprGoal(p_id:number):Observable<number|ResponseError>{
+    return this.http.patch<number|ResponseError>(this.sys_config.backend_b2b+'/customer-group/representative-indicator/'+p_id.toString(),{},{
+      headers: this.getHeader()
     });
    }
   

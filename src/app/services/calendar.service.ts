@@ -84,19 +84,19 @@ export class CalendarService extends MyHttp{
   }
 
   listFlimv():Observable<CommercialRule[]|ResponseError>{
-    return this.http.get<CommercialRule[]|ResponseError>(this.sys_config.backend_scm+'/calendar/flimv',{
+    return this.http.get<CommercialRule[]|ResponseError>(this.sys_config.backend_scm+'/flimv/',{
       headers: this.getHeader()
     });
   }
 
   getFlimv(id:number):Observable<CommercialRule|ResponseError>{
-    return this.http.get<CommercialRule|ResponseError>(this.sys_config.backend_scm+'/calendar/flimv/'+id.toString(),{
+    return this.http.get<CommercialRule|ResponseError>(this.sys_config.backend_scm+'/flimv/'+id.toString(),{
       headers: this.getHeader()
     });
   }
 
   saveFlimv(data:CommercialRule[]):Observable<boolean|ResponseError>{
-    return this.http.post<boolean|ResponseError>(this.sys_config.backend_scm+'/calendar/flimv',{
+    return this.http.post<boolean|ResponseError>(this.sys_config.backend_scm+'/flimv/',{
       "rules": data
     },{
       headers: this.getHeader(ContentType.json)

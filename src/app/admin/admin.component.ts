@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { LayoutService } from '../services/layout.service';
 import { Common } from '../classes/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-admin',
@@ -78,9 +78,15 @@ export class AdminComponent extends Common implements OnInit, AfterViewInit{
                 label: 'SCM - Calendário',
                 items:[
                     //{ label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink:[this.modulePath+'/scm/configurations'], queryParams: { place: this.modules.SCM }  },
-                    { label: 'Tipos de Eventos', icon: 'pi pi-fw pi-events icon-small', routerLink:[this.modulePath+'/scm/event-types'] }
+                    { label: 'Tipos de Eventos', icon: 'pi pi-fw pi-events icon-small', routerLink:[this.modulePath+'/scm/event-types']}
                 ]
-            },
+            },{
+                label:'Importações',
+                items:[
+                    { label: 'Clientes/Representantes', icon: 'pi pi-fw pi-import-entity icon-small',routerLink: [this.modulePath+'/import/entities'] },
+                    { label: 'Produtos', icon: 'pi pi-fw pi-import-product icon-small', routerLink: [this.modulePath+'/import/products']},
+                ]
+            }
             // NÃO APAGAR, ISSO SERAH UTILIZADO NO FUTURO
             // {
             //     label: 'MPG - Marketing',

@@ -7,17 +7,17 @@
                 <div>
                     <label for="email1" class="block text-900 font-medium mb-2">Login</label>
                     <!-- ng-invalid ng-dirty -->
-                    <input id="email1" type="text" placeholder="usuário, email ou CNPJ" pInputText class="w-full mb-3" formControlName="txtUsername" required [ngClass]="{'ng-invalid': sended && frmLogin.controls['txtUsername'].invalid,'ng-dirty':sended && frmLogin.controls['txtUsername'].invalid}">
+                    <input id="email1" type="text" placeholder="usuário, email ou CNPJ" pInputText class="w-full mb-3" formControlName="txtUsername" required [ngClass]="{'ng-invalid ng-dirty':sended && frmLogin.controls['txtUsername'].invalid}">
 
                     <label for="password1" class="block text-900 font-medium mb-2">Senha</label>
-                    <p-password [toggleMask]="true" styleClass="w-full mb-3" inputStyleClass="w-full" [feedback]="false" formControlName="txtPassword" required [ngClass]="{'ng-invalid': sended && frmLogin.controls['txtUsername'].invalid,'ng-dirty':sended && frmLogin.controls['txtUsername'].invalid}"></p-password>
+                    <p-password [toggleMask]="true" styleClass="w-full mb-3" inputStyleClass="w-full" [feedback]="false" formControlName="txtPassword" required [ngClass]="{'ng-invalid ng-dirty':sended && frmLogin.controls['txtUsername'].invalid}"></p-password>
  
                     <div class="flex align-items-center justify-content-between mb-6">
                         <div class="flex align-items-center">
                             <p-checkbox id="rememberme1" [binary]="true" styleClass="mr-2" formControlName="chkRemember"></p-checkbox>
                             <label for="rememberme1" class="text-900">Lembrar credenciais</label>
                         </div>
-                        <a class="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer">Esqueci minha senha</a>
+                        <p-button [text]="true" (onClick)="pnlRecovery.toggle($event)">Esqueci minha senha</p-button>
                     </div>
 
                     <button pButton label="Acessar" [loading]="loading" icon="pi pi-user" class="w-full"></button>
@@ -26,3 +26,13 @@
     </div>
 </form>
 <p-toast></p-toast>
+
+<p-overlayPanel #pnlRecovery>
+    <div class="flex flex-column w-25rem">
+        <label>E-mail</label>
+        <input pInputText type="email" placeholder="Informe seu e-mail" class="w-full mb-3" [(ngModel)]="email_to_recovery" [ngClass]="{'ng-invalid ng-dirty':sended && !email_to_recovery}"/>
+    </div>
+    <div class="flex flex-row justify-content-end w-25rem">
+        <p-button label="Recuperar" styleClass="p-button-sm" (onClick)="onRecovery()" icon="pi pi-recovery-password" severity="help"></p-button>
+    </div>
+</p-overlayPanel>

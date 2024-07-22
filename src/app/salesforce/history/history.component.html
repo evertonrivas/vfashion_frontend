@@ -11,7 +11,7 @@
                 <th pSortableColumn="total_value">Valor Total <p-sortIcon field="total_value"></p-sortIcon></th>
                 <th *ngIf="showIntegration" pSortableColumn="invoice_number">N&deg; NF <p-sortIcon field="invoice_number"></p-sortIcon></th>
                 <th pSortableColumn="status">Status <p-sortIcon field="status"></p-sortIcon></th>
-                <th *ngIf="showIntegrationTrack" pSortableColumn="total_value">Rastrear</th>
+                <th *ngIf="showIntegrationTrack">Rastrear</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-item>
@@ -26,7 +26,7 @@
                 <td *ngIf="showIntegration">{{item.invoice_number}}</td>
                 <td><p-tag [severity]="getSeverity(item.status)">{{item.status | orderStatus}}</p-tag></td>
                 <td *ngIf="showIntegrationTrack" class="text-center">
-                    <p-button styleClass="p-button-text p-button-rounded" icon="pi pi-map" (onClick)="showTrack(item.id_order)"></p-button>
+                    <p-button [text]="true" [rounded]="true" icon="pi pi-map" (onClick)="showTrack(item.id_order)"></p-button>
                 </td>
             </tr>
         </ng-template>

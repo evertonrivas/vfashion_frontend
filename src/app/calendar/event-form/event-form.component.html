@@ -72,8 +72,8 @@
             <p-inputNumber mode="currency" currency="BRL" locale="pt-BR" [(ngModel)]="eventBudget" [ngClass]="{'ng-invalid ng-dirty' : hasSended && selectedEventType!=null && selectedEventType.has_budget && eventBudget==null}"></p-inputNumber>
         </div>
         <div class="flex flex-row justify-content-end gap-2">
-            <p-button pRipple label="Cancelar" icon="pi pi-times" [severity]="'danger'" (click)="closeForm()"></p-button>
-            <p-button pRipple label="Salvar" icon="pi pi-check" (click)="onSubmit()"></p-button>
+            <p-button pRipple label="Cancelar" icon="pi pi-times" styleClass="p-button-sm" [severity]="'danger'" (click)="closeForm()"></p-button>
+            <p-button pRipple label="Salvar" icon="pi pi-check" styleClass="p-button-sm" (click)="onSubmit()"></p-button>
         </div>
     </ng-template>
 </p-dialog>

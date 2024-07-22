@@ -5,6 +5,7 @@ import { DashboardComponent } from '../common/dashboard/dashboard.component';
 import { VersionComponent } from '../common/version/version.component';
 import { ReportsComponent } from '../reports/reports.component';
 import { ProfileComponent } from '../common/profile/profile.component';
+import { OrdersComponent } from './orders/orders.component';
 
 const routes: Routes = [
   { 
@@ -12,6 +13,7 @@ const routes: Routes = [
     component: RepresentativeComponent,
     children:[{ path: 'dashboard', component: DashboardComponent},
       { path: 'version/:id', component: VersionComponent},
+      { path: 'orders', component: OrdersComponent },
       { path: 'reports', component: ReportsComponent },
       { path: 'profile', component: ProfileComponent }]
    }];

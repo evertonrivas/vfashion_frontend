@@ -1,5 +1,6 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { PaginatorState } from 'primeng/paginator';
 import { Common } from 'src/app/classes/common';
 import { OrderHistory } from 'src/app/models/order.model';
@@ -33,7 +34,8 @@ export class HistoryComponent extends Common implements AfterViewInit{
     date_created: ''
   };
   constructor(route:Router,
-    private svc:B2bOrderService){
+    private svc:B2bOrderService,
+    private cdr:ChangeDetectorRef){
     super(route);
   }
 

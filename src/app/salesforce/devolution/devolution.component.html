@@ -12,8 +12,9 @@
     </ng-template>
     <ng-template pTemplate="body">
         <p-table
-        [loading]="loading"
-        [value]="response.data">
+            styleClass="p-datatable-striped"
+            [loading]="loading"
+            [value]="response.data">
             <ng-template pTemplate="header">
                 <tr>
                     <!-- <th pSortableColumn="date_created">Data do Pedido <p-sortIcon field="date_created"></p-sortIcon></th> -->

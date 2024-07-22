@@ -4,9 +4,12 @@
     <button #menubutton class="p-link layout-menu-button layout-topbar-button" *ngIf="module==modules.ADM || module==modules.B2B" [pTooltip]="module==modules.ADM?'Exibir/Ocultar Menu':'Exibir/Ocultar Filtros'" tooltipPosition="bottom" tooltipStyleClass="text-xs" (click)="onMenu()">
         <i class="material-symbols-outlined">menu</i>
     </button>
-    <button class="p-link layout-topbar-button" [routerLink]="[modulePath+'/dashboard']" pTooltip="Dashboard" tooltipPosition="bottom" tooltipStyleClass="text-xs" *ngIf="module!=modules.B2B && module!=modules.ADM">
+    <button *ngIf="module==modules.REPR || module==modules.SCM" class="p-link layout-topbar-button" [routerLink]="[modulePath+'/dashboard']" pTooltip="Dashboard" tooltipPosition="bottom" tooltipStyleClass="text-xs">
         <i class="material-symbols-outlined">dashboard</i>
     </button>
+    <!-- <button *ngIf="module==modules.SCM || module==modules.FPR" class="p-link layout-topbar-button" [routerLink]="[modulePath+'/reports']" pTooltip="Relatórios" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+            <i class="material-symbols-outlined">picture_as_pdf</i>
+        </button> -->
     <!-- Modulo Calendário -->
     <ng-container *ngIf="module==modules.SCM">
         <button class="p-link layout-topbar-button" [routerLink]="[modulePath+'/gantt']" pTooltip="Calendário" tooltipPosition="bottom" tooltipStyleClass="text-xs">
@@ -15,18 +18,12 @@
         <button class="p-link layout-topbar-button" [routerLink]="[modulePath+'/flimv']" pTooltip="FLIMV" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">military_tech</i>
         </button>
-        <!-- <button class="p-link layout-topbar-button" [routerLink]="[modulePath+'/reports']" pTooltip="Relatórios" tooltipPosition="bottom" tooltipStyleClass="text-xs">
-            <i class="material-symbols-outlined">picture_as_pdf</i>
-        </button> -->
     </ng-container>
     <!-- Modulo CRM -->
     <ng-container *ngIf="module==modules.CRM">
         <button class="p-link layout-topbar-button" [routerLink]="[modulePath+'/kanban']" pTooltip="Kanban" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">view_kanban</i>
         </button>
-        <!-- <button class="p-link layout-topbar-button" [routerLink]="[modulePath+'/reports']" pTooltip="Relatórios" tooltipPosition="bottom" tooltipStyleClass="text-xs">
-            <i class="material-symbols-outlined">picture_as_pdf</i>
-        </button> -->
     </ng-container>
 
     <ng-container *ngIf="module==modules.FPR">
@@ -37,7 +34,7 @@
     </ng-container>
 
     <ng-container *ngIf="module==modules.REPR">
-        <button class="p-link layout-topbar-button" pTooltip="Gestor de Pedidos" tooltipPosition="bottom" tooltipStyleClass="text-xs" [routerLink]="[modulePath+'/order']">
+        <button class="p-link layout-topbar-button" pTooltip="Gestor de Pedidos" tooltipPosition="bottom" tooltipStyleClass="text-xs" [routerLink]="[modulePath+'/orders']">
             <i class="material-symbols-outlined">dvr</i>
             <label>Pedidos</label>
         </button>
@@ -94,10 +91,10 @@
             <i *ngIf="module!=modules.B2B" class="material-symbols-outlined" pBadge value="{{totalMessages}}" severity="danger">mail</i>
             <i *ngIf="module==modules.B2B" class="material-symbols-outlined" pBadge severity="danger">mail</i>
         </button> -->
-        <button class="p-link layout-topbar-button" pTooltip="Editar Perfil" [routerLink]="[modulePath+'/profile']" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+        <!-- <button class="p-link layout-topbar-button" pTooltip="Editar Perfil" [routerLink]="[modulePath+'/profile']" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">person</i>
             <label>Perfil</label>
-        </button>
+        </button> -->
         <button class="p-link layout-topbar-button" pTooltip="Sair do Sistema" (click)="onLogoff()" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">logout</i>
             <label>Sair</label>

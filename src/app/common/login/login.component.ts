@@ -1,4 +1,4 @@
-import { Component,AfterContentInit } from '@angular/core';
+import { Component,AfterContentInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Auth } from 'src/app/models/auth.model';
@@ -12,6 +12,8 @@ import { PasswordModule } from 'primeng/password';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
 import { CommonModule } from '@angular/common';
+import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
+import { ResponseError } from 'src/app/models/paginate.model';
 
 @Component({
   selector: 'app-login',
@@ -26,10 +28,12 @@ import { CommonModule } from '@angular/common';
     FormsModule,
     ReactiveFormsModule,
     ToastModule,
+    OverlayPanelModule,
     CommonModule],
   providers: [MessageService]
 })
 export class LoginComponent implements AfterContentInit{
+  @ViewChild('pnlRecovery') pnlRecovery:OverlayPanel|null = null;
   sended:boolean = false;
   loading:boolean = false;
   app_token:Auth = {
@@ -46,6 +50,8 @@ export class LoginComponent implements AfterContentInit{
     txtPassword: new FormControl('',Validators.required),
     chkRemember: new FormControl()
   });
+
+  email_to_recovery:string = "";
 
   constructor(
     private route:Router,
@@ -132,5 +138,33 @@ export class LoginComponent implements AfterContentInit{
     })
 
     return true;
+  }
+
+  onRecovery():void{
+    this.sended = true;
+
+    if(this.email_to_recovery.trim().length==0 && this.email_to_recovery.indexOf("@")==-1){
+      return;
+    }
+
+    this.authService.recoveryPassword(this.email_to_recovery).subscribe({
+      next:(data) =>{
+        this.pnlRecovery?.hide();
+        this.email_to_recovery = "";
+        this.sended = false;
+        if(typeof data ==='boolean'){
+          this.messageService.add({ 
+            severity: 'success', 
+            summary: 'Sucesso!', 
+            detail: "Caso seu usuário esteja ativo ou exista em nosso banco de dados, você receberá um e-mail com as instruções!" });
+        }else{
+          this.messageService.add({
+            severity:'error',
+            summary:'Erro ao tentar enviar o e-mail!',
+            detail: (data as ResponseError).error_details
+          });
+        }
+      }
+    });
   }
 }

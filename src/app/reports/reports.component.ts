@@ -47,9 +47,9 @@ export class ReportsComponent extends Common implements AfterViewInit{
       expandedIcon: 'pi pi-folder-open',
       expanded: true,
       children:[
-        { label: 'Por Cliente', data: 'vendas-cliente.html', leaf: true },
-        { label: 'Por Coleção', data: 'vendas-colecao.html', leaf: true },
-        { label: 'Por Representante', data: 'vendas-representante.html', leaf: true },
+        { label: 'Por Cliente', data: 'vendas-cliente', leaf: true },
+        { label: 'Por Coleção', data: 'vendas-colecao', leaf: true },
+        { label: 'Por Representante', data: 'vendas-representante', leaf: true },
       ]
     },{
       key: '2',
@@ -59,10 +59,10 @@ export class ReportsComponent extends Common implements AfterViewInit{
       expandedIcon: 'pi pi-folder-open',
       expanded: false,
       children:[
-        { label:'Ativos', data:'ativos.html', leaf:true },
-        { label:'Inativos', data:'inativos.html', leaf:true },
-        { label:'Histórico', data: 'history.html', leaf:true },
-        { label:'Prospecção', data:'prospect.html', leaf:true }
+        { label:'Ativos', data:'clientes-ativos', leaf:true },
+        { label:'Inativos', data:'clientes-inativos', leaf:true },
+        { label:'Histórico', data: 'clientes-history', leaf:true },
+        { label:'Prospecção', data:'clientes-prospect', leaf:true }
       ]
     },{
       key: '3',
@@ -72,7 +72,17 @@ export class ReportsComponent extends Common implements AfterViewInit{
       expandedIcon: 'pi pi-folder-open',
       expanded: false,
       children: [
-        { label: 'Orçamento', data:'orcamento.html', leaf:true }
+        { label: 'Orçamento', data:'calendario-orcamento', leaf:true }
+      ]
+    },{
+      key: '3',
+      label: 'CRM',
+      data:'crm',
+      collapsedIcon: 'pi pi-folder',
+      expandedIcon: 'pi pi-folder-open',
+      expanded: false,
+      children: [
+        { label: 'Clientes p/ Funil', data:'crm-cliente-funil', leaf:true }
       ]
     }];
     this.cdr.detectChanges();

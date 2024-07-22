@@ -161,6 +161,14 @@ body{
     @include use-md-icon("event_note")
 }
 
+.pi-import-product{
+    @include use-md-icon("unarchive")
+}
+
+.pi-import-entity{
+    @include use-md-icon("deployed_code_account")
+}
+
 .pi-users{
     @include use-md-icon("group")
 }
@@ -271,6 +279,10 @@ body{
 
 .pi-verify {
     @include use-md-icon-normal('checklist')
+}
+
+.pi-recovery-password{
+    @include use-md-icon-normal('passkey')
 }
 
 .kcolor .p-dropdown-items .p-dropdown-item {

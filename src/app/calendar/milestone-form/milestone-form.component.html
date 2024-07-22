@@ -14,8 +14,8 @@
             <p-calendar appendTo="body" [showIcon]="true" id="dtEvent" dateFormat="dd/mm/yy" class="p-inputtext-sm" [ngClass]="{'ng-invalid ng-dirty' : hasSended && selectedDate==null}" [(ngModel)]="selectedDate"></p-calendar>
         </div>
         <div class="flex flex-row justify-content-end gap-2">
-            <p-button pRipple label="Cancelar" icon="pi pi-times" severity="danger" (click)="closeForm()" type="button"></p-button>
-            <p-button pRipple label="Salvar" icon="pi pi-check" type="submit" (click)="onSubmit()"></p-button>
+            <p-button pRipple label="Cancelar" icon="pi pi-times" styleClass="p-button-sm" severity="danger" (click)="closeForm()" type="button"></p-button>
+            <p-button pRipple label="Salvar" icon="pi pi-check" styleClass="p-button-sm" type="submit" (click)="onSubmit()"></p-button>
         </div>
     </ng-template>
 </p-dialog>

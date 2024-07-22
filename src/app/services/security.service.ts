@@ -37,4 +37,12 @@ export class SecurityService extends MyHttp{
   logoff():Observable<any>{
     return this.http.post<any>(this.sys_config.backend_cmm+"/users/logout/"+localStorage.getItem("id_user"),null);
   }
+
+  recoveryPassword(p_email:string):Observable<boolean|ResponseError>{
+    return this.http.post<boolean|ResponseError>(this.sys_config.backend_cmm+'/users/password/',{
+      "email": p_email
+    },{
+      headers: this.getHeader(ContentType.json)
+    });
+  }
 }

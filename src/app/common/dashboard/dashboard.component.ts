@@ -362,7 +362,42 @@ export class DashboardComponent extends Common implements AfterViewInit,OnInit,O
   }
 
   private mountCRMData():void{
+    
+  }
 
+  private mountREPRData():void{
+    let id_repr:number = parseInt(localStorage.getItem("id_profile") as string);
+    const $totalCustomer = this.svcI.reprTotalCustomer(id_repr);
+    const $totalOrder    = this.svcI.reprTotalOrder(id_repr);
+    const $numTotalOrder = this.svcI.reprCountOrder(id_repr);
+    const $represGoal    = this.svcI.reprGoal(id_repr);
+
+    this.serviceSub[0] = forkJoin([$totalCustomer,$totalOrder,$numTotalOrder,$represGoal])
+    .subscribe(([totalCustomer,totalOrder,numTotalOrder,represGoal])=>{
+      this.topCards[0].icon      = "finance_chip";
+      this.topCards[0].iconColor = "green"
+      this.topCards[0].title     = "Valor em Pedidos";
+      this.topCards[0].value     = totalOrder as number;
+      this.topCards[0].dataType  = FormatType.MONEY;
+
+      this.topCards[1].icon      = "order_approve";
+      this.topCards[1].iconColor = "blue";
+      this.topCards[1].title     = "Nº de Pedidos";
+      this.topCards[1].value     = numTotalOrder as number;
+      this.topCards[1].dataType  = FormatType.NUMBER;
+
+      this.topCards[2].icon      = "store";
+      this.topCards[2].iconColor = "purple";
+      this.topCards[2].title     = "Nº de Clientes";
+      this.topCards[2].value     = totalCustomer as number;
+      this.topCards[2].dataType  = FormatType.NUMBER;
+
+      this.topCards[3].icon      = "apartment";
+      this.topCards[3].iconColor = "orange";
+      this.topCards[3].title     = "Comissão à receber";
+      this.topCards[3].value     = represGoal as number;
+      this.topCards[3].dataType  = FormatType.MONEY;
+    });
   }
 
   ngAfterViewInit(): void {
@@ -377,6 +412,8 @@ export class DashboardComponent extends Common implements AfterViewInit,OnInit,O
       this.mountFPRData();
     }else if(this.module==ModuleName.B2B){
       this.mountB2BData();
+    }else if(this.module==ModuleName.REPR){
+      this.mountREPRData();
     }
   }
 }

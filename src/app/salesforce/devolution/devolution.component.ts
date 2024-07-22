@@ -93,7 +93,7 @@ export class DevolutionComponent extends Common implements AfterViewInit{
     let options = {
       page: 1,
       pageSize: 1,
-      query: 'can:list-all 1||is:status '+OrderStatus.FINISHED+'||'
+      query: 'can:list-all 1||is:status '+OrderStatus.FINISHED+'||is:no-devolution 1||'
     }
     this.svcOrd.listMyOrders(options).subscribe({
       next:(data) =>{
@@ -216,8 +216,14 @@ export class DevolutionComponent extends Common implements AfterViewInit{
 
   onSave(p_status:DevolutionStatus):void{
     this.hasSended = true;
-    this.loading = true;
     let itens:DevolutionItem[] = [];
+
+    //evita bug na tela
+    if(Object.keys(this.selectedProduct).length == 0){
+      return;
+    }
+
+    this.loading = true;
 
     let validated = true;
     Object.keys(this.selectedProduct).forEach((v) =>{
@@ -267,33 +273,45 @@ export class DevolutionComponent extends Common implements AfterViewInit{
       items: itens
     }
 
-    this.hasSended = true;
-    this.svcRet.saveDevolution(this.localDevolution).subscribe({
-      next: (data) =>{
-        this.hasSended = false;
-        this.showDialog = false;
-        this.loading = false;
-        if(typeof data ==='number'){
-          this.msg.add({
-            summary:"Sucesso...",
-            detail: "Registro criado com sucesso!",
-            severity:"success"
-          });
-        }else if(typeof data ==='boolean'){
-          this.msg.add({
-            summary:"Sucesso...",
-            detail: "Registro atualizado com sucesso!",
-            severity:"success"
-          });
-        }else{
-          this.msg.add({
-            summary:"Falha...",
-            detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
-            severity:"error"
-          });
-        }
-        this.loadingData();
-      }
+    this.cnf.confirm({
+      header:"Confirmar envio de devolução",
+      message:"Deseja realmente notificar a devolução do(s) registro(s) marcado(s)?",
+      acceptLabel:"Sim",
+      acceptIcon:"pi pi-check mr-1",
+      acceptButtonStyleClass:"p-button-sm",
+      accept:() =>{
+        this.hasSended = true;
+        this.svcRet.saveDevolution(this.localDevolution).subscribe({
+          next: (data) =>{
+            this.hasSended = false;
+            this.showDialog = false;
+            this.loading = false;
+            if(typeof data ==='number'){
+              this.msg.add({
+                summary:"Sucesso...",
+                detail: "Registro criado com sucesso!",
+                severity:"success"
+              });
+            }else if(typeof data ==='boolean'){
+              this.msg.add({
+                summary:"Sucesso...",
+                detail: "Registro atualizado com sucesso!",
+                severity:"success"
+              });
+            }else{
+              this.msg.add({
+                summary:"Falha...",
+                detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
+                severity:"error"
+              });
+            }
+            this.loadingData();
+          }
+        });
+      },
+      rejectLabel:"Não",
+      rejectIcon:"pi pi-ban mr-1",
+      rejectButtonStyleClass:"p-button-danger p-button-sm"
     });
   }
 
