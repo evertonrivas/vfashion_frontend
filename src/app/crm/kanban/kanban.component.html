@@ -26,10 +26,10 @@
         <p-button [disabled]="selectedFunnel?.type=='P'?false:true" icon="pi pi-upload" styleClass="p-button-rounded  p-button-text p-button-success" pTooltip="Importar registros de clientes" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="openToImport()"></p-button>
         <!-- <p-button [disabled]="true" icon="pi pi-file-excel" styleClass="p-button-rounded  p-button-success p-button-text" pTooltip="Exportar para CSV" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button> -->
         <!-- <p-button [disabled]="true" icon="pi pi-file-export" styleClass="p-button-rounded  p-button-success p-button-text" pTooltip="Exportar para JSON" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button> -->
-        <span class="p-input-icon-right">
-            <i class="pi pi-search"></i>
+        <p-iconField iconPosition="right">
+            <p-inputIcon styleClass="pi pi-search"/>
             <input type="text" pInputText placeholder="Procurar..." (keydown)="doGlobalSearch($event)" class="p-inputtext-sm" [(ngModel)]="globalSearchInput"/>
-        </span>
+        </p-iconField>
     </div>
 </div>
 
@@ -73,12 +73,14 @@
                                             <p class="text-xs" style="margin-left: 27px!important;">Desde: {{customer.date_created | date}}</p>
                                         </div>
                                         <!-- <div class="hidden pt-3 pr-2"> -->
-                                        <div *ngIf="selectedFunnel?.type=='S'" class="flex pt-3 pr-2">
+                                        <div *ngIf="selectedFunnel?.type=='S'" class="flex flex-row pt-3 pr-2">
                                             <div class="flex flex-column align-content-center text-xs text-center" style="padding:1px">
-                                                <i class="pi pi-star" style="font-size:9px!important"></i>
+                                                <i class="pi pi-star" style="font-size:9px!important;"></i>
+                                                <!-- <i class="pi pi-star-fill" style="font-size:9px!important;color:gold"></i> -->
                                             </div>
                                             <div class="flex flex-column align-content-center text-xs text-center" style="padding:1px">
                                                 <i class="pi pi-star" style="font-size:9px!important"></i>
+                                                <!-- <i class="pi pi-star-fill" style="font-size:9px!important;color:gold"></i> -->
                                             </div>
                                             <div class="flex flex-column align-content-center text-xs text-center" style="padding:1px">
                                                 <i class="pi pi-star" style="font-size:9px!important"></i>

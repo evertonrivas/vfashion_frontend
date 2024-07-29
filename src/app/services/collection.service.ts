@@ -3,7 +3,7 @@ import { ContentType, MyHttp } from './my-http';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Options, RequestResponse, ResponseError } from '../models/paginate.model';
-import { ProductCollection } from '../models/product.model';
+import { Collection } from '../models/collection.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,15 +14,15 @@ export class CollectionService extends MyHttp{
     super(http)
   }
 
-  list(opt:Options):Observable<ProductCollection[]|RequestResponse|ResponseError>{
-    return this.http.get<ProductCollection[]|RequestResponse|ResponseError>(this.sys_config.backend_b2b+'/collection/',{
+  list(opt:Options):Observable<Collection[]|RequestResponse|ResponseError>{
+    return this.http.get<Collection[]|RequestResponse|ResponseError>(this.sys_config.backend_b2b+'/collection/',{
       headers: this.getHeader(),
       params: this.getParams(opt)
     });
   }
 
-  load(id:number):Observable<ProductCollection|ResponseError>{
-    return this.http.get<ProductCollection|ResponseError>(this.sys_config.backend_b2b+'/collection/'+id.toString(),{
+  load(id:number):Observable<Collection|ResponseError>{
+    return this.http.get<Collection|ResponseError>(this.sys_config.backend_b2b+'/collection/'+id.toString(),{
       headers:this.getHeader()
     });
   }

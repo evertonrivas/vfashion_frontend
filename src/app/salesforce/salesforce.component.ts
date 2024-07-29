@@ -3,7 +3,7 @@ import { Common } from '../classes/common';
 import { Router } from '@angular/router';
 import { LayoutService } from '../services/layout.service';
 import { forkJoin } from 'rxjs';
-import { B2bBrand, Color, ProductCategory, ProductCollection, ProductModel, ProductType, Size } from '../models/product.model';
+import { B2bBrand, Color, ProductCategory, ProductModel, ProductType, Size } from '../models/product.model';
 import { Options } from '../models/paginate.model';
 import { Filter } from '../models/filter.model';
 import { B2bOrderService } from '../services/b2b.order.service';
@@ -16,6 +16,7 @@ import { ProductTypeService } from '../services/product.type.service';
 import { ModelService } from '../services/model.service';
 import { SizeService } from '../services/size.service';
 import { ColorService } from '../services/color.service';
+import { Collection } from '../models/collection.model';
 
 @Component({
   selector: 'app-salesforce',
@@ -27,7 +28,7 @@ export class SalesforceComponent extends Common implements AfterViewInit{
   sidebarVisible:boolean = false;
   sidebarCart:boolean = false;
   all_brand:B2bBrand[] = [];
-  all_collect:ProductCollection[] = [];
+  all_collect:Collection[] = [];
   all_categ:ProductCategory[] = [];
   all_type:ProductType[] = [];
   all_model:ProductModel[] = [];
@@ -119,7 +120,7 @@ export class SalesforceComponent extends Common implements AfterViewInit{
     .subscribe({
       next:([brand,collect,categ,type,model,size,color])=>{
         this.all_brand   = brand as B2bBrand[];
-        this.all_collect = collect as ProductCollection[];
+        this.all_collect = collect as Collection[];
         this.all_categ   = categ as ProductCategory[]; 
         this.all_type    = type as ProductType[];
         this.all_model   = model as ProductModel[];

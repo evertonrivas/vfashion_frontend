@@ -8,12 +8,14 @@ import { SharedModule } from 'src/app/common/shared.module';
 import { RequestResponse, ResponseError } from 'src/app/models/paginate.model';
 import { EntitiesService } from 'src/app/services/entities.service';
 import { FilterComponent } from "../../common/filter/filter.component";
-import { FieldCase, FieldType } from 'src/app/models/system.enum';
+import { FieldType } from 'src/app/models/system.enum';
 import { FormComponent } from 'src/app/common/form/form.component';
 import { Entity } from 'src/app/models/entity.model';
-import { FieldOption, FormField, FormRow } from 'src/app/models/field.model';
+import { FieldOption } from 'src/app/models/field.model';
 import { LocationService } from 'src/app/services/location.service';
 import { Country, StateRegion } from 'src/app/models/place.model';
+import { FileUploadModule } from 'primeng/fileupload';
+import { HttpHeaders } from '@angular/common/http';
 
 @Component({
     selector: 'app-entities',
@@ -28,12 +30,17 @@ import { Country, StateRegion } from 'src/app/models/place.model';
         CommonModule,
         SharedModule,
         FilterComponent,
-        FormComponent
+        FormComponent,
+        FileUploadModule
     ]
 })
 
 export class EntitiesComponent extends Common implements AfterViewInit{
   localObject!:Entity;
+  url_upload_import:string = this.sysconfig.backend_cmm+'/upload/import/?type=P';
+  showDialogImport:boolean = false;
+  uploadHeaders:HttpHeaders = new HttpHeaders()
+    .set("Authorization",localStorage.getItem('token_type')+" "+localStorage.getItem('token_access'));
   constructor(route:Router,
     private svc:EntitiesService,
     private cdr:ChangeDetectorRef,
@@ -278,5 +285,17 @@ export class EntitiesComponent extends Common implements AfterViewInit{
       rejectIcon:"pi pi-ban mr-1",
       rejectButtonStyleClass:"p-button-danger p-button-sm"
     });
+  }
+
+  onImport():void{
+    this.showDialogImport = true;
+  }
+
+  cancelImport():void{
+    this.showDialogImport = false;
+  }
+
+  uploadDone():void{
+
   }
 }

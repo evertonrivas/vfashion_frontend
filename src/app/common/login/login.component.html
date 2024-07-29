@@ -33,6 +33,6 @@
         <input pInputText type="email" placeholder="Informe seu e-mail" class="w-full mb-3" [(ngModel)]="email_to_recovery" [ngClass]="{'ng-invalid ng-dirty':sended && !email_to_recovery}"/>
     </div>
     <div class="flex flex-row justify-content-end w-25rem">
-        <p-button label="Recuperar" styleClass="p-button-sm" (onClick)="onRecovery()" icon="pi pi-recovery-password" severity="help"></p-button>
+        <p-button label="Recuperar" styleClass="p-button-sm" (onClick)="onRecovery()" icon="pi pi-recovery-password"></p-button>
     </div>
 </p-overlayPanel>

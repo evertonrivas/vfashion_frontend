@@ -11,9 +11,9 @@ import { RequestResponse, ResponseError } from 'src/app/models/paginate.model';
 import { FieldCase, FieldType } from 'src/app/models/system.enum';
 import { FormComponent } from 'src/app/common/form/form.component';
 import { FieldOption, FormField, FormRow } from 'src/app/models/field.model';
-import { ProductCollection } from 'src/app/models/product.model';
 import { BrandService } from 'src/app/services/brand.service';
 import { Brand } from 'src/app/models/brand.model';
+import { Collection } from 'src/app/models/collection.model';
 
 @Component({
     selector: 'app-collections',
@@ -32,7 +32,7 @@ import { Brand } from 'src/app/models/brand.model';
     ]
 })
 export class CollectionsComponent extends Common implements AfterViewInit, OnDestroy{
-  localObject!:ProductCollection;
+  localObject!:Collection;
   constructor(route:Router,
     private cdr:ChangeDetectorRef,
     private msg:MessageService,
@@ -168,7 +168,7 @@ export class CollectionsComponent extends Common implements AfterViewInit, OnDes
       this.serviceSub[2] = this.svc.load(id).subscribe({
         next: (data) =>{
           if ("name" in data){
-            this.localObject = data as ProductCollection;
+            this.localObject = data as Collection;
             fieldName.value  = this.localObject.name;
             fieldBrand.value = (fieldBrand.options as FieldOption[]).find(o => o.value==this.localObject.brand?.id);
 
@@ -249,7 +249,7 @@ export class CollectionsComponent extends Common implements AfterViewInit, OnDes
       accept:() =>{
         let ids:number[] = [];
         this.tableSelected.forEach((v) =>{
-          ids.push((v as ProductCollection).id);
+          ids.push((v as Collection).id);
         });
         this.serviceSub[3] = this.svc.delete(ids,pSendToTrash).subscribe({
           next: (data) =>{

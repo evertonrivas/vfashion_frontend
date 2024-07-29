@@ -10,7 +10,7 @@ import { ProductsService } from 'src/app/services/products.service';
 import { FilterComponent } from "../../common/filter/filter.component";
 import { FieldCase, FieldType } from 'src/app/models/system.enum';
 import { FieldOption, FormField, FormRow } from 'src/app/models/field.model';
-import { B2bBrand, Color, Product, ProductCategory, ProductCollection, ProductGrid, ProductModel, ProductType, Size } from 'src/app/models/product.model';
+import { B2bBrand, Color, Product, ProductCategory, ProductGrid, ProductModel, ProductType, Size } from 'src/app/models/product.model';
 import { forkJoin } from 'rxjs';
 import { BrandService } from 'src/app/services/brand.service';
 import { ModelService } from 'src/app/services/model.service';
@@ -24,6 +24,7 @@ import { MeasureUnitService } from 'src/app/services/measure-unit.service';
 import { MeasureUnit } from 'src/app/models/measure-unit';
 import { FileUploadModule } from 'primeng/fileupload';
 import { HttpHeaders } from '@angular/common/http';
+import { Collection } from 'src/app/models/collection.model';
 
 @Component({
     selector: 'app-products',
@@ -49,7 +50,9 @@ export class ProductsComponent extends Common implements AfterViewInit {
   allOptGrid:FieldOption[]  = [];
   allOptMeasure:FieldOption[] = [];
   showDialogUpload:boolean = false;
-  url_upload:string = this.sysconfig.backend_cmm+'/upload/images/';
+  showDialogImport:boolean = false;
+  url_upload_images:string = this.sysconfig.backend_cmm+'/upload/images/';
+  url_upload_import:string = this.sysconfig.backend_cmm+'/upload/import/?type=P';
   uploadHeaders:HttpHeaders = new HttpHeaders()
     .set("Authorization",localStorage.getItem('token_type')+" "+localStorage.getItem('token_access'));
     
@@ -166,7 +169,7 @@ export class ProductsComponent extends Common implements AfterViewInit {
         optModel.push({value: m.id, label: m.name, id:undefined});
       });
 
-      (valCollec as ProductCollection[]).forEach((c) =>{
+      (valCollec as Collection[]).forEach((c) =>{
         optCollec.push({value: c.id, label: c.name, id:undefined});
       });
 
@@ -526,7 +529,7 @@ export class ProductsComponent extends Common implements AfterViewInit {
           //valida se precisa fazer upload de imagem ou se usa url
           if(!this.sysconfig.system.use_url_images){
             this.idToEdit = data as number;
-            this.url_upload += this.idToEdit;
+            this.url_upload_images += this.idToEdit;
             this.showDialogUpload = true;
           }
           this.msg.add({
@@ -537,7 +540,7 @@ export class ProductsComponent extends Common implements AfterViewInit {
         }else if(typeof data ==='boolean'){
           //valida se precisa fazer upload de imagem ou se usa url
           if(!this.sysconfig.system.use_url_images){
-            this.url_upload += this.idToEdit;
+            this.url_upload_images += this.idToEdit;
             this.showDialogUpload = true;
           }
           this.msg.add({
@@ -604,5 +607,13 @@ export class ProductsComponent extends Common implements AfterViewInit {
 
   uploadDone(){
 
+  }
+
+  cancelImport(){
+    this.showDialogImport = false;
+  }
+
+  onImport(){
+    this.showDialogImport = true;
   }
 }

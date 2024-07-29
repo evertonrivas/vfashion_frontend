@@ -1,4 +1,4 @@
-id_original,cpf_cnpj,name,fantasy_name,cidade,cep,bairro,endereco,tipo,tipo_telefone,telefone,eh_whastapp,tipo_email,email,eh_padrao
-1,88855577711,JOSE DA SILVA,JOSE DA SILVA,Curitiba,80620-010,Centro,"Rua da Pessoa, 156 - BL 01 AP 42",PERSONA,PESSOAL,41 99557-0055,1,PESSOAL,jose.silva@gmail.com,1
-47,44999888000100,JWT COMPANY,JOSÉ CONFECÇÕES,Brusque,88350-001,Centro,"Rua do Cliente, 12",CUSTOMER,FABRICA,47 99999-8888,1,NFE,nfe@jwtcompany.com,1
-5897,55777111000199,ARY REPRESENTAÇÕES,ARY REPRESENTAÇÕES,São Paulo,01153-000,Centro,"Rua do Representante, 45 - Lote 12",REPR,ARY,11 98888-4444,1,PRINCIPAL,aryrep@gmail.com,
+id_original,cpf_cnpj,name,fantasy_name,cidade,cep,bairro,endereco,tipo,tipo_telefone,telefone,eh_whastapp,phone_eh_padrao,tipo_email,email,email_eh_padrao
+1,88855577711,JOSE DA SILVA,JOSE DA SILVA,Curitiba,80620-010,Centro,"Rua da Pessoa, 156 - BL 01 AP 42",PERSONA,PESSOAL,41 99557-0055,1,1,PESSOAL,jose.silva@gmail.com,1
+47,44999888000100,JWT COMPANY,JOSÉ CONFECÇÕES,Brusque,88350-001,Centro,"Rua do Cliente, 12",CUSTOMER,FABRICA,47 99999-8888,1,0,NFE,nfe@jwtcompany.com,1
+5897,55777111000199,ARY REPRESENTAÇÕES,ARY REPRESENTAÇÕES,São Paulo,01153-000,Centro,"Rua do Representante, 45 - Lote 12",REPR,ARY,11 98888-4444,1,1,PRINCIPAL,aryrep@gmail.com,

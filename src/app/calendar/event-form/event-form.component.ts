@@ -1,13 +1,12 @@
-import { Component,Input,OnDestroy,Output,EventEmitter, ViewChild} from '@angular/core';
+import { Component,Input,OnDestroy,Output,EventEmitter, ViewChild, AfterViewInit} from '@angular/core';
 import { Router } from '@angular/router';
 import { Dropdown } from 'primeng/dropdown';
 import { Common } from 'src/app/classes/common';
 import { CalendarEvent, CalendarEventData, CalendarEventType } from 'src/app/models/calendar.model';
 import { CalendarService } from 'src/app/services/calendar.service';
 import { MessageService } from 'primeng/api';
-import { Calendar } from 'primeng/calendar';
 import { CollectionService } from 'src/app/services/collection.service';
-import { ProductCollection } from 'src/app/models/product.model';
+import { Collection } from 'src/app/models/collection.model';
 
 
 @Component({
@@ -15,7 +14,7 @@ import { ProductCollection } from 'src/app/models/product.model';
   templateUrl: './event-form.component.html',
   styleUrls: ['./event-form.component.scss']
 })
-export class EventFormComponent extends Common implements OnDestroy{
+export class EventFormComponent extends Common implements OnDestroy, AfterViewInit{
   @Input() selectedEvent:CalendarEvent | null = null;
   @Input() periodStart:string | null = null;
   @Input() periodEnd:string | null = null;
@@ -29,11 +28,10 @@ export class EventFormComponent extends Common implements OnDestroy{
   eventEnd:Date|null = null;
   eventBudget:number|null = null;
   eventParentEventId:number = 0;
-  eventCollectionId:number = 0;
   eventTypes:CalendarEventType[] = [];
   validPeriod:boolean = true;
-  all_collections:ProductCollection[] = [];
-  selectedCollection!:ProductCollection;
+  all_collections:Collection[] = [];
+  selectedCollection!:Collection;
 
   //trabalho com children
   showParentEvents:boolean = false;
@@ -41,8 +39,8 @@ export class EventFormComponent extends Common implements OnDestroy{
 
   constructor(private svc:CalendarService,
     private svcCol:CollectionService,
-    route:Router,
-    private msgSvc:MessageService){
+    private msgSvc:MessageService,
+    route:Router){
     super(route);
   }
 
@@ -51,33 +49,60 @@ export class EventFormComponent extends Common implements OnDestroy{
     this.serviceSub[1].unsubscribe();
   }
 
+  ngAfterViewInit(): void {
+    
+  }
+
   loadData():void{
+    // realiza a carga das colecoes
+    this.svcCol.list({page:1,pageSize:1,query:'can:list-all 1||'}).subscribe({
+      next: (data) =>{
+        this.all_collections = data as Collection[];
+      }
+    });
+
     this.validPeriod = true;
 
     //realiza carga dos tipos de eventos
     this.eventTypes = [];
     this.options.query = "can:list-all 1||is:just-parent 1||is:no-milestone 1||";
-    this.serviceSub[0] = this.svc.listEventType(this.options).subscribe({
+    this.selectedEvent?.type.id
+
+    this.svc.listEventType(this.options).subscribe({
       next: (data) =>{
         this.eventTypes = data as CalendarEventType[];
-      },complete: () => {
-          if(this.selectedEvent!=null){
-
-            this.selectedEventType = this.selectedEvent.type;
-            this.setSelectedEventType(this.selectedEventType);
-
-            //tratamento para valor do orcamento
-            if (this.selectedEvent.budget_value!=null){
-              this.eventBudget = this.selectedEvent.budget_value;
-            }
-      
-            //nome
-            this.eventName = this.selectedEvent.name;
-            this.eventStart = new Date(parseInt(this.selectedEvent.start_date.substring(0,4)),parseInt(this.selectedEvent.start_date.substring(5,7))-1,parseInt(this.selectedEvent.start_date.substring(8,10)));
-            this.eventEnd = new Date(parseInt(this.selectedEvent.end_date.substring(0,4)),parseInt(this.selectedEvent.end_date.substring(5,7))-1,parseInt(this.selectedEvent.end_date.substring(8,10)));
-          }
-      },
+      }
     });
+
+    if(this.selectedEvent!=undefined){
+      this.serviceSub[0] = this.svc.loadEventType(this.selectedEvent?.type.id as number).subscribe({
+        next: (data) =>{
+          this.selectedEventType = data as CalendarEventType;
+        },
+        complete: () =>{
+          if(this.selectedEventType?.use_collection){
+            this.selectedCollection = this.all_collections.find(v => v.id == this.selectedEvent?.collection.id) as Collection;
+          }
+  
+          //verifica se tem orcamento e seta
+          if(this.selectedEventType?.has_budget){
+            this.eventBudget = this.selectedEvent?.budget_value as number;
+          }
+  
+          this.eventName = this.selectedEvent?.name as string;
+          this.eventStart = new Date(
+            parseInt((this.selectedEvent?.start_date as string).substring(0,4)),
+            parseInt((this.selectedEvent?.start_date as string).substring(5,7))-1,
+            parseInt((this.selectedEvent?.start_date as string).substring(8,10)));
+          this.eventEnd = new Date(
+            parseInt((this.selectedEvent?.end_date as string).substring(0,4)),
+            parseInt((this.selectedEvent?.end_date as string).substring(5,7))-1,
+            parseInt((this.selectedEvent?.end_date as string).substring(8,10)));
+  
+          this.setSelectedEventType(this.selectedEventType as CalendarEventType);
+        }
+      });
+    }
   }
 
   onSubmit():void{
@@ -104,6 +129,18 @@ export class EventFormComponent extends Common implements OnDestroy{
       validated = false;
     }
 
+    //se cria um funil, eh necessario informar a colecao
+    if(validated && (this.selectedEventType as CalendarEventType).create_funnel && (this.selectedCollection == undefined || this.selectedCollection.id == 0)){
+      validated = false;
+      this.msgSvc.clear();
+      this.msgSvc.add({
+        key: 'systemToast',
+        severity: 'warn',
+        summary: "Atenção!!!",
+        detail: "Este evento cria um novo funil no CRM, logo é necessário que ele possua uma coleção associada!"
+      });
+    }
+
     //colocar aqui a validacao
     if (validated){
 
@@ -115,7 +152,7 @@ export class EventFormComponent extends Common implements OnDestroy{
         date_end: (this.eventEnd as Date).toISOString().substring(0,10),
         budget_value: (this.selectedEventType as CalendarEventType).has_budget ? this.eventBudget: null,
         id_event_type: (this.selectedEventType as CalendarEventType).id,
-        id_collection: (this.selectedEventType as CalendarEventType).use_collection? this.eventCollectionId: null,
+        id_collection: (this.selectedEventType as CalendarEventType).use_collection? this.selectedCollection.id: null,
         year: 0
       };
 
@@ -164,14 +201,7 @@ export class EventFormComponent extends Common implements OnDestroy{
     });
 
     //busca em tipos de eventos filhos
-    if (selected==undefined){
-      // realiza a carga das colecoes
-      this.svcCol.list({page:1,pageSize:1,query:'can:list-all 1||'}).subscribe({
-        next: (data) =>{
-          this.all_collections = data as ProductCollection[];
-        }
-      });
-      
+    if (selected==undefined){      
       this.eventTypes.find((evt) =>{
         selected = evt.children.find((v:any) =>{
           if(this.selectedEventType!=null){
@@ -204,11 +234,15 @@ export class EventFormComponent extends Common implements OnDestroy{
           },
         });
       }
-    }else if(selected!=undefined){
+    }
+    
+    if(selected!=undefined){
+      console.log("Passou aqui no selected")
+      console.log(this.selectedEventType)
       // realiza a carga das colecoes
       this.svcCol.list({page:1,pageSize:1,query:'can:list-all 1||'}).subscribe({
         next: (data) =>{
-          this.all_collections = data as ProductCollection[];
+          this.all_collections = data as Collection[];
         }
       });
     }
@@ -223,13 +257,8 @@ export class EventFormComponent extends Common implements OnDestroy{
       name: "",
       brand: {
         id: 0,
-        brand:null,
-        name: null,
-        date_created: "",
-        date_updated: null,
-        id_brand: 0
-      },
-      table_prices: []
+        name: ""
+      }
     }
 
     this.selectedEventType = undefined;
@@ -238,7 +267,14 @@ export class EventFormComponent extends Common implements OnDestroy{
     this.eventEnd = null;
     this.eventBudget = null;
     this.eventParentEventId = 0;
-    this.eventCollectionId = 0;
+    this.selectedCollection = {
+      id: 0,
+      brand: {
+        id: 0,
+        name: ""
+      },
+      name: ""
+    };
     this.eventTypes = [];
     this.validPeriod = true;
 

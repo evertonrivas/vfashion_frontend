@@ -25,6 +25,8 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { EditorModule } from 'primeng/editor';
 import { TopbarComponent } from '../common/topbar/topbar.component';
 import { ChipsModule } from 'primeng/chips';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 
 @NgModule({
   declarations: [
@@ -52,7 +54,10 @@ import { ChipsModule } from 'primeng/chips';
     AutoCompleteModule,
     EditorModule,
     TopbarComponent,
-    ChipsModule
+    ChipsModule,
+    IconFieldModule,
+    InputIconModule
+
   ],
   providers:[
     provideNgxMask()

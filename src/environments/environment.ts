@@ -1,9 +1,9 @@
 export const environment = {
-    backend_b2b: "/b2b/api",
-    backend_fpr: "/fpr/api",
-    backend_crm: "/crm/api",
-    backend_scm: "/scm/api",
-    backend_cmm: "/cmm/api",    
+    backend_b2b: "https://fast2bee.pythonanywhere.com/b2b/api",
+    backend_fpr: "https://fast2bee.pythonanywhere.com/fpr/api",
+    backend_crm: "https://fast2bee.pythonanywhere.com/crm/api",
+    backend_scm: "https://fast2bee.pythonanywhere.com/scm/api",
+    backend_cmm: "https://fast2bee.pythonanywhere.com/cmm/api",    
     company:{
         name: "Company Name",
         logo_home: "logo-venda-fashion.png",

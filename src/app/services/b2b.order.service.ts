@@ -62,9 +62,11 @@ export class B2bOrderService extends MyHttp{
     total_value:number,
     installments:number,
     installment_value:number,
-    total_itens:number):Observable<number|ResponseError>{
+    total_itens:number,
+    userType:string):Observable<number|ResponseError>{
 
     return this.http.post<number|ResponseError>(this.sys_config.backend_b2b+'/orders/',{
+      "user_type": userType,
       "make_online": true,
       "id_payment_condition": id_payment,
       "customers": customers,

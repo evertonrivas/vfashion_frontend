@@ -372,7 +372,8 @@ export class CheckoutComponent extends Common implements AfterViewInit{
       this.myTotalPayment,
       pay.installments,
       (this.myTotalPayment/pay.installments),
-      this.myTotalItens
+      this.myTotalItens,
+      this.level_access
     ).subscribe({
       next: (data) =>{
         if(typeof data ==='boolean'){

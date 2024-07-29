@@ -16,6 +16,7 @@
                 <!-- <p-button icon="pi pi-plus" [severity]="'success'" styleClass="p-button-sm" pTooltip="Novo registro" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="onEditData()"></p-button> -->
                 <p-button *ngIf="!isTrash" [disabled]="tableSelected.length>0?false:true" icon="pi pi-trash" [severity]="'danger'" styleClass="p-button-sm" pTooltip="Excluir selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="onDataDelete(true)"></p-button>
                 <p-button *ngIf="isTrash" [disabled]="tableSelected.length>0?false:true" icon="pi pi-restore-from-trash icon-xsmall" [severity]="'danger'" styleClass="p-button-sm" pTooltip="Restaurar selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="onDataDelete(false)"></p-button>
+                <p-button icon="pi pi-upload" styleClass="p-button-sm" pTooltip="Importar" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="onImport()"></p-button>
                 <p-button [disabled]="tableSelected.length>0?false:true" icon="pi pi-massive-actions icon-xsmall" [severity]="'help'" styleClass="p-button-sm" pTooltip="Ações Massivas" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="pnlMassive.toggle($event)"></p-button>
                 <p-button icon="pi pi-filter" [severity]="'warning'" styleClass="p-button-sm" pTooltip="Filtro(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="showFilter()"></p-button>
                 <p-toggleButton [onIcon]="'pi pi-deleted icon-xsmall'" [offIcon]="'pi pi-deleted icon-xsmall'" styleClass="p-button-sm" pTooltip="Listar excluído(s)" tooltipPosition="top" tooltipStyleClass="text-xs" [(ngModel)]="isTrash" (onChange)="loadingData({page:0,pageCount:0},isTrash)"></p-toggleButton>
@@ -68,3 +69,27 @@
         </p-paginator>
     </ng-template>
 </p-panel>
+
+<p-dialog header="Importação de Entidades Legais" [(visible)]="showDialogImport" (onHide)="cancelImport()">
+    <div class="flex flex-column">
+        <p style="text-align: justify;">Utilize o modelo do link abaixo para realizar o envio dos dados para o servidor</p>
+        <a href="/assets/entity-download.csv">Arquivo de exemplo</a>
+    </div>
+    <p-fileUpload #upl
+        [multiple]="false" 
+        cancelLabel="Cancelar" 
+        chooseLabel="Escolher arquivo" 
+        uploadLabel="Anexar"
+        chooseStyleClass="p-button-sm"
+        uploadStyleClass="p-button-success p-button-sm"
+        cancelStyleClass="p-button-danger p-button-sm"
+        [url]="url_upload_import"
+        name="files[]"
+        [withCredentials]="true"
+        accept="image/*"
+        [headers]="uploadHeaders"
+        invalidFileLimitMessageSummary="Número máximo de arquivos excedido."
+        invalidFileLimitMessageDetail="Máximo permitido: {0}"
+        (onUpload)="uploadDone()"
+        ></p-fileUpload>
+</p-dialog>
