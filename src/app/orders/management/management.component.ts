@@ -26,16 +26,11 @@ import { MessageService } from 'primeng/api';
   styleUrl: './management.component.scss'
 })
 export class ManagementComponent extends Common implements AfterViewInit{
+  track_companies:any[] = ['BRASPRESS','JADLOG','JAMEF']
   showIntegration:boolean = false;
   showIntegrationTrack:boolean = false;
   status = OrderStatus;
   all_order_status:any[] = [0,1,2,3,4,5]
-  /*ANALIZING    = 0,
-    SENDED       = 1,
-    PROCESSING   = 2,
-    TRANSPORTING = 3,
-    FINISHED     = 4,
-    REJECTED     = 5*/
   selectedOrder:Order = {
     id: 0,
     customer: undefined,
@@ -178,5 +173,28 @@ export class ManagementComponent extends Common implements AfterViewInit{
       products: []
     }
     this.formVisible = false;
+  }
+
+  saveOrder():void{
+    this.loading = true;
+    this.svc.saveOrder(this.selectedOrder).subscribe({
+      next:(data) =>{
+        this.loading = false;
+        if(typeof data ==='boolean'){
+          this.showDialog = false;
+          this.msg.add({
+            summary:'Successo!',
+            severity:'success',
+            detail: 'Pedido atualizado com sucesso!'
+          });
+        }else{
+          this.msg.add({
+            summary:"Falha ao salvar...",
+            detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
+            severity:"error"
+          });
+        }
+      }
+    });
   }
 }

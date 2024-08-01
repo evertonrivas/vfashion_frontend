@@ -27,20 +27,7 @@
                 <td class="text-right">{{item.installment_value |shortMoney}}</td>
                 <td class="text-right">{{item.total_value | shortMoney}}</td>
                 <td *ngIf="showIntegration">{{item.invoice_number}}</td>
-                <td>
-                    <p-tag [severity]="getSeverity(item.status)">{{item.status | orderStatus}}</p-tag>
-                    <!-- <p-dropdown
-                        [options]="all_order_status"
-                        [(ngModel)]="item.status"
-                        appendTo="body">
-                        <ng-template pTemplate="selectedItem">
-                            <div [style]="{'background-color': getColor(item.status),'color':'#FFFFFF','font-weight':'bold'}">{{item.status | orderStatus}}</div>
-                        </ng-template>
-                        <ng-template pTemplate="item" let-status>
-                            <div [style]="{'background-color': getColor(status), 'color': '#FFFFFF','font-weight':'bold', 'padding':'0.75rem 1.05rem' }">{{status | orderStatus}}</div>
-                        </ng-template>
-                    </p-dropdown> -->
-                </td>
+                <td><p-tag [severity]="getSeverity(item.status)">{{item.status | orderStatus}}</p-tag></td>
                 <td class="text-center">
                     <p-button *ngIf="showIntegrationTrack" [text]="true" icon="pi pi-map" (onClick)="showTrack(item.id_order)"></p-button>
                     <p-button [text]="true" icon="pi pi-file-pdf" pTooltip="Imprimir pedido" tooltipStyleClass="text-xs" tooltipPosition="top"></p-button>
@@ -80,7 +67,7 @@
 </p-dialog>
 
 <p-dialog [(visible)]="formVisible" header="Visualização de Pedido" [closable]="false" [modal]="true" [draggable]="false" [style]="{width: '60vw'}">
-    <div class="flex flex-row justify-content-between mb-4">
+    <div class="flex flex-row justify-content-between mb-3">
         <div class="flex flex-column">
             <label><strong>Pedido:</strong> {{onOrderNumber(selectedOrder.id)}}</label>
         </div>
@@ -91,28 +78,61 @@
             <label><strong>Cliente:</strong> {{selectedOrder.customer?.name}}</label>
         </div>
     </div>
-    <div class="flex flex-row justify-content-between mb-4">
+    <div class="flex flex-row justify-content-between mb-3">
         <div class="flex flex-column">
-            <label><strong>Valor Total</strong> {{selectedOrder.total_value | shortMoney}}</label>
+            <label><strong>Valor Total: </strong> {{selectedOrder.total_value | shortMoney}}</label>
         </div>
         <div class="flex flex-column">
-            <label><strong>Cond. Pagamento</strong> {{selectedOrder.payment_condition?.name}}</label>
+            <label><strong>Cond. Pagamento: </strong> {{selectedOrder.payment_condition?.name}}</label>
         </div>
         <div class="flex flex-column">
-            <label><strong>Parcelas</strong> {{selectedOrder.installments}}</label>
+            <label><strong>Parcelas: </strong> {{selectedOrder.installments}}</label>
         </div>
         <div class="flex flex-column">
-            <label><strong>Valor Parcela</strong> {{selectedOrder.installments_value | shortMoney}}</label>
+            <label><strong>Valor Parcela: </strong> {{selectedOrder.installments_value | shortMoney}}</label>
+        </div>
+    </div>
+    <div class="flex flex-row justify-content-between mb-3">
+        <div class="flex flex-column">
+            <!-- &nbsp;&nbsp;<p-tag [severity]="getSeverity(selectedOrder.status)">{{selectedOrder.status | orderStatus}}</p-tag> -->
+            <label class="mb-2 font-bold">Status: </label>
+            <p-dropdown
+                [options]="all_order_status"
+                [(ngModel)]="selectedOrder.status"
+                appendTo="body"
+                styleClass="p-inputtext-sm">
+                <ng-template pTemplate="selectedItem">
+                    {{selectedOrder.status | orderStatus}}
+                </ng-template>
+                <ng-template pTemplate="item" let-status>
+                    {{status | orderStatus}}
+                </ng-template>
+            </p-dropdown>
         </div>
         <div class="flex flex-column">
-            <label><strong>Status:</strong>&nbsp;&nbsp;<p-tag [severity]="getSeverity(selectedOrder.status)">{{selectedOrder.status | orderStatus}}</p-tag></label>
+            <label class="mb-2 font-bold">Transportadora</label>
+            <p-dropdown
+            [options]="track_companies"
+            styleClass="p-inputtext-sm"
+            appendTo="body"
+            [(ngModel)]="selectedOrder.track_company"
+            placeholder="Selecione...">
+            </p-dropdown>
+        </div>
+        <div class="flex flex-column">
+            <label class="mb-2 font-bold">Nota Fiscal</label>
+            <input pInputText ngClass="p-inputtext-sm" [(ngModel)]="selectedOrder.invoice_number">
+        </div>
+        <div class="flex flex-column">
+            <label class="mb-2 font-bold">Série NF</label>
+            <p-inputNumber min="0" inputStyleClass="p-inputtext-sm" styleClass="p-inputtext-sm" [(ngModel)]="selectedOrder.invoice_serie"></p-inputNumber>
         </div>
     </div>
     <p-table
     styleClass="p-datatable-striped"
     [value]="selectedOrder.products"
     [scrollable]="true"
-    [scrollHeight]="'300px'">
+    [scrollHeight]="'250px'">
         <ng-template pTemplate="header">
             <tr>
                 <th>Ref.</th>
@@ -141,6 +161,6 @@
     </p-table>
     <div class="flex flex-row mt-2" [ngClass]="selectedOrder.status==status.FINISHED?'justify-content-center':'justify-content-end gap-2'">
         <p-button icon="pi pi-ban" label="Cancelar" (onClick)="onCloseView()" styleClass="p-button-sm" severity="danger"></p-button>
-        <p-button *ngIf="selectedOrder.status!=status.FINISHED" icon="pi pi-save" label="Salvar" styleClass="p-button-sm"></p-button>
+        <p-button *ngIf="selectedOrder.status!=status.FINISHED" icon="pi pi-save" label="Salvar" styleClass="p-button-sm" (onClick)="saveOrder()" [loading]="loading"></p-button>
     </div>
 </p-dialog>

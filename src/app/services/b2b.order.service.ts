@@ -130,4 +130,11 @@ export class B2bOrderService extends MyHttp{
       headers: this.getHeader()
     });
   }
+
+  saveOrder(ord:Order):Observable<boolean|ResponseError>{
+    return this.http.post<boolean|ResponseError>(this.sys_config.backend_b2b+'/orders/'+ord.id.toString(),
+    JSON.stringify(ord),{
+      headers: this.getHeader(ContentType.json)
+    });
+  }
 }

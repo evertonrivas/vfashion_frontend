@@ -71,7 +71,8 @@ export class DashboardComponent extends Common implements AfterViewInit,OnInit,O
         iconColor:"",
         title:null,
         subtitle:null,
-        text:null
+        text:null,
+        disabled: false
       }
       this.topCards.push(card);
     }
@@ -330,6 +331,7 @@ export class DashboardComponent extends Common implements AfterViewInit,OnInit,O
       this.topCards[4].title     = "Lic. Lojista (IA)";
       this.topCards[4].value     = totalLojaI as number;
       this.topCards[4].dataType  = FormatType.NUMBER;
+      this.topCards[4].disabled  = true;
       // this.topCards[4].subtitle  = {
       //   text: "Valor/licença: R$ 75,50",
       //   prefix:  undefined,
@@ -339,7 +341,7 @@ export class DashboardComponent extends Common implements AfterViewInit,OnInit,O
       // };
       
       this.topCards[5].icon      = "person";
-      this.topCards[5].iconColor = "gray";
+      this.topCards[5].iconColor = "pink";
       this.topCards[5].title     = "Lic. Colaborador";
       this.topCards[5].value     = totalUser as number;
       this.topCards[5].dataType  = FormatType.NUMBER;

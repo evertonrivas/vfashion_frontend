@@ -14,6 +14,7 @@ export interface Card {
     subtitle:SubtitleCard|null,
     text:string|null
     value:number
+    disabled:boolean
 }
 
 export interface SubtitleCard{
