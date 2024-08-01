@@ -347,31 +347,31 @@ export class CustomerGroupsComponent extends Common implements AfterViewInit{
         ids.push(u.id);
       });
 
-      this.svc.addToCustomerGroup(this.idToEdit,{
-        ids:ids
-      }).subscribe({
-        next:(data) =>{
-          this.sendCustomer = false;
-          this.msg.clear();
-          if(typeof data==='boolean'){
-            this.msg.add({
-              severity:"success",
-              summary:"Sucesso!",
-              detail:"Cliente(s) adicionado(s) com sucesso!"
-            });
-            this.showCustomers = false;
-            this.loadingData();
-            this.cancelMassive();
-          }else{
-            this.msg.add({
-              key: 'systemToast',
-              severity: 'error',
-              summary: 'Ocorreu o seguinte erro no sistema!',
-              detail: (data as ResponseError).error_details
-            });
-          }
+    this.svc.addToCustomerGroup(this.idToEdit,{
+      ids:ids
+    }).subscribe({
+      next:(data) =>{
+        this.sendCustomer = false;
+        this.msg.clear();
+        if(typeof data==='boolean'){
+          this.msg.add({
+            severity:"success",
+            summary:"Sucesso!",
+            detail:"Cliente(s) adicionado(s) com sucesso!"
+          });
+          this.showCustomers = false;
+          this.loadingData();
+          this.cancelMassive();
+        }else{
+          this.msg.add({
+            key: 'systemToast',
+            severity: 'error',
+            summary: 'Ocorreu o seguinte erro no sistema!',
+            detail: (data as ResponseError).error_details
+          });
         }
-      });
+      }
+    });
   }
 
   onViewCustomers(evt:PaginatorState = { page: 0, pageCount: 0},id:number){

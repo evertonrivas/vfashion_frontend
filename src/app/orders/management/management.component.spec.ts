@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RepresentativeComponent } from './representative.component';
+import { ManagementComponent } from './management.component';
 
-describe('RepresentativeComponent', () => {
-  let component: RepresentativeComponent;
-  let fixture: ComponentFixture<RepresentativeComponent>;
+describe('ManagementComponent', () => {
+  let component: ManagementComponent;
+  let fixture: ComponentFixture<ManagementComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [RepresentativeComponent]
+      imports: [ManagementComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(RepresentativeComponent);
+    fixture = TestBed.createComponent(ManagementComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

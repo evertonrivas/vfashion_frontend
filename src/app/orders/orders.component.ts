@@ -2,17 +2,17 @@ import { AfterContentInit, Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-representative',
-  templateUrl: './representative.component.html',
-  styleUrl: './representative.component.scss'
+  selector: 'app-orders',
+  templateUrl: './orders.component.html',
+  styleUrl: './orders.component.scss'
 })
-export class RepresentativeComponent implements AfterContentInit{
+export class OrdersComponent implements AfterContentInit{
   constructor(private route:Router){
     
   }
   
   ngAfterContentInit(): void {
-    this.route.navigate(["/representative/orders"]);
+    this.route.navigate(["/orders/management"]);
     // this.route.navigate(["/crm/reports"]);
   }
 }

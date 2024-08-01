@@ -247,4 +247,8 @@ export class FormComponent {
       }
     });
   }
+
+  setIcon(icon:any,field:FormField):void{
+    field.value = icon;
+  }
 }

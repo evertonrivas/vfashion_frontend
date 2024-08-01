@@ -412,7 +412,7 @@ export class DashboardComponent extends Common implements AfterViewInit,OnInit,O
       this.mountFPRData();
     }else if(this.module==ModuleName.B2B){
       this.mountB2BData();
-    }else if(this.module==ModuleName.REPR){
+    }else if(this.module==ModuleName.ORD){
       this.mountREPRData();
     }
   }

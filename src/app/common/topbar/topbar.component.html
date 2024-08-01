@@ -4,12 +4,12 @@
     <button #menubutton class="p-link layout-menu-button layout-topbar-button" *ngIf="module==modules.ADM || module==modules.B2B" [pTooltip]="module==modules.ADM?'Exibir/Ocultar Menu':'Exibir/Ocultar Filtros'" tooltipPosition="bottom" tooltipStyleClass="text-xs" (click)="onMenu()">
         <i class="material-symbols-outlined">menu</i>
     </button>
-    <button *ngIf="module==modules.REPR || module==modules.SCM" class="p-link layout-topbar-button" [routerLink]="[modulePath+'/dashboard']" pTooltip="Dashboard" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+    <button *ngIf="module==modules.ORD || module==modules.SCM" class="p-link layout-topbar-button" [routerLink]="[modulePath+'/dashboard']" pTooltip="Dashboard" tooltipPosition="bottom" tooltipStyleClass="text-xs">
         <i class="material-symbols-outlined">dashboard</i>
     </button>
-    <!-- <button *ngIf="module==modules.SCM || module==modules.FPR" class="p-link layout-topbar-button" [routerLink]="[modulePath+'/reports']" pTooltip="Relatórios" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+    <button *ngIf="module==modules.SCM || module==modules.FPR" class="p-link layout-topbar-button" [routerLink]="[modulePath+'/reports']" pTooltip="Relatórios" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">picture_as_pdf</i>
-        </button> -->
+        </button>
     <!-- Modulo Calendário -->
     <ng-container *ngIf="module==modules.SCM">
         <button class="p-link layout-topbar-button" [routerLink]="[modulePath+'/gantt']" pTooltip="Calendário" tooltipPosition="bottom" tooltipStyleClass="text-xs">
@@ -33,8 +33,8 @@
         </button>
     </ng-container>
 
-    <ng-container *ngIf="module==modules.REPR">
-        <button class="p-link layout-topbar-button" pTooltip="Gestor de Pedidos" tooltipPosition="bottom" tooltipStyleClass="text-xs" [routerLink]="[modulePath+'/orders']">
+    <ng-container *ngIf="module==modules.ORD">
+        <button class="p-link layout-topbar-button" pTooltip="Gestor de Pedidos" tooltipPosition="bottom" tooltipStyleClass="text-xs" [routerLink]="[modulePath+'/management']">
             <i class="material-symbols-outlined">dvr</i>
             <label>Pedidos</label>
         </button>
@@ -53,7 +53,7 @@
                     <span *ngIf="module!=modules.B2B" class="p-2"><a href="javascript:void(0);" [routerLink]="['/salesforce']">B2B - Salesforce</a></span>
                     <span *ngIf="module!=modules.CRM && level_access==levels.ADMIN" class="p-2"><a href="javascript:void(0);" [routerLink]="['/crm']">CRM - Funis</a></span>
                     <span *ngIf="module!=modules.FPR && level_access==levels.ADMIN" class="p-2"><a href="javascript:void(0);" [routerLink]="['/devolution']">FPR - Devoluções</a></span>
-                    <span *ngIf="module!=modules.REPR" class="p-2"><a href="javascript:void(0);" [routerLink]="['/representative']">REPR - Representante</a></span>
+                    <span *ngIf="module!=modules.ORD" class="p-2"><a href="javascript:void(0);" [routerLink]="['/orders']">ORD - Pedidos</a></span>
                     <span *ngIf="module!=modules.SCM && level_access==levels.ADMIN" class="p-2"><a href="javascript:void(0);" [routerLink]="['/calendar']">SCM - Calendário</a></span>
                     <!-- <span *ngIf="module!=modules.MPG" class="p-2"><a href="javascript:void(0);" [routerLink]="['/marketing']">MPG - Marketing</a></span> -->
                 </div>

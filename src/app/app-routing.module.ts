@@ -9,7 +9,7 @@ const routes: Routes = [
 { path: 'calendar', loadChildren: () => import('./calendar/calendar.module').then(m => m.CalendarModule) },
 { path: 'crm', loadChildren: () => import('./crm/crm.module').then(m => m.CrmModule) },
 { path: 'devolution', loadChildren: () => import('./devolution/devolution.module').then(m => m.DevolutionModule) },
-{ path: 'representative', loadChildren: () => import('./representative/representative.module').then(m => m.RepresentativeModule) },
+{ path: 'orders', loadChildren: () => import('./orders/orders.module').then(m => m.OrdersModule) },
 {
   path:'', pathMatch: 'full', redirectTo: '/login'
 }

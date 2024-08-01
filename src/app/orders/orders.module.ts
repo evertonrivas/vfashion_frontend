@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { RepresentativeRoutingModule } from './representative-routing.module';
-import { RepresentativeComponent } from './representative.component';
+import { OrdersRoutingModule } from './orders-routing.module';
+import { OrdersComponent } from './orders.component';
 import { SharedModule } from '../common/shared.module';
 import { TopbarComponent } from '../common/topbar/topbar.component';
 
 
 @NgModule({
   declarations: [
-    RepresentativeComponent
+    OrdersComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
     TopbarComponent,
-    RepresentativeRoutingModule
+    OrdersRoutingModule
   ]
 })
-export class RepresentativeModule { }
+export class OrdersModule { }

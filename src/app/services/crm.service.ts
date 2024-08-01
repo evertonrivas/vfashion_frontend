@@ -95,6 +95,20 @@ export class CrmService  extends MyHttp{
     });
   }
 
+  getCustomersWihoutStage():Observable<Entity[]|ResponseError>{
+    return this.http.patch<Entity[]|ResponseError>(this.sys_config.backend_crm+'/funnel-stages/',{},{
+      headers: this.getHeader()
+    });
+  }
+
+  addCustomersToStage(idStage:number,ids:Entity[]):Observable<boolean|ResponseError>{
+    return this.http.post<boolean|ResponseError>(this.sys_config.backend_cmm+'/legal-entities/by-crm-stage/'+idStage.toString(),{
+      "entities": ids
+    },{
+      headers: this.getHeader(ContentType.json)
+    });
+  }
+
   getRepresentatives(opts:Options):Observable<Entity[]>{
     return this.http.get<Entity[]>(this.sys_config.backend_cmm+'/legal-entities/',{
       headers: this.getHeader(ContentType.json),

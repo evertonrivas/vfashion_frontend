@@ -14,7 +14,7 @@
                 <th pSortableColumn="total_value">Valor Total <p-sortIcon field="total_value"></p-sortIcon></th>
                 <th *ngIf="showIntegration" pSortableColumn="invoice_number">N&deg; NF <p-sortIcon field="invoice_number"></p-sortIcon></th>
                 <th pSortableColumn="status">Status <p-sortIcon field="status"></p-sortIcon></th>
-                <th>Ação</th>
+                <th class="text-center">Ações</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-item>
@@ -27,10 +27,24 @@
                 <td class="text-right">{{item.installment_value |shortMoney}}</td>
                 <td class="text-right">{{item.total_value | shortMoney}}</td>
                 <td *ngIf="showIntegration">{{item.invoice_number}}</td>
-                <td><p-tag [severity]="getSeverity(item.status)">{{item.status | orderStatus}}</p-tag></td>
+                <td>
+                    <p-tag [severity]="getSeverity(item.status)">{{item.status | orderStatus}}</p-tag>
+                    <!-- <p-dropdown
+                        [options]="all_order_status"
+                        [(ngModel)]="item.status"
+                        appendTo="body">
+                        <ng-template pTemplate="selectedItem">
+                            <div [style]="{'background-color': getColor(item.status),'color':'#FFFFFF','font-weight':'bold'}">{{item.status | orderStatus}}</div>
+                        </ng-template>
+                        <ng-template pTemplate="item" let-status>
+                            <div [style]="{'background-color': getColor(status), 'color': '#FFFFFF','font-weight':'bold', 'padding':'0.75rem 1.05rem' }">{{status | orderStatus}}</div>
+                        </ng-template>
+                    </p-dropdown> -->
+                </td>
                 <td class="text-center">
                     <p-button *ngIf="showIntegrationTrack" [text]="true" icon="pi pi-map" (onClick)="showTrack(item.id_order)"></p-button>
-                    <p-button [text]="true" icon="pi pi-eye" (onClick)="onView(item.id_order)"></p-button>
+                    <p-button [text]="true" icon="pi pi-file-pdf" pTooltip="Imprimir pedido" tooltipStyleClass="text-xs" tooltipPosition="top"></p-button>
+                    <p-button [text]="true" icon="pi pi-file-edit" (onClick)="onView(item.id_order)" pTooltip="Editar pedido" tooltipStyleClass="text-xs" tooltipPosition="top"></p-button>
                 </td>
             </tr>
         </ng-template>
@@ -66,7 +80,7 @@
 </p-dialog>
 
 <p-dialog [(visible)]="formVisible" header="Visualização de Pedido" [closable]="false" [modal]="true" [draggable]="false" [style]="{width: '60vw'}">
-    <div class="flex flex-row justify-content-between mb-3">
+    <div class="flex flex-row justify-content-between mb-4">
         <div class="flex flex-column">
             <label><strong>Pedido:</strong> {{onOrderNumber(selectedOrder.id)}}</label>
         </div>
@@ -76,11 +90,8 @@
         <div class="flex flex-column">
             <label><strong>Cliente:</strong> {{selectedOrder.customer?.name}}</label>
         </div>
-        <div class="flex flex-column">
-            <label><strong>Status:</strong>&nbsp;&nbsp;<p-tag [severity]="getSeverity(selectedOrder.status)">{{selectedOrder.status | orderStatus}}</p-tag></label>
-        </div>
     </div>
-    <div class="flex flex-row justify-content-between mb-2">
+    <div class="flex flex-row justify-content-between mb-4">
         <div class="flex flex-column">
             <label><strong>Valor Total</strong> {{selectedOrder.total_value | shortMoney}}</label>
         </div>
@@ -92,6 +103,9 @@
         </div>
         <div class="flex flex-column">
             <label><strong>Valor Parcela</strong> {{selectedOrder.installments_value | shortMoney}}</label>
+        </div>
+        <div class="flex flex-column">
+            <label><strong>Status:</strong>&nbsp;&nbsp;<p-tag [severity]="getSeverity(selectedOrder.status)">{{selectedOrder.status | orderStatus}}</p-tag></label>
         </div>
     </div>
     <p-table

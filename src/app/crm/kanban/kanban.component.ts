@@ -13,6 +13,16 @@ import { CustomerEmailComponent } from './customer-email/customer-email.componen
 import { EntitiesService } from 'src/app/services/entities.service';
 import { Options, RequestResponse, ResponseError } from 'src/app/models/paginate.model';
 import { UserService } from 'src/app/services/user.service';
+import { City, StateRegion } from 'src/app/models/place.model';
+import { LocationService } from 'src/app/services/location.service';
+
+export interface filterParams{
+  rule:any|undefined
+  state_region: StateRegion|undefined
+  password:string|undefined,
+  city:City|undefined,
+  user_type: any|undefined
+}
 
 @Component({
   selector: 'app-kanban',
@@ -49,6 +59,19 @@ export class KanbanComponent extends Common implements AfterContentInit{
 
   stageChecked:Checkbox[] = [];
   massiveEmail:boolean = false;
+
+  //exibe a tela de busca de clientes para associar em um funil
+  showCustomers:boolean = false;
+  all_funnels:Funnel[] = [];
+  stages_from_funnel:FunnelStage[] = [];
+  filtering:boolean = false;
+  sendCustomer:boolean = false;
+  entitiesToAddInCRM:Entity[] = [];
+  selectedEntitiesToAddInCRM:Entity[] = [];
+  selectedStageToCustomers!:FunnelStage;
+  stageLoading:boolean = false;
+  selectedFunnelToCustomers!:Funnel;
+
 
   //menu para ordenacao e atualizacao de cada estagio
   stageMenu:MenuItem[][] = [];
@@ -113,6 +136,7 @@ export class KanbanComponent extends Common implements AfterContentInit{
     private msgSvc:MessageService,
     private svc:CrmService,
     private entSvc:EntitiesService,
+    private svcL:LocationService,
     private usrSvc:UserService,
     private confirmService:ConfirmationService,
     route:Router){
@@ -697,5 +721,108 @@ export class KanbanComponent extends Common implements AfterContentInit{
     });
 
     console.log(evt);
+  }
+
+  searchCustomers():void{
+    this.showCustomers = true;
+    this.entitiesToAddInCRM = [];
+    this.all_funnels = [];
+
+    this.svc.getFunnels({page:1,pageSize:1,query:"can:list-all 1"}).subscribe({
+      next: (data) =>{
+        if("error_details" in data){
+          this.showMessage({
+            key:'systemToast',
+            summary:"Falha...",
+            detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+            severity:"error"
+          });
+        }else{
+          this.all_funnels = data as Funnel[];
+        }
+      }
+    })
+    
+    //listar clientes que nao estao em nenhum funil
+    this.svc.getCustomersWihoutStage().subscribe({
+      next:(data) =>{
+        if ( "error_details" in data){
+          this.showMessage({
+            key:'systemToast',
+            summary:"Falha...",
+            detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+            severity:"error"
+          });
+        }else{
+          this.entitiesToAddInCRM = data as Entity[];
+        }
+      }
+    });
+  }
+
+  clearSearch(){
+    this.showCustomers = false;
+  }
+
+  cancelMassive():void{
+    this.entitiesToAddInCRM = [];
+    this.selectedEntitiesToAddInCRM = [];
+    this.showCustomers = false;
+  }
+
+  onAddToCRM():void{
+    this.sendCustomer = true;
+    let ids:number[] = [];
+      this.selectedEntitiesToAddInCRM.forEach((u) =>{
+        ids.push(u.id);
+      });
+
+    this.svc.addCustomersToStage(
+      this.selectedStageToCustomers?.id,
+      this.selectedEntitiesToAddInCRM
+    ).subscribe({
+      next:(data) =>{
+        this.sendCustomer = false;
+        this.msgSvc.clear();
+        if(typeof data==='boolean'){
+          this.msgSvc.add({
+            key: 'systemToast',
+            severity:"success",
+            summary:"Sucesso!",
+            detail:"Cliente(s) adicionado(s) com sucesso ao estágio "+this.selectedStageToCustomers.name+" do funil "+this.selectedFunnelToCustomers.name+"!"
+          });
+          this.showCustomers = false;
+          //this.loadingData();
+          this.cancelMassive();
+        }else{
+          this.msgSvc.add({
+            key: 'systemToast',
+            severity: 'error',
+            summary: 'Ocorreu o seguinte erro no sistema!',
+            detail: (data as ResponseError).error_details
+          });
+        }
+      }
+    });
+  }
+
+  getFunnelStages(evt:DropdownChangeEvent):void{
+    console.log(evt);
+    this.stageLoading = true;
+    this.svc.listStages({page:1,pageSize:1,query:'can:list-all 1 ||is:funnel '+this.selectedFunnel?.id.toString()}).subscribe({
+      next: (data) =>{
+        this.stageLoading = false;
+        if ("error_details" in data){
+          this.showMessage({
+            key:'systemToast',
+            summary:"Falha...",
+            detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+            severity:"error"
+          });
+        }else{
+          this.stages_from_funnel = data as FunnelStage[];
+        }
+      }
+    });
   }
 }

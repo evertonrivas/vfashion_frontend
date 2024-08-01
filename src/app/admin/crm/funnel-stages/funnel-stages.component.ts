@@ -215,10 +215,9 @@ export class FunnelStagesComponent extends Common implements AfterViewInit{
       });
     }else{
       //monta as linhas do forme e exibe o mesmo
-      let row:FormRow = {
-        fields: [fieldName]
-      }  
-      this.formRows.push(row);
+      this.formRows.push({ fields: [fieldName] });
+      this.formRows.push({ fields: [fieldFunnel] });
+      this.formRows.push({ fields: [fieldColor,fieldIcon,fieldOrder] });
       this.formVisible = true;
     }
   }

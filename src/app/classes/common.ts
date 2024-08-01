@@ -75,8 +75,8 @@ export class Common{
             this.module = ModuleName.FPR;
         }else if(url_parts[0]=="salesforce"){
             this.module = ModuleName.B2B;
-        }else if(url_parts[0]=="representative"){
-            this.module = ModuleName.REPR;
+        }else if(url_parts[0]=="orders"){
+            this.module = ModuleName.ORD;
         }
 
         this.modulePath = "/"+url_parts[0];

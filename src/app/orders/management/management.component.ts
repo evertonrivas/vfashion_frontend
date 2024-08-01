@@ -22,13 +22,20 @@ import { MessageService } from 'primeng/api';
     TagModule
   ],
   providers:[MessageService],
-  templateUrl: './orders.component.html',
-  styleUrl: './orders.component.scss'
+  templateUrl: './management.component.html',
+  styleUrl: './management.component.scss'
 })
-export class OrdersComponent extends Common implements AfterViewInit{
+export class ManagementComponent extends Common implements AfterViewInit{
   showIntegration:boolean = false;
   showIntegrationTrack:boolean = false;
   status = OrderStatus;
+  all_order_status:any[] = [0,1,2,3,4,5]
+  /*ANALIZING    = 0,
+    SENDED       = 1,
+    PROCESSING   = 2,
+    TRANSPORTING = 3,
+    FINISHED     = 4,
+    REJECTED     = 5*/
   selectedOrder:Order = {
     id: 0,
     customer: undefined,
@@ -111,6 +118,21 @@ export class OrdersComponent extends Common implements AfterViewInit{
       return "contrast";
     }
     return "success";
+  }
+
+  getColor(status:number):string | void{
+    if(status==OrderStatus.FINISHED){
+      return "#22c55e"; 
+    }else if(status==OrderStatus.ANALIZING){
+      return "#000000";
+    }else if(status==OrderStatus.SENDED){
+      return "#f97316";
+    }else if(status==OrderStatus.PROCESSING){
+      return "#0ea5e9";
+    }else if(status==OrderStatus.TRANSPORTING){
+      return "#64748b";
+    }
+    return "#ef4444";
   }
 
   onView(p_idOrder:string):void{

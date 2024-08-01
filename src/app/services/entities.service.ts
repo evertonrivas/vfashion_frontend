@@ -33,19 +33,8 @@ export class EntitiesService extends MyHttp {
 
   //realiza insert e update de um entity
   saveEntity(entity:Entity):Observable<number|boolean|ResponseError>{
-    var url = this.sys_config.backend_cmm+'/legal-entities/'+(entity.id>0?entity.id.toString():'');
-    return this.http.post<number|boolean|ResponseError>(url,{
-      "id": entity.id,
-      "name": entity.name,
-      "fantasy_name":entity.fantasy_name,
-      "taxvat": entity.taxvat,
-      "id_city": entity.city.id,
-      "address": entity.address,
-      "postal_code": entity.postal_code,
-      "neighborhood": entity.neighborhood,
-      "type": entity.type,
-      "representative_id": (entity.agent as Entity).id
-    },{
+    var url = this.sys_config.backend_cmm+'/legal-entities/'+(entity.id > 0 ?entity.id.toString():'');
+    return this.http.post<number|boolean|ResponseError>(url,JSON.stringify(entity),{
       headers:this.getHeader(ContentType.json)
     });
   }
@@ -142,6 +131,12 @@ export class EntitiesService extends MyHttp {
     return this.http.get<CustomerGroup|RequestResponse|ResponseError>(this.sys_config.backend_b2b+'/customer-group/customers/',{
       headers: this.getHeader(),
       params: this.getParams(opt)
+    });
+  }
+  
+  processImport():Observable<boolean|ResponseError>{
+    return this.http.post<boolean|ResponseError>(this.sys_config.backend_cmm+'/legal-entities/process-import/',{},{
+      headers: this.getHeader()
     });
   }
 }

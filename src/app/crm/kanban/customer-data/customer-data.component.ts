@@ -1,7 +1,7 @@
 import { Component,Input, ViewChild,Output, EventEmitter,OnChanges, SimpleChanges, AfterViewInit } from '@angular/core';
 import { Message } from 'primeng/api';
 import { AutoComplete, AutoCompleteCompleteEvent } from 'primeng/autocomplete';
-import { Entity, EntityContact, EntityWeb, RepEntity } from 'src/app/models/entity.model';
+import { Entity, EntityContact, EntityType, EntityWeb, RepEntity } from 'src/app/models/entity.model';
 import { City } from 'src/app/models/place.model';
 import { EntitiesService } from 'src/app/services/entities.service';
 import { ConfirmationService } from 'primeng/api';
@@ -12,6 +12,7 @@ import { OverlayPanel } from 'primeng/overlaypanel';
 import { Common } from 'src/app/classes/common';
 import { Options } from 'src/app/models/paginate.model';
 import { Router } from '@angular/router';
+import { CrmService } from 'src/app/services/crm.service';
 
 @Component({
   selector: 'app-customer-data',
@@ -88,6 +89,7 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
   }
 
   constructor(private svc:EntitiesService,
+    private crm:CrmService,
     private confirmService:ConfirmationService,
     private localService:LocationService,
     route:Router){
@@ -195,15 +197,21 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
       && this.editableCustomer.neighborhood.trim().length > 0
       && this.editableCustomer.postal_code.trim().length > 0
       && this.editableCustomer.city.id >0 
-      && this.editableCustomer.address.trim().length > 0
-      && this.editableCustomer.taxvat.trim().length > 0
-      && this.editableCustomer.agent!=undefined){
+      && this.editableCustomer.address.trim().length > 0){
+        this.editableCustomer.type = EntityType.C;
         this.svc.saveEntity(this.editableCustomer as Entity).subscribe({
           next: (data) =>{
             if(data as number > 0){
-              this.messageToShow.emit({ key:'systemToast',severity:'success',summary:'Dados do cliente salvos com sucesso!'});
-              this.hasSended = false;
-              this.reloadData();
+              this.editableCustomer.id = data as number;
+              this.crm.addCustomersToStage(this.selectedStage?.id as number,[this.editableCustomer]).subscribe({
+                next:(data) =>{
+                  if(typeof data ==='boolean'){
+                    this.messageToShow.emit({ key:'systemToast',severity:'success',summary:'Dados do cliente salvos com sucesso!'});
+                    this.hasSended = false;
+                    this.reloadData();
+                  }
+                }
+              });
             }
           },
           error: (err) => {
@@ -438,7 +446,8 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
     this.sendContact = true;
     if (this.newContact.name.trim().length > 0 &&
       this.newContact.value.trim().length > 0){
-      this.editableCustomer.contacts.push(this.newContact);
+      let ct = this.newContact;
+      this.editableCustomer.contacts.push(ct);
       this.newContact = {
         id: 0,
         id_legal_entity: 0,

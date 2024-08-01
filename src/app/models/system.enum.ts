@@ -6,7 +6,7 @@ export enum ModuleName{
     FPR = 4,
     FCM = 5, // futuro modulo financeiro
     MPG = 6, // futuro modulo de marketing
-    REPR = 7, // simboliza o modulo do representante
+    ORD = 7, // simboliza o modulo do representante, mas eh gestao de pedidos
     NONE = -1
   }
 

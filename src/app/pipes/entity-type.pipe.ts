@@ -13,6 +13,7 @@ export class EntityTypePipe implements PipeTransform {
       case 'C': vReturn = "Cliente"; break;
       case 'R': vReturn = "Representante"; break;
       case 'F': vReturn = "Fornecedor"; break;
+      case 'P': vReturn = "Pessoa (Física)"; break;
     }
 
     return vReturn;

@@ -25,7 +25,7 @@
                 <p-overlayPanel #pnlIcons appendTo="body">
                     <ng-template pTemplate="content">
                         <div class="flex flex-wrap gap-1 w-21rem max-w-21rem">
-                            <i *ngFor="let icon of icons" class="material-symbols-outlined gap-1">{{icon}}</i>
+                            <a *ngFor="let icon of icons" href="javascript:void(0)" (click)="setIcon(icon,field)" style="color: #666666!important;"><i class="material-symbols-outlined gap-1">{{icon}}</i></a>
                         </div>
                     </ng-template>
                 </p-overlayPanel>

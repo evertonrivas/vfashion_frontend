@@ -102,7 +102,7 @@ export class EntitiesComponent extends Common implements AfterViewInit{
       filter_name: "type",
       filter_prefix: "is",
       name:"type",
-      options:[{value:'C',label:'Cliente',id:undefined},{value:'R',label:'Representante',id:undefined},{value:'S',label:'Fornecedor',id:undefined}],
+      options:[{value:'C',label:'Cliente',id:undefined},{value:'R',label:'Representante',id:undefined},{value:'S',label:'Fornecedor',id:undefined},{value:'P',label: 'Pessoa (Física)', id:undefined}],
       value:undefined
     });
 
@@ -296,6 +296,23 @@ export class EntitiesComponent extends Common implements AfterViewInit{
   }
 
   uploadDone():void{
-
+    this.svc.processImport().subscribe({
+      next: (data) =>{
+        this.msg.clear();
+        if(typeof data ==='boolean'){
+          this.msg.add({
+            severity:"success",
+            summary:"Sucesso!",
+            detail:"Importação de dados em processamento!"
+          });
+        }else{
+          this.msg.add({
+            summary:"Falha...",
+            detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
+            severity:"error"
+          });
+        }
+      }
+    });
   }
 }
