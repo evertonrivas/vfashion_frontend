@@ -1,6 +1,16 @@
 <div class="layout-topbar">
-    <img *ngIf="module!=modules.B2B" src="assets/images/Fast2Bee.png" height="30" class="mr-4">
-    <a *ngIf="module==modules.B2B" href="javascript:void(0)" [routerLink]="[modulePath+'/grid']"><img src="assets/images/Fast2Bee.png" height="30" class="mr-4"></a>
+    <img *ngIf="module!=modules.B2B" 
+        [src]="'assets/images/'+(!sysconfig.use_company_custom?'Fast2Bee.png':sysconfig.company_logo)" 
+        [alt]="(!sysconfig.use_company_custom?'Fast2Bee':sysconfig.company_name)"
+        [title]="(!sysconfig.use_company_custom?'Fast2Bee':sysconfig.company_name)"
+        height="30" class="mr-4">
+    <a *ngIf="module==modules.B2B" href="javascript:void(0)" [routerLink]="[modulePath+'/grid']">
+        <img 
+            [src]="'assets/images/'+(!sysconfig.use_company_custom?'Fast2Bee.png':sysconfig.company_logo)" 
+            [alt]="(!sysconfig.use_company_custom?'Fast2Bee':sysconfig.company_name)"
+            [title]="(!sysconfig.use_company_custom?'Fast2Bee':sysconfig.company_name)"
+            height="30" class="mr-4">
+    </a>
     <button #menubutton class="p-link layout-menu-button layout-topbar-button" *ngIf="module==modules.ADM || module==modules.B2B" [pTooltip]="module==modules.ADM?'Exibir/Ocultar Menu':'Exibir/Ocultar Filtros'" tooltipPosition="bottom" tooltipStyleClass="text-xs" (click)="onMenu()">
         <i class="material-symbols-outlined">menu</i>
     </button>
@@ -45,7 +55,7 @@
     </button>
 
     <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active':profileSidebarVisible}">
-        <div *ngIf="module==modules.ADM" class="mt-2 justify-content-end vertical-align-baseline pl-2"><a href="javascript:void(0)" [routerLink]="[modulePath+'/version/'+sysconfig.version]">v. {{sysconfig.version}}</a></div>
+        <div *ngIf="module==modules.ADM" class="mt-2 justify-content-end vertical-align-baseline pl-2"><a href="javascript:void(0)" [routerLink]="[modulePath+'/version/'+envconfig.version]">v. {{envconfig.version}}</a></div>
         <p-overlayPanel #p_module>
             <ng-template pTemplate="content">
                 <div class="flex flex-column w-full">

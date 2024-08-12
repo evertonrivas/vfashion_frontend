@@ -176,6 +176,7 @@ export class TopbarComponent extends Common implements AfterContentInit,OnDestro
 
   onLogoff():void{
     this.svc.logoff().subscribe(() =>{
+      localStorage.clear();
       this.route.navigate(["/"]);
     });
   }

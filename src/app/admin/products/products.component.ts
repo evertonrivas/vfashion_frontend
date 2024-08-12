@@ -51,8 +51,8 @@ export class ProductsComponent extends Common implements AfterViewInit {
   allOptMeasure:FieldOption[] = [];
   showDialogUpload:boolean = false;
   showDialogImport:boolean = false;
-  url_upload_images:string = this.sysconfig.backend_cmm+'/upload/images/';
-  url_upload_import:string = this.sysconfig.backend_cmm+'/upload/import/?type=P';
+  url_upload_images:string = this.envconfig.backend_cmm+'/upload/images/';
+  url_upload_import:string = this.envconfig.backend_cmm+'/upload/import/?type=P';
   uploadHeaders:HttpHeaders = new HttpHeaders()
     .set("Authorization",localStorage.getItem('token_type')+" "+localStorage.getItem('token_access'));
     
@@ -428,9 +428,9 @@ export class ProductsComponent extends Common implements AfterViewInit {
       disabled:false,
       lockField:undefined
     }
-    for(let i:number = 0;i<this.sysconfig.system.max_upload_images;i++){
+    // for(let i:number = 0;i<this.sysconfig.system.max_upload_images;i++){
       
-    }
+    // }
 
     if(id>0){
       //busca os dados do registro para edicao
@@ -474,7 +474,7 @@ export class ProductsComponent extends Common implements AfterViewInit {
             this.formRows.push({
               fields:[fObserve]
             });
-            if (this.sysconfig.system.use_url_images){
+            if (this.sysconfig.company_use_url_images){
               this.formRows.push({
                 fields:[fImages]
               });
@@ -508,7 +508,7 @@ export class ProductsComponent extends Common implements AfterViewInit {
       this.formRows.push({
         fields:[fObserve]
       });
-      if (this.sysconfig.system.use_url_images){
+      if (this.sysconfig.company_use_url_images){
         this.formRows.push({
           fields:[fImages]
         });
@@ -527,7 +527,7 @@ export class ProductsComponent extends Common implements AfterViewInit {
         if(typeof data ==='number'){
 
           //valida se precisa fazer upload de imagem ou se usa url
-          if(!this.sysconfig.system.use_url_images){
+          if(!this.sysconfig.company_use_url_images){
             this.idToEdit = data as number;
             this.url_upload_images += this.idToEdit;
             this.showDialogUpload = true;
@@ -539,7 +539,7 @@ export class ProductsComponent extends Common implements AfterViewInit {
           });
         }else if(typeof data ==='boolean'){
           //valida se precisa fazer upload de imagem ou se usa url
-          if(!this.sysconfig.system.use_url_images){
+          if(!this.sysconfig.company_use_url_images){
             this.url_upload_images += this.idToEdit;
             this.showDialogUpload = true;
           }

@@ -347,7 +347,7 @@ export class ProductGridComponent extends Common implements AfterViewInit,OnDest
       let options:Options = {
         query : "is:id_group "+id.toString(),
         page: (evt.page as number)+1,
-        pageSize: this.sysconfig.system.pageSize
+        pageSize: this.sysconfig.system_pagination_size
       }
 
       this.serviceSub[2] = this.svc.listGridDistribution(id,options).subscribe({

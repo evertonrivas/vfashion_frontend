@@ -27,6 +27,7 @@ import { TopbarComponent } from '../common/topbar/topbar.component';
 import { ChipsModule } from 'primeng/chips';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { ToolbarModule } from 'primeng/toolbar';
 
 @NgModule({
   declarations: [
@@ -56,8 +57,8 @@ import { InputIconModule } from 'primeng/inputicon';
     TopbarComponent,
     ChipsModule,
     IconFieldModule,
-    InputIconModule
-
+    InputIconModule,
+    ToolbarModule
   ],
   providers:[
     provideNgxMask()

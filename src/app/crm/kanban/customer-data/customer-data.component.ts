@@ -1,4 +1,4 @@
-import { Component,Input, ViewChild,Output, EventEmitter,OnChanges, SimpleChanges, AfterViewInit } from '@angular/core';
+import { Component,Input, ViewChild,Output, EventEmitter,OnChanges, SimpleChanges, AfterViewInit, input } from '@angular/core';
 import { Message } from 'primeng/api';
 import { AutoComplete, AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 import { Entity, EntityContact, EntityType, EntityWeb, RepEntity } from 'src/app/models/entity.model';
@@ -6,11 +6,11 @@ import { City } from 'src/app/models/place.model';
 import { EntitiesService } from 'src/app/services/entities.service';
 import { ConfirmationService } from 'primeng/api';
 import { LocationService } from 'src/app/services/location.service';
-import { Dropdown, DropdownChangeEvent } from 'primeng/dropdown';
+import { DropdownChangeEvent } from 'primeng/dropdown';
 import { Funnel, FunnelStage } from 'src/app/models/crm.model';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { Common } from 'src/app/classes/common';
-import { Options } from 'src/app/models/paginate.model';
+import { ResponseError } from 'src/app/models/paginate.model';
 import { Router } from '@angular/router';
 import { CrmService } from 'src/app/services/crm.service';
 
@@ -23,22 +23,26 @@ import { CrmService } from 'src/app/services/crm.service';
 export class CustomerDataComponent extends Common implements OnChanges, AfterViewInit{
   @Input() isVisible:boolean = false;
   @Input() isEditing:boolean = false;
-  @Input() representatives:Entity[] = [];
-  @Input() funnels:Funnel[] = [];
-  @ViewChild('cmplCity') cmplCity:AutoComplete|null = null;
-  @ViewChild('ddRep') ddRep:Dropdown|null = null;
+  @Input() idStageOfCustomer:number = 0;
+  @Output() idStageOfCustomerChange = new EventEmitter<number>();
+  @Input() idEditableCustomer:number = 0;
+  @Input() idCustomerFunnel:number = 0;
+  customerFunnel!:Funnel|null;
+
+
   @ViewChild('pnlContact') pnlContact:OverlayPanel|null = null;
   @ViewChild('pnlWeb') pnlWeb:OverlayPanel|null = null;
   @Output() messageToShow = new EventEmitter<Message>();
+  funnels:Funnel[] = [];
+  representatives:Entity[] = [];
   selectedRepresentativeId:number = 0;
   sendContact:boolean = false;
   sendWeb:boolean = false;
   tabActive:number = 0;
   stages:FunnelStage[] = [];
-  selectedFunnel:Funnel|null = null;
   selectedStage:FunnelStage|null = null;
 
-  @Input() editableCustomer:Entity = {
+  editableCustomer:Entity = {
     id: 0,
     origin_id: 0,
     name: '',
@@ -69,6 +73,7 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
     date_updated: undefined,
     agent: null
   }
+
   citySuggestions:City[] = [];
   filteredCities:City[] = [];
   newContact:EntityContact = {
@@ -95,13 +100,9 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
     route:Router){
       super(route);
   }
+
   ngAfterViewInit(): void {
-    let opt:Options = {
-      page:1,
-      pageSize:0,
-      query:"can:list_all true"
-    };
-    this.localService.listCities(opt).subscribe({
+    this.localService.listCities({page:1,pageSize:1,query:"can:list-all 1"}).subscribe({
       next: (data) =>{
         this.citySuggestions = data as City[];
       }
@@ -109,65 +110,85 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.hasOwnProperty("editableCustomer") && this.editableCustomer.agent!=null){
-      //console.log(this.editableCustomer.agent);
-      this.selectedRepresentativeId = this.editableCustomer.agent.id;
-        // (this.ddRep as Dropdown).onChange.emit();
-    }
-    if(!this.isVisible){
-      this.selectedRepresentativeId = 0;
-      this.newWeb = {
-        id: 0,
-        id_legal_entity: 0,
-        name: '',
-        web_type: '',
-        value: ''
-      };
+    //se estiver editando um cliente entrarah aqui pois haverao as propriedades
+    if(this.isVisible){
 
-      this.newContact = {
-        id: 0,
-        id_legal_entity: 0,
-        name: '',
-        contact_type: '',
-        value: '',
-        is_whatsapp: false,
-        is_default: false
-      };
+      //realiza carga dos funis existentes
+      if(changes.hasOwnProperty("isVisible")){
+        this.crm.getFunnels({
+          page:1,
+          pageSize:1,
+          query:'can:list-all 1'
+        }).subscribe({
+          next: (data) =>{
+            this.funnels = data as Funnel[];
+            this.customerFunnel = this.funnels.find(v => v.id == this.idCustomerFunnel) as Funnel;
+            
+            //realiza a montagem dos estagios do funil
+            let evt:DropdownChangeEvent = {
+              originalEvent: new Event(''),
+              value: this.customerFunnel
+            }
+            this.getStagesOfFunnel(evt);
+          }
+        });
+      }
 
-      this.editableCustomer = {
-        id: 0,
-        origin_id: 0,
-        name: '',
-        fantasy_name: '',
-        taxvat: '',
-        city: {
+      //realiza a carga de dados dos representantes
+      this.crm.getRepresentatives({
+        page:1,
+        pageSize:1,
+        query: "can:list_all true||is:type R||is:order_by name||is:order ASC"
+      }).subscribe({
+        next:(data) =>{
+          this.representatives = data;
+          this.representatives.unshift({
           id: 0,
-          state_region: {
+          origin_id: 0,
+          name: 'NÃO UTILIZAR REPRESENTANTE',
+          fantasy_name: 'NÃO UTILIZAR REPRESENTANTE',
+          taxvat: '',
+          city: {
             id: 0,
-            country: {
+            state_region: {
               id: 0,
-              name: ''
+              country: {
+                id: 0,
+                name: ''
+              },
+              name: '',
+              acronym: ''
             },
             name: '',
-            acronym: ''
+            brazil_ibge_code: null
           },
-          name: '',
-          brazil_ibge_code: null
-        },
-        contacts: [],
-        web: [],
-        files:[],
-        postal_code: '',
-        neighborhood: '',
-        address: '',
-        type: 'C',
-        date_created: undefined,
-        date_updated: undefined,
-        agent: null
-      };
-
-      this.hasSended = this.sendContact = this.sendWeb = false;
-      this.tabActive = 0;
+          contacts: [],
+          web: [],
+          files:[],
+          postal_code: '',
+          neighborhood: '',
+          address: '',
+          type: '',
+          date_created: undefined,
+          date_updated: undefined,
+          agent: null
+        });
+        }
+      })
+      
+      if(changes.hasOwnProperty("idEditableCustomer")){
+        //realiza a carga de dados do cliente
+        this.svc.loadEntity(this.idEditableCustomer as number).subscribe({
+          next: (data) =>{
+            this.editableCustomer = data as Entity;
+            
+            //define o funil do usuario
+            this.selectedStage = this.stages.find(v => v.id == this.idStageOfCustomer) as FunnelStage;
+          }
+        });
+      }
+    }else{
+      this.clearData();
     }
   }
 
@@ -205,10 +226,23 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
               this.editableCustomer.id = data as number;
               this.crm.addCustomersToStage(this.selectedStage?.id as number,[this.editableCustomer]).subscribe({
                 next:(data) =>{
-                  if(typeof data ==='boolean'){
-                    this.messageToShow.emit({ key:'systemToast',severity:'success',summary:'Dados do cliente salvos com sucesso!'});
-                    this.hasSended = false;
-                    this.reloadData();
+                  this.hasSended = false;
+                  if(typeof data ==='boolean' || typeof data==='number'){
+                    this.messageToShow.emit({ 
+                      key:'systemToast',
+                      severity:'success',
+                      summary:'Sucesso!',
+                      detail:'Dados do cliente salvos com sucesso.'
+                    });
+                    //this.reloadData();
+                    this.clearData();
+                  }else{
+                    this.messageToShow.emit({
+                      key:'systemToast',
+                      severity:'error',
+                      summary:"Falha...",
+                      detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details
+                    })
                   }
                 }
               });
@@ -429,6 +463,84 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
       }
     });
   }
+  
+  private clearData():void{
+    this.editableCustomer = {
+      id: 0,
+      origin_id: 0,
+      name: '',
+      fantasy_name: '',
+      taxvat: '',
+      city: {
+        id: 0,
+        state_region: {
+          id: 0,
+          country: {
+            id: 0,
+            name: ''
+          },
+          name: '',
+          acronym: ''
+        },
+        name: '',
+        brazil_ibge_code: null
+      },
+      contacts: [],
+      web: [],
+      files:[],
+      postal_code: '',
+      neighborhood: '',
+      address: '',
+      type: 'C',
+      date_created: undefined,
+      date_updated: undefined,
+      agent: null
+    }
+
+    this.customerFunnel = {
+      id: 0,
+      is_default: false,
+      date_created: '',
+      date_updated: '',
+      name:'',
+      stages:[],
+      type:'V'
+    }
+
+    this.selectedStage = {
+      id:0,
+      color:'',
+      date_created:'',
+      date_updated:'',
+      icon:'',
+      icon_color: '',
+      id_funnel: 0,
+      name:'',
+      order:0
+    }
+
+    this.newContact = {
+      id: 0,
+      id_legal_entity: 0,
+      name: '',
+      contact_type: '',
+      value: '',
+      is_whatsapp: false,
+      is_default: false
+    }
+    this.newWeb = {
+      id: 0,
+      id_legal_entity: 0,
+      name: '',
+      web_type: '',
+      value: ''
+    }
+
+    this.selectedRepresentativeId = 0;
+    this.idEditableCustomer = 0;
+    this.idStageOfCustomer = 0;
+
+  }
 
   private reloadData():void{
     this.svc.loadEntity(this.editableCustomer.id).subscribe({
@@ -440,6 +552,11 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
 
   getStagesOfFunnel(evt:DropdownChangeEvent){
     this.stages = evt.value.stages as FunnelStage[];
+  }
+
+  setStage(evt:DropdownChangeEvent){
+    this.idEditableCustomer = evt.value.id;
+    this.idStageOfCustomerChange.emit(this.idEditableCustomer);
   }
 
   addContactInNewCustomer(){

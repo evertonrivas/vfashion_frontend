@@ -1,4 +1,6 @@
 import { Component, OnInit, isDevMode } from '@angular/core';
+import { SysService } from './services/sys.service';
+import { SysConfig } from './models/auth.model';
 
 @Component({
   selector: 'app-root',
@@ -9,10 +11,6 @@ export class AppComponent implements OnInit{
   title = 'nfrontend';
 
   ngOnInit(): void {
-    if(isDevMode()){
-      console.log("Development!");
-    }else{
-      console.log("Production");
-    }
+    
   }
 }

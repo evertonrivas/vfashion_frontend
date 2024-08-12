@@ -1,7 +1,7 @@
 import { Component,AfterContentInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Auth } from 'src/app/models/auth.model';
+import { Auth, SysConfig } from 'src/app/models/auth.model';
 import { SecurityService } from 'src/app/services/security.service';
 import { MessageService } from 'primeng/api';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -14,6 +14,7 @@ import { ToastModule } from 'primeng/toast';
 import { CommonModule } from '@angular/common';
 import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 import { ResponseError } from 'src/app/models/paginate.model';
+import { SysService } from 'src/app/services/sys.service';
 
 @Component({
   selector: 'app-login',
@@ -34,14 +35,18 @@ import { ResponseError } from 'src/app/models/paginate.model';
 })
 export class LoginComponent implements AfterContentInit{
   @ViewChild('pnlRecovery') pnlRecovery:OverlayPanel|null = null;
+  config_loading:boolean = false;
   sended:boolean = false;
   loading:boolean = false;
+  use_company_custom:boolean = false;
+  company_logo:string = "";
+  company_name:string = "";
   app_token:Auth = {
     token_access: "",
     token_type: "",
     token_expire: "",
-    level_access:"",
-    id_user:0,
+    level_access: "",
+    id_user: 0,
     id_profile: 0
   }
 
@@ -54,14 +59,47 @@ export class LoginComponent implements AfterContentInit{
   email_to_recovery:string = "";
 
   constructor(
+    private svc:SysService,
     private route:Router,
     private authService: SecurityService,
     private messageService: MessageService
   ){
-
+    
   }
 
   ngAfterContentInit(): void {
+    this.config_loading = true;
+    //limpa o storage antes de usar o sistema
+    localStorage.clear();
+    //busca as configuracoes do sistema
+    this.svc.getConfig().subscribe({
+      next:(data) =>{
+        if ("system_pagination_size" in data){
+          let config:SysConfig = data as SysConfig;
+          localStorage.setItem("system_pagination_size",String(config.system_pagination_size));
+          localStorage.setItem("use_company_custom",String(config.use_company_custom?1:0));
+          localStorage.setItem("company_name",config.company_name);
+          localStorage.setItem("company_logo",config.company_logo);
+          localStorage.setItem("company_instagram",config.company_instagram);
+          localStorage.setItem("company_facebook",config.company_facebook);
+          localStorage.setItem("company_linkedin",config.company_linkedin);
+          localStorage.setItem("company_max_up_files",String(config.company_max_up_files));
+          localStorage.setItem("company_max_up_images",String(config.company_max_up_images));
+          localStorage.setItem("company_use_url_images",String(config.company_use_url_images?1:0));
+
+          this.use_company_custom = config.use_company_custom;
+          this.company_logo = config.company_logo;
+          this.company_name = config.company_name;
+          
+          this.config_loading = false;
+        }
+        else{
+
+        }
+      }
+    });
+
+
     this.frmLogin.controls.txtUsername.setValue(localStorage.getItem("username"));
     this.frmLogin.controls.txtPassword.setValue(localStorage.getItem("password"));
     if(localStorage.getItem("username")!=null){
@@ -106,21 +144,17 @@ export class LoginComponent implements AfterContentInit{
           if (num==-1){ msg = "Usuário inexistente ou inativo!"; }
           this.messageService.add({ severity: 'error', summary: 'Erro', detail: msg });
         }else{
-          this.app_token.token_access = data.token_access;
-          this.app_token.token_type   = data.token_type;
-          this.app_token.level_access = data.level_access;
-          this.app_token.id_user      = data.id_user;
-          this.app_token.id_profile   = data.id_profile;
-          this.app_token.token_expire = data.token_expire
+          this.app_token = data;
         }
       },
       complete: () => {
         //salva as informacoes do token para verificacao
         localStorage.setItem('token_access',this.app_token.token_access);
         localStorage.setItem('token_type',this.app_token.token_type);
+        localStorage.setItem('token_expire',this.app_token.token_expire);
+
         localStorage.setItem('id_user',String(this.app_token.id_user));
         localStorage.setItem('id_profile',String(this.app_token.id_profile));
-        localStorage.setItem('token_expire',this.app_token.token_expire);
         localStorage.setItem("level_access",String(this.app_token.level_access));
         localStorage.setItem("message_renew","1");
         switch(this.app_token.level_access){

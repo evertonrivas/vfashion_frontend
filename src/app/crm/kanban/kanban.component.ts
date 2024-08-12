@@ -33,8 +33,15 @@ export interface filterParams{
 export class KanbanComponent extends Common implements AfterContentInit{
   @ViewChild('funSel') funSel:Dropdown|null = null;
   @ViewChild('cstEmail') cstEmail:CustomerEmailComponent|null = null;
-  toEdit:boolean = false;
-  selectedFunnel:Funnel|null = null;
+  selectedFunnel:Funnel = {
+    id: 0,
+    name: '',
+    is_default: false,
+    type: 'V',
+    stages: [],
+    date_created: '',
+    date_updated: null
+  };
   stageToMove:FunnelStage = {
     id: 0,
     id_funnel: 0,
@@ -49,7 +56,7 @@ export class KanbanComponent extends Common implements AfterContentInit{
   stagesOfFunnel:FunnelStage[] = [];
   stagesToMove:FunnelStage[] = [];
   customersOfStage:RequestResponse[] = [];
-  representativeList:Entity[] = [];
+  // representativeList:Entity[] = [];
   rows:number[]  = [];
   first:number[] = [];
   globalSearchInput:string|null = null;
@@ -96,6 +103,8 @@ export class KanbanComponent extends Common implements AfterContentInit{
 
   //painel de informacoes do cliente
   infoVisible:boolean    = false;
+  funnelOfCustomer:number = 0;
+  stageOfCustomer:number = 0;
   infoCustomer:Entity = {
     id: 0,
     origin_id: 0,
@@ -159,7 +168,7 @@ export class KanbanComponent extends Common implements AfterContentInit{
         this.response.data = data;
         this.response.data.forEach((funnel:Funnel) => {
           //verifica seh ha funil selecionado
-          if(this.selectedFunnel==null){
+          if(this.selectedFunnel.id==0){
             //nao havendo funil selecionado verifica se eh padrao
             if(funnel.is_default){
               //se o funil fo padrao define ele como selecionado
@@ -267,7 +276,7 @@ export class KanbanComponent extends Common implements AfterContentInit{
     let opts:Options = {
       page: (evt.page+1),
       query: (query==null)?'':query as string,
-      pageSize: this.sysconfig.system.pageSize
+      pageSize: this.sysconfig.system_pagination_size
     }
     this.customersOfStage[idStage] = {
       pagination:{
@@ -386,97 +395,15 @@ export class KanbanComponent extends Common implements AfterContentInit{
 
   showUpload(customer:Entity){
     this.infoCustomer = customer;
-    this.url_upload = this.sysconfig.backend_cmm+'/upload/'+customer.id;
+    this.url_upload = this.envconfig.backend_cmm+'/upload/'+customer.id;
     this.uploadVisible = true;
   }
 
-  showCustomerInfo(idCustomer:number,isEdit:boolean){
-    this.toEdit = isEdit;
-    this.svc.getRepresentatives({
-      page: 0,
-      pageSize: 0,
-      query: "can:list_all true||is:type R||is:order_by name||is:order ASC"
-    }).subscribe({
-      next: (data) =>{
-        this.representativeList = data;
-        this.representativeList.unshift({
-          id: 0,
-          origin_id: 0,
-          name: 'NÃO UTILIZAR REPRESENTANTE',
-          fantasy_name: 'NÃO UTILIZAR REPRESENTANTE',
-          taxvat: '',
-          city: {
-            id: 0,
-            state_region: {
-              id: 0,
-              country: {
-                id: 0,
-                name: ''
-              },
-              name: '',
-              acronym: ''
-            },
-            name: '',
-            brazil_ibge_code: null
-          },
-          contacts: [],
-          web: [],
-          files:[],
-          postal_code: '',
-          neighborhood: '',
-          address: '',
-          type: '',
-          date_created: undefined,
-          date_updated: undefined,
-          agent: null
-        });
-      },
-      error: (err) => {
-        console.log(err);
-      },
-    });
-    
-    if(isEdit){
-      this.entSvc.loadEntity(idCustomer).subscribe({
-        next: (data) => {
-          this.infoCustomer = data as Entity;
-          this.infoVisible = true;
-        }
-      });
-    }else{
-      this.infoCustomer = {
-        id: 0,
-        origin_id: 0,
-        name: '',
-        fantasy_name: '',
-        taxvat: '',
-        city: {
-          id: 0,
-          state_region: {
-            id: 0,
-            country: {
-              id: 0,
-              name: ''
-            },
-            name: '',
-            acronym: ''
-          },
-          name: '',
-          brazil_ibge_code: null
-        },
-        contacts: [],
-        web: [],
-        files:[],
-        postal_code: '',
-        neighborhood: '',
-        address: '',
-        type: '',
-        date_created: undefined,
-        date_updated: undefined,
-        agent: null
-      };
-      this.infoVisible = true;
-    }
+  showCustomerInfo(idCustomer:number,idStage:number){
+    this.infoCustomer.id = idCustomer;
+    this.stageOfCustomer = idStage;
+    this.funnelOfCustomer = this.selectedFunnel.id;
+    this.infoVisible = true;
   }
 
   showEmailSend(customer:Entity){
@@ -585,6 +512,14 @@ export class KanbanComponent extends Common implements AfterContentInit{
     this.importVisible  = false;
     this.uploadVisible  = false;
     this.historyVisible = false;
+
+    //se houver stageOfCustomer significa que esta
+    //cadastrando ou atualizando o cadastro
+    //entao forca o reload do stage
+    if(this.stageOfCustomer > 0){
+      this.doLocalReload(this.stageOfCustomer);
+      this.stageOfCustomer = 0;
+    }
     this.msgSvc.clear();
     this.msgSvc.add(msg);
   }
@@ -719,8 +654,6 @@ export class KanbanComponent extends Common implements AfterContentInit{
         page:0
       },stg.id,false,null);
     });
-
-    console.log(evt);
   }
 
   searchCustomers():void{
@@ -784,6 +717,7 @@ export class KanbanComponent extends Common implements AfterContentInit{
       next:(data) =>{
         this.sendCustomer = false;
         this.msgSvc.clear();
+        this.selectedEntitiesToAddInCRM = [];
         if(typeof data==='boolean'){
           this.msgSvc.add({
             key: 'systemToast',
@@ -807,7 +741,7 @@ export class KanbanComponent extends Common implements AfterContentInit{
   }
 
   getFunnelStages(evt:DropdownChangeEvent):void{
-    console.log(evt);
+    //console.log(evt);
     this.stageLoading = true;
     this.svc.listStages({page:1,pageSize:1,query:'can:list-all 1 ||is:funnel '+this.selectedFunnel?.id.toString()}).subscribe({
       next: (data) =>{

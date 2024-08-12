@@ -5,13 +5,13 @@
 
     <!--Calendario-->
     <ng-container *ngIf="module==modules.SCM">
-        <div class="col-12 xl:col-9">
+        <div class="col-12 lg:col-9">
             <div class="card">
                 <label class="font-bold">Vendas por Representante</label>
                 <div echarts [options]="firstChartOption"></div>
             </div>
         </div>
-        <div class="col-6 xl:col-3">
+        <div class="col-12 lg:col-3">
             <div class="card">
                 <label class="font-bold">Venda da Coleção</label>
                 <div echarts [options]="secondChartOption"></div>

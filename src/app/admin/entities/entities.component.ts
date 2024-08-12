@@ -37,7 +37,7 @@ import { HttpHeaders } from '@angular/common/http';
 
 export class EntitiesComponent extends Common implements AfterViewInit{
   localObject!:Entity;
-  url_upload_import:string = this.sysconfig.backend_cmm+'/upload/import/?type=P';
+  url_upload_import:string = this.envconfig.backend_cmm+'/upload/import/?type=E';
   showDialogImport:boolean = false;
   uploadHeaders:HttpHeaders = new HttpHeaders()
     .set("Authorization",localStorage.getItem('token_type')+" "+localStorage.getItem('token_access'));

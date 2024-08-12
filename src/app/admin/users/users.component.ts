@@ -242,7 +242,7 @@ export class UsersComponent extends Common implements AfterViewInit{
         (data as Entity[]).forEach((e) =>{
           fEntity.options?.push({
             value: e.id.toString(),
-            label: (e.type=='C'?'CLIENTE - ':(e.type=='R'?'REPRESENTANTE - ':'FORNECEDOR - ')) + e.name,
+            label: (e.type=='C'?'CLIENTE - ':(e.type=='R'?'REPRESENTANTE - ':(e.type=='P'?'PESSOA (FÍSICA) - ':'FORNECEDOR - '))) + e.name,
             id:undefined
           });
         });

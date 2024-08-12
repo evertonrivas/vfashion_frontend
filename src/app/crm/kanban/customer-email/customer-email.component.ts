@@ -31,7 +31,7 @@ export class CustomerEmailComponent extends Common implements AfterViewInit{
   subject:string = '';
   content:string = '';
   attachments:string[] = [];
-  url_upload:string = this.sysconfig.backend_cmm+'/upload/temp';
+  url_upload:string = this.envconfig.backend_cmm+'/upload/temp';
   moreThan4:string[] = ["Vários clientes selecionados..."];
 
   constructor(

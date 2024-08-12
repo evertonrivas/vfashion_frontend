@@ -295,9 +295,24 @@
         <div class="flex flex-column w-full">
             <div class="flex flex-column">
                 <label>Funil</label>
-                <p-dropdown [options]="funnels" optionLabel="name" styleClass="p-inputtext-sm w-full" (onChange)="getStagesOfFunnel($event)" [ngModel]="selectedFunnel" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !selectedFunnel}"></p-dropdown>
+                <p-dropdown 
+                    [options]="funnels" 
+                    optionLabel="name" 
+                    styleClass="p-inputtext-sm w-full" 
+                    (onChange)="getStagesOfFunnel($event)" 
+                    [ngModel]="customerFunnel" 
+                    [ngClass]="{'ng-invalid ng-dirty' : hasSended && !customerFunnel}"
+                    placeholder="Selecione..."></p-dropdown>
                 <label>Etapa</label>
-                <p-dropdown [options]="stages" optionLabel="name" [(ngModel)]="selectedStage" emptyMessage="Nenhum registro encontrado!" styleClass="p-inputtext-sm w-full" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !selectedStage}"></p-dropdown>
+                <p-dropdown 
+                    [options]="stages" 
+                    optionLabel="name" 
+                    [(ngModel)]="selectedStage" 
+                    emptyMessage="Nenhum registro encontrado!" 
+                    styleClass="p-inputtext-sm w-full" 
+                    [ngClass]="{'ng-invalid ng-dirty' : hasSended && !selectedStage}" 
+                    (onChange)="setStage($event)"
+                    placeholder="Selecione..."></p-dropdown>
             </div>
         </div>
         <p-divider layout="vertical"></p-divider>

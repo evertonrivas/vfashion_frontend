@@ -126,7 +126,7 @@ export class CrmService  extends MyHttp{
 
   moveCustomersToState(customers:number[],idStage:number):Observable<boolean|ResponseError>{
     return this.http.post<boolean|ResponseError>(this.sys_config.backend_crm+'/funnel-stages/move-customer',{
-      customers: JSON.stringify(customers),
+      customers: customers,
       stage: idStage.toString()
     },{
       headers: this.getHeader(ContentType.json)

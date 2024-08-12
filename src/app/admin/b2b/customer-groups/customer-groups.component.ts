@@ -380,7 +380,7 @@ export class CustomerGroupsComponent extends Common implements AfterViewInit{
       let options:Options = {
         query : "is:id_group "+id.toString(),
         page: (evt.page as number)+1,
-        pageSize: this.sysconfig.system.pageSize
+        pageSize: this.sysconfig.system_pagination_size
       }
 
       this.serviceSub[2] = this.svc.listCustomerGroupCustomers(options).subscribe({
@@ -399,7 +399,7 @@ export class CustomerGroupsComponent extends Common implements AfterViewInit{
         has_next: false,
         page: 0,
         pages: 0,
-        per_page: this.sysconfig.system.pageSize,
+        per_page: this.sysconfig.system_pagination_size,
         registers: 0
       },
       data: []

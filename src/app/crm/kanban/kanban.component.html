@@ -1,12 +1,14 @@
 <p-toast key="systemToast" [position]="'bottom-right'"></p-toast>
 <p-confirmDialog></p-confirmDialog>
-<div class="card p-3 flex flex-wrap align-items-center justify-content-between vertical-align-middle mb-2">
-    <div><p-dropdown #funSel [options]="response.data" optionLabel="name" [(ngModel)]="selectedFunnel" styleClass="p-inputtext-sm" (onChange)="changeFunnel($event)"></p-dropdown></div>
-    <div class="flex flex-row justify-content-end vertical-align-super">
-        <p-button icon="pi pi-plus-circle" [rounded]="true" [text]="true" pTooltip="Novo Cliente" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="showCustomerInfo(0,false)"></p-button>
+<!--barra superior-->
+<div class="card p-3 mb-2 grid">
+    <div class="col">
+        <p-dropdown #funSel [options]="response.data" optionLabel="name" [(ngModel)]="selectedFunnel" styleClass="p-inputtext-sm" (onChange)="changeFunnel($event)"></p-dropdown>
+    </div>
+    <div class="lg:col col-12 justify-content-end">
+        <p-button icon="pi pi-plus-circle" [rounded]="true" [text]="true" pTooltip="Novo Cliente" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="showCustomerInfo(0,0)"></p-button>
         <p-button icon="pi pi-check-circle" [rounded]="true" [text]="true" pTooltip="Adicionar Cliente Existente" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="searchCustomers()"></p-button>
         <p-button icon="pi pi-minus-circle" [rounded]="true" [text]="true" pTooltip="Remover selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="delCustomersSelected()"></p-button>
-        <div style="border-right: 1px solid #ced4da;min-height: 100%; width: 5px;"></div>
 
         <p-button [text]="true" [rounded]="true" severity="warning" pTooltip="Recarregar Funil" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="getFunnels('can:list_all true')"><span class="material-symbols-outlined text-lg">autorenew</span></p-button>
         <p-button [text]="true" [rounded]="true" severity="warning" pTooltip="Enviar e-mail para selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="showEmailSendMassive()"><span class="material-symbols-outlined text-lg">stacked_email</span></p-button>
@@ -23,10 +25,11 @@
         </p-overlayPanel>
         <!-- <p-button [disabled]="true" icon="pi pi-users" styleClass="p-button-rounded p-button-text p-button-warning" pTooltip="Detectar e Mesclar" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button> -->
 
-        <div style="border-right: 1px solid #ced4da;min-height: 100%; width: 5px;"></div>
-        <p-button [disabled]="selectedFunnel?.type=='P'?false:true" icon="pi pi-upload" styleClass="p-button-rounded  p-button-text p-button-success" pTooltip="Importar registros de clientes" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="openToImport()"></p-button>
-        <!-- <p-button [disabled]="true" icon="pi pi-file-excel" styleClass="p-button-rounded  p-button-success p-button-text" pTooltip="Exportar para CSV" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button> -->
-        <!-- <p-button [disabled]="true" icon="pi pi-file-export" styleClass="p-button-rounded  p-button-success p-button-text" pTooltip="Exportar para JSON" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button> -->
+        <p-button [disabled]="selectedFunnel.type=='P'?false:true" icon="pi pi-upload" styleClass="p-button-rounded  p-button-text p-button-success" pTooltip="Importar registros de clientes" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="openToImport()"></p-button>
+        <p-button [disabled]="true" icon="pi pi-file-excel" styleClass="p-button-rounded  p-button-success p-button-text" pTooltip="Exportar para CSV" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button>
+        <p-button [disabled]="true" icon="pi pi-file-export" styleClass="p-button-rounded  p-button-success p-button-text" pTooltip="Exportar para JSON" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button>
+    </div>
+    <div class="lg:col-2 col-12">
         <p-iconField iconPosition="right">
             <p-inputIcon styleClass="pi pi-search"/>
             <input type="text" pInputText placeholder="Procurar..." (keydown)="doGlobalSearch($event)" class="p-inputtext-sm" [(ngModel)]="globalSearchInput"/>
@@ -119,7 +122,7 @@
                                     <a href="javascript:void(0)" pTooltip="Enviar E-mail" tooltipPosition="top" tooltipStyleClass="text-xs" (click)="showEmailSend(customer)"><i class="pi pi-envelope text-800"></i></a>
                                     <a href="javascript:void(0)" pTooltip="Anexar Arquivo" tooltipPosition="top" tooltipStyleClass="text-xs" (click)="showUpload(customer)"><i class="pi pi-paperclip text-800"></i></a>
                                     <!-- <a href="javascript:void(0)" pTooltip="Enviar mensagem" tooltipPosition="top"><i class="pi pi-whatsapp text-800"></i></a> -->
-                                    <a href="javascript:void(0)" pTooltip="Informações do Cliente" tooltipPosition="top" tooltipStyleClass="text-xs" (click)="showCustomerInfo(customer.id,true)"><i class="pi pi-info-circle text-800"></i></a>
+                                    <a href="javascript:void(0)" pTooltip="Informações do Cliente" tooltipPosition="top" tooltipStyleClass="text-xs" (click)="showCustomerInfo(customer.id,stage.id)"><i class="pi pi-info-circle text-800"></i></a>
                                     <a href="javascript:void(0)" pTooltip="Ver histórico" tooltipPosition="top" (click)="showHistory(customer)" tooltipStyleClass="text-xs"><i class="pi pi-history text-800"></i></a>
                                 </div>
                             </div>
@@ -146,7 +149,7 @@
 </div>
 
 <!--painel de exibicao do historico-->
-<p-sidebar [(visible)]="historyVisible" position="right" styleClass="w-5">
+<p-sidebar [(visible)]="historyVisible" position="right" styleClass="w-30rem lg:w-5" >
     <h3 class="w-full text-center">Histórico do Cliente</h3>
     <p class="w-full text-center">{{infoCustomer.fantasy_name}}</p>
     <p-divider></p-divider>
@@ -168,7 +171,7 @@
         [url]="url_upload"
         name="files[]"
         [withCredentials]="true"
-        [fileLimit]="sysconfig.system.max_upload_files"
+        [fileLimit]="sysconfig.company_max_up_files"
         [headers]="uploadHeaders"
         invalidFileLimitMessageSummary="Número máximo de arquivos excedido."
         invalidFileLimitMessageDetail="Máximo permitido: {0}"
@@ -177,13 +180,13 @@
 </p-sidebar>
  
 <!--envio de email-->
-<p-dialog [(visible)]="emailVisible" [style]="{'width':'70vw'}" [modal]="true" [draggable]="false">
+<p-dialog [(visible)]="emailVisible" styleClass="w-30rem lg:w-9" [modal]="true" [draggable]="false">
     <ng-template pTemplate="header">
         <div class="flex justify-content-end w-full mr-1">
             <span class="w-full text-center align-baseline">Envio de e-mail para: {{infoCustomer.name}}</span>
         </div>
     </ng-template>
-    <app-customer-email #cstEmail [emailToList]="cstEmail.emailToList" [uploadHeaders]="uploadHeaders" [uploadMax]="sysconfig.system.max_upload_files" [massiveEmail]="massiveEmail" (messageToShow)="showMessage($event)"></app-customer-email>
+    <app-customer-email #cstEmail [emailToList]="cstEmail.emailToList" [uploadHeaders]="uploadHeaders" [uploadMax]="sysconfig.company_max_up_files" [massiveEmail]="massiveEmail" (messageToShow)="showMessage($event)"></app-customer-email>
 </p-dialog>
 
 <p-dialog header="Importação de Registros" [(visible)]="importVisible" [style]="{'width': '70vw'}" [modal]="true" [draggable]="false">
@@ -204,7 +207,7 @@
         [url]="url_upload"
         name="files[]"
         [withCredentials]="true"
-        [fileLimit]="sysconfig.system.max_upload_files"
+        [fileLimit]="sysconfig.company_max_up_files"
         [headers]="uploadHeaders"
         [multiple]="false"
         accept=".csv"
@@ -233,17 +236,17 @@
     </div>
 </p-dialog>
 
-<p-sidebar [(visible)]="infoVisible" [style]="{'width': '70vw'}" [modal]="true" position="right" (onHide)="resetForm($event)">
+<p-sidebar [(visible)]="infoVisible" styleClass="w-30rem lg:w-9" [modal]="true" position="right" (onHide)="resetForm($event)">
     <ng-template pTemplate="header">
         <h3 class="w-full text-center">Informações do Cliente</h3>
     </ng-template>  
     <app-customer-data 
         (messageToShow)="showMessage($event)" 
-        [isEditing]="toEdit" 
-        [editableCustomer]="infoCustomer" 
-        [isVisible]="infoVisible" 
-        [representatives]="representativeList"
-        [funnels]="response.data"></app-customer-data>
+        [idEditableCustomer]="infoCustomer.id" 
+        [isVisible]="infoVisible"
+        [isEditing]="(infoCustomer.id > 0?true:false)"
+        [(idStageOfCustomer)]="stageOfCustomer"
+        [idCustomerFunnel]="funnelOfCustomer"></app-customer-data>
 </p-sidebar>
 
 

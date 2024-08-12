@@ -5,7 +5,8 @@ import { AccessLevel, FileType, ModuleName } from "../models/system.enum";
 import { Router } from "@angular/router";
 import { environment as sys_config } from "src/environments/environment";
 import { environment as sys_config_dev } from "src/environments/environment.development";
-import { FieldFilter, FieldOption, FormRow } from "../models/field.model";
+import { FieldFilter, FormRow } from "../models/field.model";
+import { SysConfig } from "../models/auth.model";
 
 export class Common{
     filterVisible:boolean = false; //exibe ou nao os filtros do admin
@@ -13,7 +14,19 @@ export class Common{
     formRows:FormRow[] = []; //campos do formulario de cadastro
     idToEdit:number = 0;//id do registro que esta em edicao no form
     formVisible:boolean = false; //exibe ou oculta o formulario
-    sysconfig = isDevMode()?sys_config_dev:sys_config; //arquivo de configuracoes do sistema
+    envconfig = isDevMode()?sys_config_dev:sys_config; //arquivo de configuracoes do sistema
+    sysconfig:SysConfig = {
+        use_company_custom: false,
+        company_name: "",
+        company_logo: "",
+        company_instagram: "",
+        company_facebook: "",
+        company_linkedin: "",
+        company_max_up_files: 0,
+        company_max_up_images: 0,
+        company_use_url_images: false,
+        system_pagination_size: 0
+    }
     module:ModuleName = ModuleName.NONE; // nome do module que estah em uso no sistema
     modulePath:string = ""; //url do caminho do modulo
     modules = ModuleName; //lista de modulos existentes
@@ -21,7 +34,7 @@ export class Common{
     disabledNew:boolean = false; //habilita ou desabilita a edicao ou novo registro no admin
     options:Options = {
         page: 1,
-        pageSize: this.sysconfig.system.pageSize,
+        pageSize: 0,
         query:''
     }; //opcoes padrao para buscas no sistema
     hasSended:boolean = false;//serve para validacao de campos quando ha envio
@@ -45,6 +58,20 @@ export class Common{
             },
             data : undefined
         }
+
+        this.sysconfig = {
+            use_company_custom: JSON.stringify(localStorage.getItem("use_company_custom"))=="1"?true:false,
+            company_name: JSON.stringify(localStorage.getItem("company_name")),
+            company_logo: JSON.stringify(localStorage.getItem("company_log")),
+            company_instagram: JSON.stringify(localStorage.getItem("company_instagram")),
+            company_facebook: JSON.stringify(localStorage.getItem("company_facebook")),
+            company_linkedin: JSON.stringify(localStorage.getItem("company_linkedin")),
+            company_max_up_files: parseInt(JSON.stringify(localStorage.getItem("company_max_up_files")).replace('"',"")),
+            company_max_up_images: parseInt(JSON.stringify(localStorage.getItem("company_max_up_images")).replace('"',"")),
+            company_use_url_images: JSON.stringify(localStorage.getItem("company_use_url_images"))=="1"?true:false,
+            system_pagination_size: parseInt(JSON.stringify(localStorage.getItem("system_pagination_size")).replace('"',""))
+        }
+        this.options.pageSize = this.sysconfig.system_pagination_size;
 
         for(let i=0;i<10;i++){
             if (this.serviceSub[i]==undefined)
