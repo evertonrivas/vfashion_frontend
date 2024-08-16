@@ -102,7 +102,7 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
   }
 
   ngAfterViewInit(): void {
-    this.localService.listCities({page:1,pageSize:1,query:"can:list-all 1"}).subscribe({
+    this.localService.listCities({page:1,pageSize:1,query:"can:list-all 1||is:order-by name"}).subscribe({
       next: (data) =>{
         this.citySuggestions = data as City[];
       }
@@ -218,7 +218,8 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
       && this.editableCustomer.neighborhood.trim().length > 0
       && this.editableCustomer.postal_code.trim().length > 0
       && this.editableCustomer.city.id >0 
-      && this.editableCustomer.address.trim().length > 0){
+      && this.editableCustomer.address.trim().length > 0
+      && (!this.isEditing && this.idStageOfCustomer > 0)){
         this.editableCustomer.type = EntityType.C;
         this.svc.saveEntity(this.editableCustomer as Entity).subscribe({
           next: (data) =>{

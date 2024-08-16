@@ -236,4 +236,74 @@ export class SizesComponent extends Common implements AfterViewInit{
       rejectButtonStyleClass:"p-button-danger p-button-sm"
     });
   }
+
+  onSaveMassive(type:string){
+    let massive:Size[] = [];
+    if(type=='S'){
+      massive = [{
+        id: 0,
+        name:'Mini',
+        old_size: 'PP',
+        new_size: 'PP'
+      },{
+        id: 0,
+        name:'Pequeno',
+        old_size: 'P',
+        new_size: 'PP'
+      },{
+        id: 0,
+        name: 'Médio',
+        old_size:'M',
+        new_size:'M'
+      },{
+        id: 0,
+        name: 'Grande',
+        old_size: 'G',
+        new_size: 'G'
+      },{
+        id: 0,
+        name: 'Extra Grande',
+        old_size: 'GG',
+        new_size: 'GG'
+      },{
+        id: 0,
+        name: 'Super Grande',
+        old_size: 'XGG',
+        new_size: 'XGG'
+      }]
+    }else if(type=='C'){
+      for(let i=34;i<45;i++){
+        massive.push({
+          id: 0,
+          name: i.toString(),
+          old_size: i.toString(),
+          new_size: i.toString()
+        });
+      }
+    }
+
+
+    this.hasSended = true;
+    this.serviceSub[3] = this.svc.saveMassive(massive).subscribe({
+      next:(data) =>{
+        this.hasSended = false;
+        this.formVisible = false;
+        this.msg.clear();
+        if(typeof data ==='boolean'){
+          this.msg.add({
+            summary:"Sucesso...",
+            detail: "Registro massivo cadastrado com sucesso!",
+            severity:"success"
+          });
+        }else{
+          this.msg.add({
+            summary:"Falha...",
+            detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
+            severity:"error"
+          });
+        }
+        this.loadingData();
+      }
+    });
+  }
 }

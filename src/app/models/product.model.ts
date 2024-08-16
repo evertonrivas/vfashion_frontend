@@ -91,6 +91,26 @@ export interface ProductStock{
     sizes : ProductStockSizes[]
 }
 
+export interface ProductStockSizes2{
+    id:number,
+    name:string,
+    quantity: number,
+    in_order: number,
+    ilimited: boolean,
+}
+
+export interface ProductStockColor{
+    id: number,
+    name: string,
+    sizes: ProductStockSizes2[]
+}
+
+export interface ProductStock2{
+    id_product:number,
+    product:string,
+    colors: ProductStockColor[]
+}
+
 export interface ProductGrid{
     id:number,
     origin_id:number,

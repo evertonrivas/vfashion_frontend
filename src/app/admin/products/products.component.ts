@@ -416,13 +416,21 @@ export class ProductsComponent extends Common implements AfterViewInit {
       lockField:undefined
     }
 
+    let fOpts:FieldOption[] = [];
+    for(let i=0;i<this.sysconfig.company_max_up_images;i++){
+      fOpts.push({
+        id:(i*-1),
+        label:'',
+        value:(i==0?true:false)
+      });
+    }
     let fImages:FormField = {
       label: "Imagens",
-      name: "image[]",
-      placeholder: "Digite a url da imagem",
+      name: "images",
+      placeholder: "Digite ou cole a url da imagem",
       type: FieldType.IMGURL,
       value: undefined,
-      options:[],
+      options:fOpts,
       required: false,
       case: FieldCase.LOWER,
       disabled:false,
@@ -449,14 +457,25 @@ export class ProductsComponent extends Common implements AfterViewInit {
             fRef.value     = this.localObject.refCode;
             fCode.value    = this.localObject.prodCode;
             fDesc.value    = this.localObject.description;
+
             fImages.options = [];
-            this.localObject.images.forEach((f) =>{
+            this.localObject.images.forEach(f =>{
               fImages.options?.push({
                 id: f.id,
-                value: f.default,
-                label: f.img_url
+                label: f.img_url,
+                value: f.default
               });
-            })
+            });
+
+            if (this.localObject.images.length < fOpts.length){
+              for(let i=0;i<(fOpts.length - this.localObject.images.length);i++){
+                fImages.options.push({
+                  id: (i*-1),
+                  value: false,
+                  label:''
+                });
+              }
+            }
 
             //monta as linhas do form e exibe o mesmo
             this.formRows.push({

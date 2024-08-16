@@ -46,7 +46,7 @@
                     <td pFrozenColumn><p-button [text]="true" icon="pi pi-pencil" pTooltip="Editar" tooltipPosition="top" tooltipStyleClass="text-sm" (onClick)="onEditData(item.id)"></p-button></td>
                     <td pFrozenColumn>{{item.name}}</td>
                     <td>{{item.color}}</td>
-                    <td><p-tag [style]="{'background-color': item.hexcode,'color':item.hexcode.indexOf('FFF')!=-1?'#000000':'#FFFFFF'}">{{item.hexcode}}</p-tag></td>
+                    <td><p-tag *ngIf="item.hexcode!=null" [style]="{'background-color': item.hexcode,'color':item.hexcode.indexOf('FFF')!=-1?'#000000':'#FFFFFF'}">{{item.hexcode}}</p-tag></td>
                 </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">

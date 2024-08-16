@@ -117,7 +117,7 @@ export class ColorsComponent extends Common implements AfterViewInit {
       placeholder:undefined,
       type:FieldType.COLOR,
       value:undefined,
-      required:true,
+      required:false,
       case:FieldCase.UPPER,
       disabled:false,
       lockField: undefined

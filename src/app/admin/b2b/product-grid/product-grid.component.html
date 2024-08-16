@@ -127,6 +127,6 @@
     </div>
     <div class="flex flex-row justify-content-end w-full gap-1">
         <p-button icon="pi pi-ban" label="Cancelar" severity="danger" styleClass="p-button-sm" (onClick)="onCancelEdit()"></p-button>
-        <p-button icon="pi pi-save" label="Salvar" (onClick)="onSaveGrid()" styleClass="p-button-sm"></p-button>
+        <p-button icon="pi pi-save" label="Salvar" (onClick)="onSaveGrid()" styleClass="p-button-sm" [loading]="loading"></p-button>
     </div>
 </p-dialog>

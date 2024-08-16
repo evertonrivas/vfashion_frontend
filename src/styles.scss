@@ -289,6 +289,10 @@ body{
     @include use-md-icon-normal('upload')
 }
 
+.pi-stock{
+    @include use-md-icon-normal('warehouse')
+}
+
 .kcolor .p-dropdown-items .p-dropdown-item {
     padding: 0px!important;
     margin-top: 2px;

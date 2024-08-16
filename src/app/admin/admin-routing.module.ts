@@ -29,6 +29,7 @@ import { PaymentComponent } from './b2b/payment/payment.component';
 import { MeasureUnitComponent } from './measure-unit/measure-unit.component';
 import { ProfileComponent } from '../common/profile/profile.component';
 import { VersionComponent } from '../common/version/version.component';
+import { ProductStockComponent } from './b2b/product-stock/product-stock.component';
 
 const routes: Routes = [{ 
   path: '', 
@@ -56,7 +57,8 @@ const routes: Routes = [{
         { path: 'product-types', component: ProductTypeComponent },
         { path: 'sizes', component: SizesComponent },
         { path: 'table-prices', component: TablePricesComponent },
-        { path: 'payment-condition', component: PaymentComponent }
+        { path: 'payment-condition', component: PaymentComponent },
+        { path: 'stock', component: ProductStockComponent }
       ]
     },{
       path: 'crm',

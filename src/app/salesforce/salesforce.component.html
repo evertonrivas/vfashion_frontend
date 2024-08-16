@@ -1,3 +1,6 @@
+<p-confirmDialog></p-confirmDialog>
+<p-toast position="bottom-right"></p-toast>
+
 <div class="layout-wrapper">
     <app-topbar></app-topbar>
     <div class="layout-main-container">
@@ -8,31 +11,31 @@
 </div>
 <p-sidebar [(visible)]="sidebarVisible" styleClass="w-25rem">
     <ng-template pTemplate="header"><div class="text-xl font-bold text-gray-500"><i class="pi pi-filter mr-1"></i> Filtros</div></ng-template>
-    <div class="flex flex-column w-full">
+    <div *ngIf="all_brand.length > 0" class="flex flex-column w-full">
         <label class="mb-2">Marca(s):</label>
         <p-multiSelect styleClass="w-full" emptyMessage="Nenhum registro encontrado!" [options]="all_brand" [(ngModel)]="filter.brands" optionLabel="name" optionValue="id" placeholder="Selecione..."></p-multiSelect>
     </div>
-    <div class="flex flex-column w-full mt-2">
+    <div *ngIf="all_collect.length > 0" class="flex flex-column w-full mt-2">
         <label class="mb-2">Coleção(ões):</label>
         <p-multiSelect styleClass="w-full" emptyMessage="Nenhum registro encontrado!" [options]="all_collect" [(ngModel)]="filter.collections" optionValue="id" optionLabel="name" placeholder="Selecione um ou mais itens..."></p-multiSelect>
     </div>
-    <div class="flex flex-column w-full mt-2">
+    <div *ngIf="all_categ.length > 0" class="flex flex-column w-full mt-2">
         <label class="mb-2">Categoria(s)/Coordenado(s):</label>
         <p-multiSelect styleClass="w-full" emptyMessage="Nenhum registro encontrado!" [options]="all_categ" [(ngModel)]="filter.categories" optionValue="id" optionLabel="name" placeholder="Selecione um ou mais itens..."></p-multiSelect>
     </div>
-    <div class="flex flex-column w-full mt-2">
+    <div *ngIf="all_model.length > 0" class="flex flex-column w-full mt-2">
         <label class="mb-2">Modelo(s):</label>
         <p-multiSelect styleClass="w-full" emptyMessage="Nenhum registro encontrado!" [options]="all_model" [(ngModel)]="filter.models" optionLabel="name" optionValue="id" placeholder="Selecione um ou mais itens..."></p-multiSelect>
     </div>
-    <div class="flex flex-column w-full mt-2">
+    <div *ngIf="all_type.length > 0" class="flex flex-column w-full mt-2">
         <label class="mb-2">Tipo(s):</label>
         <p-multiSelect styleClass="w-full" emptyMessage="Nenhum registro encontrado!" [options]="all_type" [(ngModel)]="filter.types" optionLabel="name" optionValue="id" placeholder="Selecione um ou mais itens..."></p-multiSelect>
     </div>
-    <div class="flex flex-column w-full mt-2">
+    <div *ngIf="all_size.length > 0" class="flex flex-column w-full mt-2">
         <label class="mb-2">Tamanho(s):</label>
         <p-multiSelect styleClass="w-full" emptyMessage="Nenhum registro encontrado!" [options]="all_size" [(ngModel)]="filter.sizes" optionLabel="name" optionValue="id" placeholder="Selecione um ou mais itens..."></p-multiSelect>
     </div>
-    <div class="flex flex-column w-full mt-2 mb-2">
+    <div *ngIf="all_color.length > 0" class="flex flex-column w-full mt-2">
         <label class="mb-2">Cor(es):</label>
         <p-multiSelect styleClass="w-full" emptyMessage="Nenhum registro encontrado!" [options]="all_color" [(ngModel)]="filter.colors" optionLabel="name" optionValue="id" placeholder="Selecione um ou mais itens...">
             <ng-template pTemplate="item" let-item>
@@ -40,30 +43,44 @@
             </ng-template>
         </p-multiSelect>
     </div>
-    <p-button icon="pi pi-ffilter" label="Filtrar" styleClass="w-full" (onClick)="doFilter()"></p-button>
+    <p-button icon="pi pi-ffilter" label="Filtrar" styleClass="w-full mt-2" (onClick)="doFilter()"></p-button>
 </p-sidebar>
 
 
-<p-sidebar position="right" [(visible)]="sidebarCart" styleClass="w-25rem" styleClass="w-30rem" appendTo="body">
+<p-sidebar position="right" [(visible)]="sidebarCart" styleClass="w-30rem lg:w-5" appendTo="body">
     <ng-template pTemplate="header"><div class="text-xl font-bold text-gray-500"><i class="pi pi-shopping-cart mr-1"></i>Itens do Pedido</div></ng-template>
     <div class="flex flex-row w-full">
         <p-dataView [value]="cart_itens" layout="list" styleClass="mb-4" [loading]="loading" emptyMessage="Nenhum item para ser exibido!">
             <ng-template pTemplate="listItem" *ngIf="level_access==levels.STORE" let-product>
-                <div class="flex flex-column w-full">
-                    <h6>{{product.name}}</h6>
-                    <div class="flex flex-row justify-content-between w-full">
-                        <small class="text-bluegray-300"><strong>{{product.itens}} itens</strong> X UN {{product.price_un |currency}}</small>
-                        <span class="text-bluegray-300">{{product.total_price | currency}}</span>
+                <div class="flex flex-row w-full gap-3">
+                    <div class="flex flex-column w-full">
+                        <h6>{{product.name}}</h6>
+                        <div class="flex flex-row justify-content-between w-full">
+                            <small class="text-bluegray-300"><strong>{{product.itens}} itens</strong> X UN {{product.price_un |currency}}</small>
+                            <span class="text-bluegray-300">{{product.total_price | currency}}</span>
+                        </div>
                     </div>
-                </div>
+                    <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
+                        <!-- <span class="text-2xl font-semibold">{{ product.total_price | currency }}</span> -->
+                        <p-button icon="pi pi-trash" [rounded]="true" [text]="true" styleClass="md:align-self-end" severity="danger" (onClick)="tryDelete(product.id_product,product.id_customer)"></p-button>
+                        <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" styleClass="md:align-self-end" (onClick)="editCart(product.id_product,product.id_customer)"></p-button>
+                    </div>
+            </div>
             </ng-template>
             <ng-template pTemplate="listItem" *ngIf="level_access==levels.ADMIN || level_access==levels.REPR" let-product_cart>
-                <div class="flex flex-column w-full" *ngFor="let item of product_cart">
-                    <label class="font-bold text-base">Nome do produto {{item.name}}</label>
-                    <div style="max-width: 250px!important;" class="white-space-nowrap overflow-hidden text-overflow-ellipsis">{{item.fantasy_name}}</div>
-                    <div class="flex flex-row justify-content-between w-full mb-1">
-                        <small class="text-bluegray-300"><strong>{{item.itens}} itens</strong> X UN {{item.price_un |currency}}</small>
-                        <span class="text-bluegray-300">{{item.total_price | currency}}</span>
+                <div class="flex flex-row w-full gap-3" *ngFor="let item of product_cart">
+                    <div class="flex flex-column w-full">
+                        <label class="font-bold text-base">Nome do produto {{item.name}}</label>
+                        <div style="max-width: 250px!important;" class="white-space-nowrap overflow-hidden text-overflow-ellipsis">{{item.fantasy_name}}</div>
+                        <div class="flex flex-row justify-content-between w-full mb-1">
+                            <small class="text-bluegray-300"><strong>{{item.itens}} itens</strong> X UN {{item.price_un |currency}}</small>
+                            <span class="text-bluegray-300">{{item.total_price | currency}}</span>
+                        </div>
+                    </div>
+                    <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
+                        <!-- <span class="text-2xl font-semibold">{{ item.total_price | currency }}</span> -->
+                        <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" styleClass="md:align-self-end" (onClick)="tryDelete(item.id_product,item.id_customer)"></p-button>
+                        <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" styleClass="md:align-self-end" (onClick)="editCart(item.id_product,item.id_customer)"></p-button>
                     </div>
                 </div>
             </ng-template>
@@ -73,3 +90,41 @@
         <p-button [disabled]="totalMyItens==0?true:false" styleClass="w-full p-button-danger" icon="pi pi-supplier" label="Revisar e Finalizar Pedido" iconPos="right" (onClick)="gotoCheckout()"></p-button>
     </div>
 </p-sidebar>
+
+<p-dialog [visible]="showEditCartDialog" [closable]="false" [draggable]="false" [modal]="true" [header]="productToCart!=undefined?productToCart.name:''" [style]="{width: '70vw'}">
+    <div class="flex flex-row">
+        <div class="flex flex-column">
+            <img [src]="productToCartImage!=undefined?productToCartImage.img_url:''" style="max-width: 200px!important;">
+        </div>
+        <div class="col-9 flex flex-column">
+            <div class="flex flex-row text-lg"><strong class="mr-1">REF:</strong> {{ productToCart!=undefined?productToCart.refCode:'' }}</div>
+            <div class="flex flex-row text-lg"><strong class="mr-1">Preço Unitário:</strong> {{ (productToCart!=undefined?productToCart.price:0) | currency }}</div>
+            <div class="flex flex-row text-2xl justify-content-center">Tamanhos e cores disponíveis</div>
+            <p-table [value]="productToCartStock">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Cor</th>
+                        <th *ngFor="let size of sizeKeys" class="text-center">{{size}}</th>
+                        <th>Total</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-stock>
+                    <tr>
+                        <td><span class="px-2 border-round mr-1" [ngStyle]="{'background-color': stock.color_hexa}" style="width:20px!important;"></span>{{stock.color_name}}</td>
+                        <td *ngFor="let szk of stock.sizes; let i = index;">
+                            <div class="flex flex-column">
+                                <p-inputNumber [showButtons]="true" [min]="0" [(ngModel)]="stock.sizes[i].size_saved" [ngStyle]="{'max-width': '50px'}" [inputStyle]="{'max-width':'40px'}" (ngModelChange)="changeAndSum(stock.color_id)" [disabled]="(stock.sizes[i].size_value==null || stock.sizes[i].size_value==0)?true:false"></p-inputNumber>
+                                <label>{{ szk.size_value }}</label>
+                            </div>
+                        </td>
+                        <td class="justify-content-center vertical-align-middle">{{productToCartSubtotal[productToCart.id][stock.color_id]}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+    <div class="flex flex-row w-full justify-content-end mt-2">
+        <p-button icon="pi pi-ban" label="Cancelar" styleClass="p-button-sm mr-1" severity="danger" (onClick)="showEditCartDialog = false"></p-button>
+        <p-button icon="pi pi-check" label="Atualizar Pedido" styleClass="p-button-sm" severity="success" (onClick)="saveCart()"></p-button>
+    </div>
+</p-dialog>

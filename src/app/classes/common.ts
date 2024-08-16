@@ -60,16 +60,16 @@ export class Common{
         }
 
         this.sysconfig = {
-            use_company_custom: JSON.stringify(localStorage.getItem("use_company_custom"))=="1"?true:false,
-            company_name: JSON.stringify(localStorage.getItem("company_name")),
-            company_logo: JSON.stringify(localStorage.getItem("company_log")),
-            company_instagram: JSON.stringify(localStorage.getItem("company_instagram")),
-            company_facebook: JSON.stringify(localStorage.getItem("company_facebook")),
-            company_linkedin: JSON.stringify(localStorage.getItem("company_linkedin")),
-            company_max_up_files: parseInt(JSON.stringify(localStorage.getItem("company_max_up_files")).replace('"',"")),
-            company_max_up_images: parseInt(JSON.stringify(localStorage.getItem("company_max_up_images")).replace('"',"")),
-            company_use_url_images: JSON.stringify(localStorage.getItem("company_use_url_images"))=="1"?true:false,
-            system_pagination_size: parseInt(JSON.stringify(localStorage.getItem("system_pagination_size")).replace('"',""))
+            use_company_custom: JSON.stringify(localStorage.getItem("use_company_custom")).replaceAll('"',"")=="1"?true:false,
+            company_name: JSON.stringify(localStorage.getItem("company_name")).replaceAll('"',""),
+            company_logo: JSON.stringify(localStorage.getItem("company_logo")).replaceAll('"',""),
+            company_instagram: JSON.stringify(localStorage.getItem("company_instagram")).replaceAll('"',""),
+            company_facebook: JSON.stringify(localStorage.getItem("company_facebook")).replaceAll('"',""),
+            company_linkedin: JSON.stringify(localStorage.getItem("company_linkedin")).replaceAll('"',""),
+            company_max_up_files: parseInt(JSON.stringify(localStorage.getItem("company_max_up_files")).replaceAll('"',"")),
+            company_max_up_images: parseInt(JSON.stringify(localStorage.getItem("company_max_up_images")).replaceAll('"',"")),
+            company_use_url_images: JSON.stringify(localStorage.getItem("company_use_url_images")).replaceAll('"',"")=="1"?true:false,
+            system_pagination_size: parseInt(JSON.stringify(localStorage.getItem("system_pagination_size")).replaceAll('"',""))
         }
         this.options.pageSize = this.sysconfig.system_pagination_size;
 

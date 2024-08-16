@@ -28,7 +28,14 @@ export class SizeService extends MyHttp{
   }
   
   save(data:any):Observable<number|boolean|ResponseError>{
-    return this.http.post<number|boolean|ResponseError>(this.sys_config.backend_cmm+'/translate-sizes/'+(data.id>0?data.id.toString():''),data,{
+    return this.http.post<number|boolean|ResponseError>(this.sys_config.backend_cmm+'/translate-sizes/'+data.id.toString(),data,{
+      headers:this.getHeader(ContentType.json)
+    });
+  }
+
+  saveMassive(data:Size[]):Observable<boolean|ResponseError>{
+    return this.http.post<boolean|ResponseError>(this.sys_config.backend_cmm+'/translate-sizes/',
+    data,{
       headers:this.getHeader(ContentType.json)
     });
   }

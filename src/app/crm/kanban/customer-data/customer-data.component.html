@@ -8,7 +8,7 @@
                 <div class="flex flex-row w-full">
                     <div class="p-fluid w-full field mr-1">
                         <label for="slReprsentative">Representante</label>
-                        <p-dropdown #ddRep [options]="representatives" optionLabel="name" optionValue="id" [(ngModel)]="selectedRepresentativeId" placeholder="Selecione..." [ngClass]="{'ng-invalid ng-dirty' : hasSended && !editableCustomer.agent}" styleClass="p-inputtext-sm">
+                        <p-dropdown #ddRep [options]="representatives" optionLabel="name" optionValue="id" [(ngModel)]="selectedRepresentativeId" placeholder="Selecione..." styleClass="p-inputtext-sm">
                             <ng-template let-selectedItem pTemplate="selectedItem">
                                 <span *ngIf="selectedItem!=undefined" [ngClass]="selectedItem.id==0?'text-red-500':''">{{selectedItem.name}}</span>
                             </ng-template>
@@ -68,29 +68,29 @@
                                 <input pInputText class="p-inputtext-sm" [(ngModel)]="newContact.name" [ngClass]="{'ng-invalid ng-dirty' : sendContact && !newContact.name}">
                             </div>
                             <div class="flex flex-column mt-1">
-                                <label>Tipo</label>
-                                <p-dropdown #dptpc [options]="[{label:'E-mail',value:'E'},{label:'Telefone Convencional',value:'P'},{label:'Telefone Celular/Móvel',value:'P'}]" [(ngModel)]="newContact.contact_type" styleClass="p-inputtext-sm w-full">
+                                <label>Tipo (editando)</label>
+                                <p-dropdown #dptpc [options]="[{label:'E-mail',value:'E'},{label:'Telefone Convencional',value:'P'},{label:'Telefone Celular/Móvel',value:'C'},{label:'Linkedin',value:'L'},{label:'Instagram',value:'I'}]" [(ngModel)]="newContact.contact_type" styleClass="p-inputtext-sm w-full">
                                     <ng-template let-selected pTemplate="selectedItem">
-                                        <ng-container *ngIf="selected!=undefined">
-                                            <i class="material-symbols-outlined icon-small" *ngIf="selected.label=='E-mail'">alternate_email</i>
-                                            <i class="material-symbols-outlined icon-small" *ngIf="selected.label=='Telefone Convencional'">phone_in_talk</i>
-                                            <i class="material-symbols-outlined icon-small" *ngIf="selected.label=='Telefone Celular/Móvel'">phonelink_ring</i>
-                                            {{selected.label}}
-                                        </ng-container>
+                                        <i class="material-symbols-outlined icon-small" *ngIf="selected?.value=='E'">alternate_email</i>
+                                        <i class="material-symbols-outlined icon-small" *ngIf="selected?.value=='P'">phone_in_talk</i>
+                                        <i class="material-symbols-outlined icon-small" *ngIf="selected?.value=='C'">phonelink_ring</i>
+                                        <i class="pi pi-linkedin" *ngIf="selected.value=='L'"></i>
+                                        <i class="pi pi-instagram" *ngIf="selected.value=='I'"></i>
+                                        {{selected?.label}}
                                     </ng-template>
                                     <ng-template let-item pTemplate="item">
-                                        <i class="material-symbols-outlined icon-small" *ngIf="item.label=='E-mail'">alternate_email</i>
-                                        <i class="material-symbols-outlined icon-small" *ngIf="item.label=='Telefone Convencional'">phone_in_talk</i>
-                                        <i class="material-symbols-outlined icon-small" *ngIf="item.label=='Telefone Celular/Móvel'">phonelink_ring</i>
+                                        <i class="material-symbols-outlined icon-small" *ngIf="item.value=='E'">alternate_email</i>
+                                        <i class="material-symbols-outlined icon-small" *ngIf="item.value=='P'">phone_in_talk</i>
+                                        <i class="material-symbols-outlined icon-small" *ngIf="item.value=='C'">phonelink_ring</i>
+                                        <i class="pi pi-linkedin" *ngIf="item.value=='L'"></i>
+                                        <i class="pi pi-instagram" *ngIf="item.value=='I'"></i>
                                         {{item.label}}
                                     </ng-template>
                                 </p-dropdown>
                             </div>
-                            <div>
-                                <div class="flex flex-column mt-1" *ngIf="dptpc.selectedOption=='P'">
-                                    <label>Telefone</label>
-                                    <p-inputMask [mask]="dptpc.selectedOption=='Telefone Convencional'?'(99) 9999-9999':'(99) 99999-9999'" class="p-inputtext-sm" [(ngModel)]="newContact.value" [ngClass]="{'ng-invalid ng-dirty' : sendContact && !newContact.value}"></p-inputMask>
-                                </div>
+                            <div class="flex flex-column mt-1" *ngIf="dptpc.value=='P' || dptpc.value=='C'">
+                                <label>Telefone</label>
+                                <p-inputMask [mask]="dptpc.value=='P'?'(99) 9999-9999':'(99) 99999-9999'" class="p-inputtext-sm" [(ngModel)]="newContact.value" [ngClass]="{'ng-invalid ng-dirty' : sendContact && !newContact.value}"></p-inputMask>
                             </div>
                             <div>
                                 <div class="flex flex-column mt-1" *ngIf="dptpc.value=='E'">
@@ -310,7 +310,7 @@
                     [(ngModel)]="selectedStage" 
                     emptyMessage="Nenhum registro encontrado!" 
                     styleClass="p-inputtext-sm w-full" 
-                    [ngClass]="{'ng-invalid ng-dirty' : hasSended && !selectedStage}" 
+                    [ngClass]="{'ng-invalid ng-dirty' : hasSended && idStageOfCustomer==0}" 
                     (onChange)="setStage($event)"
                     placeholder="Selecione..."></p-dropdown>
             </div>
@@ -377,29 +377,31 @@
                         </div>
                         <div class="flex flex-column mt-1">
                             <label>Tipo</label>
-                            <p-dropdown #dptpc [options]="[{label:'E-mail',value:'E'},{label:'Telefone Convencional',value:'P'},{label:'Telefone Celular/Móvel',value:'P'}]" [(ngModel)]="newContact.contact_type" styleClass="p-inputtext-sm w-full">
+                            <p-dropdown #dptpc [options]="[{label:'E-mail',value:'E'},{label:'Telefone Convencional',value:'P'},{label:'Telefone Celular/Móvel',value:'C'},{label:'Linkedin',value:'L'},{label:'Instagram',value:'I'}]" [(ngModel)]="newContact.contact_type" styleClass="p-inputtext-sm w-full">
                                 <ng-template let-selected pTemplate="selectedItem">
-                                    <i class="material-symbols-outlined icon-small" *ngIf="selected?.label=='E-mail'">alternate_email</i>
-                                    <i class="material-symbols-outlined icon-small" *ngIf="selected?.label=='Telefone Convencional'">phone_in_talk</i>
-                                    <i class="material-symbols-outlined icon-small" *ngIf="selected?.label=='Telefone Celular/Móvel'">phonelink_ring</i>
+                                    <i class="material-symbols-outlined icon-small" *ngIf="selected?.value=='E'">alternate_email</i>
+                                    <i class="material-symbols-outlined icon-small" *ngIf="selected?.value=='P'">phone_in_talk</i>
+                                    <i class="material-symbols-outlined icon-small" *ngIf="selected?.value=='C'">phonelink_ring</i>
+                                    <i class="pi pi-linkedin" *ngIf="selected.value=='L'"></i>
+                                    <i class="pi pi-instagram" *ngIf="selected.value=='I'"></i>
                                     {{selected?.label}}
                                 </ng-template>
                                 <ng-template let-item pTemplate="item">
-                                    <i class="material-symbols-outlined icon-small" *ngIf="item.label=='E-mail'">alternate_email</i>
-                                    <i class="material-symbols-outlined icon-small" *ngIf="item.label=='Telefone Convencional'">phone_in_talk</i>
-                                    <i class="material-symbols-outlined icon-small" *ngIf="item.label=='Telefone Celular/Móvel'">phonelink_ring</i>
+                                    <i class="material-symbols-outlined icon-small" *ngIf="item.value=='E'">alternate_email</i>
+                                    <i class="material-symbols-outlined icon-small" *ngIf="item.value=='P'">phone_in_talk</i>
+                                    <i class="material-symbols-outlined icon-small" *ngIf="item.value=='C'">phonelink_ring</i>
+                                    <i class="pi pi-linkedin" *ngIf="item.value=='L'"></i>
+                                    <i class="pi pi-instagram" *ngIf="item.value=='I'"></i>
                                     {{item.label}}
                                 </ng-template>
                             </p-dropdown>
                         </div>
-                        <div>
-                            <div class="flex flex-column mt-1" *ngIf="dptpc.value=='P'">
-                                <label>Telefone</label>
-                                <p-inputMask [mask]="dptpc.selectedOption=='Telefone Convencional'?'(99) 9999-9999':'(99) 99999-9999'" class="p-inputtext-sm" [(ngModel)]="newContact.value" [ngClass]="{'ng-invalid ng-dirty' : sendContact && !newContact.value}"></p-inputMask>
-                            </div>
+                        <div class="flex flex-column mt-1" *ngIf="dptpc.value=='P' || dptpc.value=='C'">
+                            <label>Telefone</label>
+                            <p-inputMask [mask]="dptpc.value=='P'?'(99) 9999-9999':'(99) 99999-9999'" class="p-inputtext-sm" [(ngModel)]="newContact.value" [ngClass]="{'ng-invalid ng-dirty' : sendContact && !newContact.value}"></p-inputMask>
                         </div>
-                        <div>
-                            <div class="flex flex-column mt-1" *ngIf="dptpc.value=='E'">
+                        <div *ngIf="dptpc.value=='E'">
+                            <div class="flex flex-column mt-1">
                                 <label>E-mail</label>
                                 <input pInputText type="email" type="email" class="p-inputtext-sm" [(ngModel)]="newContact.value" [ngClass]="{'ng-invalid ng-dirty' : sendContact && !newContact.value}">
                             </div>

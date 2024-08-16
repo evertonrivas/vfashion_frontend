@@ -1,28 +1,23 @@
 <app-filter [fields]="filters" [(visible)]="filterVisible" [isTrash]="isTrash" (queryToFilter)="doFilter($event)"></app-filter>
-<app-form [(visible)]="formVisible" [rows]="formRows" title="Tamanho" [registryId]="idToEdit" (objectToSave)="onDataSave($event)"></app-form>
+<app-form [(visible)]="formVisible" [rows]="formRows" title="Condição de Pagamento" [registryId]="idToEdit" (objectToSave)="onDataSave($event)"></app-form>
 <p-toast></p-toast>
 <p-confirmDialog></p-confirmDialog>
 <p-panel>
     <ng-template pTemplate="header">
         <div class="flex flex-row w-full justify-content-between align-items-center">
             <div class="align-items-baseline">
-                <label class="p-panel-title">Tamanhos</label>
+                <label class="p-panel-title">Estoques de Produtos</label>
             </div>
             <div class="flex flex-row gap-1">
                 <p-overlayPanel #pnlMassive>
                     <ng-template pTemplate="content">
-                        <h5>Ações em Massa</h5>
-                        <div class="flex flex-column">
-                            <p-button [text]="true" [link]="true" (onClick)="onSaveMassive('C')">Cadastro de Tamanhos Calçados (34 ao 44)</p-button>
-                            <p-button [text]="true" [link]="true" (onClick)="onSaveMassive('S')">Cadastro de Tamanhos Confecções (PP,P,M,G,GG,XG)</p-button>
-                        </div>
+                        <h5>Alteração em Massa</h5>
                     </ng-template>
                 </p-overlayPanel>
                 <p-button icon="pi pi-plus" [severity]="'success'" styleClass="p-button-sm" pTooltip="Novo registro" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="onEditData()"></p-button>
                 <p-button *ngIf="!isTrash" [disabled]="tableSelected.length>0?false:true" icon="pi pi-trash" [severity]="'danger'" styleClass="p-button-sm" pTooltip="Excluir selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="onDataDelete(true)"></p-button>
                 <p-button *ngIf="isTrash" [disabled]="tableSelected.length>0?false:true" icon="pi pi-restore-from-trash icon-xsmall" [severity]="'danger'" styleClass="p-button-sm" pTooltip="Restaurar selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="onDataDelete(false)"></p-button>
-                <!--[disabled]="tableSelected.length>0?false:true" -->
-                <p-button icon="pi pi-massive-actions icon-xsmall" [severity]="'help'" styleClass="p-button-sm" pTooltip="Ações Massivas" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="pnlMassive.toggle($event)"></p-button>
+                <!-- <p-button [disabled]="tableSelected.length>0?false:true" icon="pi pi-massive-actions icon-xsmall" [severity]="'help'" styleClass="p-button-sm" pTooltip="Ações Massivas" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="pnlMassive.toggle($event)"></p-button> -->
                 <p-button icon="pi pi-filter" [severity]="'warning'" styleClass="p-button-sm" pTooltip="Filtro(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="showFilter()"></p-button>
                 <p-toggleButton [onIcon]="'pi pi-deleted icon-xsmall'" [offIcon]="'pi pi-deleted icon-xsmall'" styleClass="p-button-sm" pTooltip="Listar excluído(s)" tooltipPosition="top" tooltipStyleClass="text-xs" [(ngModel)]="isTrash" (onChange)="loadingData({page:0,pageCount:0},isTrash)"></p-toggleButton>
             </div>
@@ -40,18 +35,14 @@
                 <tr>
                     <th style="width: 50px!important;" class="text-center" pFrozenColumn><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
                     <th style="width: 100px!important;" class="text-center" pFrozenColumn>Ações</th>
-                    <th pSortableColumn="name" pFrozenColumn>Nome <p-sortIcon field="name"></p-sortIcon></th>
-                    <th class="text-center" pSortableColumn="old_size">Sigla original<p-sortIcon field="old_size"></p-sortIcon></th>
-                    <th class="text-center" pSortableColumn="new_size">Nova Sigla<p-sortIcon field="new_size"></p-sortIcon></th>
+                    <th pSortableColumn="name" pFrozenColumn>Produto <p-sortIcon field="name"></p-sortIcon></th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-item>
                 <tr>
                     <td class="text-center" pFrozenColumn><p-tableCheckbox [value]="item"></p-tableCheckbox></td>
                     <td pFrozenColumn><p-button [text]="true" icon="pi pi-pencil" pTooltip="Editar" tooltipPosition="top" tooltipStyleClass="text-sm" (onClick)="onEditData(item.id)"></p-button></td>
-                    <td pFrozenColumn>{{item.name}}</td>
-                    <td class="uppercase text-center">{{item.old_size}}</td>
-                    <td class="uppercase text-center">{{item.new_size}}</td>
+                    <td pFrozenColumn>{{item.product}}</td>
                 </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">

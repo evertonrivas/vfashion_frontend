@@ -54,6 +54,8 @@ export class AdminComponent extends Common implements OnInit, AfterViewInit{
                     { label: 'Tabelas de Preços', icon: 'pi pi-fw pi-price-table icon-small', routerLink: [this.modulePath+'/b2b/table-prices'] },
                     { label: 'Tradução de Cores', icon: 'pi pi-fw pi-colors icon-small', routerLink: [this.modulePath+'/b2b/colors'] },
                     { label: 'Tradução de Tamanhos', icon: 'pi pi-fw pi-sizes icon-small', routerLink: [this.modulePath+'/b2b/sizes'] },
+                    { separator: 'separator' },
+                    { label: 'Estoque', icon:'pi pi-fw pi-stock icon-small', routerLink: [this.modulePath+'/b2b/stock']}
                     // { label: 'Menu', icon: 'pi pi-fw pi-bars', routerLink: ['/uikit/menu'], routerLinkActiveOptions: { paths: 'subset', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored' } },
                 ]
             },

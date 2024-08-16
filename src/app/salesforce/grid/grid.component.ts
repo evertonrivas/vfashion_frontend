@@ -35,7 +35,7 @@ export class GridComponent extends Common implements AfterViewInit{
   @ViewChild('dlSelectCustomer') dlSelectCustomer!:Dialog
   @ViewChild('ddColors') ddColors:Dropdown|null = null;
   isAddGrid:boolean = false;
-  sortOptions!: SelectItemGroup[];
+  sortOptions: SelectItemGroup[] = [];
   all_colors:B2bColor[] = [];
   selectedImg:SelectedImg = {};
   selectedItemColor:SelectedColor = [];
@@ -70,6 +70,52 @@ export class GridComponent extends Common implements AfterViewInit{
 
     //busca padrao do sistema em caso refresh ou inicio da tela
     this.options.query    = "is:order_by price||is:order asc";
+
+    this.sortOptions.push({
+      label:'Crescente',
+      value:'',
+      items: [{
+        value:'1',
+        label: 'Menor Preço'
+      },{
+        value:'2',
+        label:'Categoria - AZ'
+      },{
+        value:'3',
+        label:'Coleção - AZ'
+      },{
+        value:'4',
+        label:'Marca - AZ'
+      },{
+        value:'5',
+        label:'Modelo - AZ'
+      },{
+        value:'6',
+        label:'Tipo - AZ'
+      }]
+    },{
+      label:'Decrescente',
+      value:'',
+      items:[{
+        value:'-1',
+        label:'Maior Preço'
+      },{
+        value:'-2',
+        label:'Categoria - ZA'
+      },{
+        value:'-3',
+        label:'Coleção - ZA'
+      },{
+        value:'-4',
+        label:'Marca - ZA'
+      },{
+        value:'-5',
+        label:'Modelo - ZA'
+      },{
+        value:'-6',
+        label:'Tipo - ZA'
+      }]
+    });
 
     this.ssvc.filterB2bAnnounced$.subscribe({
       next:(data) =>{

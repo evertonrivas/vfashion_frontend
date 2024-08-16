@@ -70,7 +70,22 @@ export class LoginComponent implements AfterContentInit{
   ngAfterContentInit(): void {
     this.config_loading = true;
     //limpa o storage antes de usar o sistema
-    localStorage.clear();
+    localStorage.removeItem("system_pagination_size");
+    localStorage.removeItem("use_company_custom");
+    localStorage.removeItem("company_name");
+    localStorage.removeItem("company_logo");
+    localStorage.removeItem("company_instagram");
+    localStorage.removeItem("company_facebook");
+    localStorage.removeItem("company_linkedin");
+    localStorage.removeItem("company_max_up_files");
+    localStorage.removeItem("company_max_up_images");
+    localStorage.removeItem("company_use_url_images");
+    localStorage.removeItem("id_user");
+    localStorage.removeItem("token_access");
+    localStorage.removeItem("token_type");
+    localStorage.removeItem("token_expire");
+    localStorage.removeItem("level_access");
+    localStorage.removeItem("id_profile");
     //busca as configuracoes do sistema
     this.svc.getConfig().subscribe({
       next:(data) =>{

@@ -195,20 +195,26 @@ export class FormComponent {
       this.dataToSave = '{"id":"'+this.registryId.toString()+'"';
       this.rows.forEach((r) =>{
         r.fields.forEach((f) =>{
-          if (f.type==this.fieldType.COMBO || f.type==this.fieldType.KCOLOR){
-            value = f.value.value!=undefined?f.value.value:undefined
+          if (f.type==this.fieldType.COMBO || f.type==this.fieldType.KCOLOR ){
+            value = f.value!=undefined?f.value.value:undefined
           }else if(f.type==this.fieldType.PASSWD){
-            value = f.value[0]
+            value = f.value[0];
+          }else if(f.type==this.fieldType.IMGURL){
+            let images:string[] = [];
+            f.options?.forEach(o =>{
+              images.push('{ "id":'+o.id+',"url":"'+o.label+'","default": '+o.value+' }');
+            });
+            value = "["+images.join(",")+"]";
           }else{
             value = f.value!=undefined?f.value:undefined
           }
           if (f.case==FieldCase.UPPER){
-            this.dataToSave += ',"'+f.name+'":'+(value!=undefined?'"'+value?.toString().toUpperCase()+'"':null)
+            this.dataToSave += ',"'+f.name+'":'+(value==undefined?null:(f.type!=this.fieldType.IMGURL?'"'+value?.toString().toUpperCase()+'"':value))
           }else if(f.case==FieldCase.LOWER){
-            this.dataToSave += ',"'+f.name+'":'+(value!=undefined?'"'+value?.toString().toLowerCase()+'"':null)
+            this.dataToSave += ',"'+f.name+'":'+(value==undefined?null:(f.type!=this.fieldType.IMGURL?'"'+value?.toString().toLowerCase()+'"':value))
           }
           else{
-            this.dataToSave += ',"'+f.name+'":'+(value!=undefined?'"'+value.toString()+'"':null)
+            this.dataToSave += ',"'+f.name+'":'+(value==undefined?null:(f.type!=this.fieldType.IMGURL?'"'+value?.toString()+'"':value))
           }
         });
       });

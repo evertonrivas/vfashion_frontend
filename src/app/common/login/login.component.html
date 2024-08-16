@@ -8,7 +8,7 @@
                 <div>
                     <label for="email1" class="block text-900 font-medium mb-2">Login</label>
                     <!-- ng-invalid ng-dirty -->
-                    <input id="email1" type="text" placeholder="usuário, email ou CNPJ" pInputText class="w-full mb-3" formControlName="txtUsername" required [ngClass]="{'ng-invalid ng-dirty':sended && frmLogin.controls['txtUsername'].invalid}">
+                    <input id="email1" type="text" placeholder="usuário, email ou CNPJ/CPF" pInputText class="w-full mb-3" formControlName="txtUsername" required [ngClass]="{'ng-invalid ng-dirty':sended && frmLogin.controls['txtUsername'].invalid}">
 
                     <label for="password1" class="block text-900 font-medium mb-2">Senha</label>
                     <p-password [toggleMask]="true" styleClass="w-full mb-3" inputStyleClass="w-full" [feedback]="false" formControlName="txtPassword" required [ngClass]="{'ng-invalid ng-dirty':sended && frmLogin.controls['txtUsername'].invalid}"></p-password>

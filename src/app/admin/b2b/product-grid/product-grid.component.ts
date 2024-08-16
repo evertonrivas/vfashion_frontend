@@ -310,14 +310,31 @@ export class ProductGridComponent extends Common implements AfterViewInit,OnDest
   }
 
   onSaveGrid():void{
+    this.loading = true;
     //atualiza os valores das cores
-    this.localDistribution.sizes.forEach(s =>{
-      s.value = this.formDistribution[s.id_size].value
-    });
+    if(this.selectedColor!=undefined){
+      this.localDistribution.id_color = this.selectedColor.id;
+      this.localDistribution.color = this.selectedColor.color;
+      if (this.localDistribution.sizes.length == 0){
+        this.all_size.forEach(s =>{
+          this.localDistribution.sizes.push({
+            id_size: s.id,
+            size: s.new_size,
+            value: this.formDistribution[s.id].value
+          });
+        });
+      }else{
+        this.localDistribution.sizes.forEach(s =>{
+          s.value = this.formDistribution[s.id_size].value;
+        });
+      }
+    }
 
     this.svc.saveGridDistribution(this.idToEdit,this.localDistribution).subscribe({
       next:(data) =>{
         this.msg.clear();
+        this.loading = false;
+        this.showDistribution = false;
         if(typeof data ==='number'){
           this.msg.add({
             summary: 'Sucesso!',

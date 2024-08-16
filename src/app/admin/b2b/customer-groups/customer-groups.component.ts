@@ -155,7 +155,7 @@ export class CustomerGroupsComponent extends Common implements AfterViewInit{
       placeholder: "Selecione...",
       type: FieldType.COMBO,
       value: undefined,
-      required:true,
+      required:false,
       case: FieldCase.NONE,
       disabled:false,
       lockField: undefined
