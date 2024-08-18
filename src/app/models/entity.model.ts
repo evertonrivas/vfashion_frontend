@@ -88,4 +88,10 @@ export interface CustomerGroup{
     date_updated:string
 }
 
+export interface Cep{
+    address: string,
+    neighborhood: string,
+    id_city: number
+}
+
 export { EntityType }
