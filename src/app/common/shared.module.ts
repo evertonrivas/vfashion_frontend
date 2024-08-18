@@ -5,7 +5,6 @@ import { EntityTypePipe } from 'src/app/pipes/entity-type.pipe';
 import { NameCutPipe } from 'src/app/pipes/name-cut.pipe';
 import { ShortMoneyPipe } from 'src/app/pipes/short-money.pipe';
 import { UserTypePipe } from 'src/app/pipes/user-type.pipe';
-import { TopbarComponent } from './topbar/topbar.component';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
@@ -35,6 +34,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { OrderStatusPipe } from '../pipes/order-status.pipe';
 import { DevolutionStatusPipe } from '../pipes/devolution-status.pipe';
+import { ContactTypePipe } from '../pipes/contact-type.pipe';
 
 @NgModule({
   declarations: [
@@ -76,7 +76,8 @@ import { DevolutionStatusPipe } from '../pipes/devolution-status.pipe';
     MultiSelectModule,
     ToggleButtonModule,
     DevolutionStatusPipe,
-    DatePipe
+    DatePipe,
+    ContactTypePipe
   ],
   exports:[
     CnpjCpfPipe,
@@ -113,7 +114,8 @@ import { DevolutionStatusPipe } from '../pipes/devolution-status.pipe';
     TooltipModule,
     MultiSelectModule,
     ToggleButtonModule,
-    DatePipe
+    DatePipe,
+    ContactTypePipe
   ]
 })
 export class SharedModule { }
