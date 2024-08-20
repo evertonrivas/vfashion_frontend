@@ -116,6 +116,8 @@ export class SalesforceComponent extends Common implements AfterViewInit{
   }
 
   loadCartItens(){
+    this.totalMyItens = 0;
+    this.myTotal = 0;
     this.svcOrd.listMyItens(
       parseInt(localStorage.getItem("id_profile") as string),
       this.level_access as string
