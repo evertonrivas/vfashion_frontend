@@ -98,31 +98,24 @@
                                         </div>
                                     </div>
                                 <p-divider styleClass="m-1"></p-divider>
-                                <div class="pt-3 px-2 pb-3 flex flex-row vertical-align-middle justify-content-evenly">
-                                    <!-- <p-overlayPanel #tasks>
-                                        <ng-template pTemplate="content">
-                                            <div class="flex flex-column">
-                                                <label class="mr-1">Momento</label>
-                                                <p-calendar [showTime]="true" dateFormat="dd/mm/yy" [(ngModel)]="notification.moment" [showIcon]="true" inputStyleClass="p-inputtext-sm"></p-calendar>
-                                            </div>
-                                            <div class="flex flex-column">
-                                                <label class="mr-1">Lembrete</label>
-                                                <input pInputText class="w-full p-inputtext-sm" [(ngModel)]="notification.remember">
-                                            </div>
-                                            <div class="flex flex-column">
-                                                <label class="mr-1">Agendar para</label>
-                                                <p-autoComplete inputStyleClass="w-full p-inputtext-sm" styleClass="w-full" placeholder="Outro usuário ou deixe em branco" appendTo="body" [suggestions]="filtered_users" (completeMethod)="searchUser($event)" [(ngModel)]="notification.user" [field]="'name'"></p-autoComplete>
-                                            </div>
-                                            <div class="flex flex-row justify-content-end mt-2">
-                                                <p-button styleClass="p-button-sm" icon="pi pi-check" label="Agendar" (onClick)="saveNotification(customer)"></p-button>
-                                            </div>
-                                        </ng-template>
-                                    </p-overlayPanel> -->
+                                <p-overlayPanel #pnlComment styleClass="w-30rem">
+                                    <ng-template pTemplate="content">
+                                        <div class="flex flex-column">
+                                            <label class="mb-1">Observação: </label>
+                                            <textarea pInputTextarea rows="5" [(ngModel)]="customerComment"></textarea>
+                                        </div>
+                                        <div class="flex flex-row justify-content-end mt-2">
+                                            <p-button icon="pi pi-save" label="Salvar" styleClass="p-button-sm" (onClick)="saveCustomerComment(customer.id,pnlComment)"></p-button>
+                                        </div>
+                                    </ng-template>
+                                </p-overlayPanel>
+                                <div class="pt-3 px-6 pb-3 flex flex-row vertical-align-middle justify-content-between">
                                     <!-- <a href="javascript:void(0)" pTooltip="Agendar Notificação" tooltipPosition="top" tooltipStyleClass="text-xs" (click)="tasks.toggle($event)"><i class="pi pi-clock text-800"></i></a> -->
                                     <a href="javascript:void(0)" pTooltip="Enviar E-mail" tooltipPosition="top" tooltipStyleClass="text-xs" (click)="showEmailSend(customer)"><i class="pi pi-envelope text-800"></i></a>
                                     <a href="javascript:void(0)" pTooltip="Anexar Arquivo" tooltipPosition="top" tooltipStyleClass="text-xs" (click)="showUpload(customer)"><i class="pi pi-paperclip text-800"></i></a>
                                     <!-- <a href="javascript:void(0)" pTooltip="Enviar mensagem" tooltipPosition="top"><i class="pi pi-whatsapp text-800"></i></a> -->
                                     <a href="javascript:void(0)" pTooltip="Informações do Cliente" tooltipPosition="top" tooltipStyleClass="text-xs" (click)="showCustomerInfo(customer.id,stage.id)"><i class="pi pi-info-circle text-800"></i></a>
+                                    <a href="javascript:void(0)" pTooltip="Adicionar Observação" tooltipPosition="top" tooltipStyleClass="text-xs" (click)="pnlComment.toggle($event)"><i class="pi pi-comment text-800"></i></a>
                                     <a href="javascript:void(0)" pTooltip="Ver histórico" tooltipPosition="top" (click)="showHistory(customer)" tooltipStyleClass="text-xs"><i class="pi pi-history text-800"></i></a>
                                 </div>
                             </div>
@@ -236,7 +229,7 @@
     </div>
 </p-dialog>
 
-<p-sidebar [(visible)]="infoVisible" styleClass="w-30rem lg:w-9" [modal]="true" position="right" (onHide)="resetForm($event)">
+<p-sidebar [(visible)]="infoVisible" styleClass="w-30rem lg:w-6" [modal]="true" position="right" (onHide)="resetForm($event)">
     <ng-template pTemplate="header">
         <h3 class="w-full text-center">Informações do Cliente</h3>
     </ng-template>  
@@ -244,7 +237,6 @@
         (messageToShow)="showMessage($event)" 
         [idEditableCustomer]="infoCustomer.id" 
         [isVisible]="infoVisible"
-        [isEditing]="(infoCustomer.id > 0?true:false)"
         [(idStageOfCustomer)]="stageOfCustomer"
         [idCustomerFunnel]="funnelOfCustomer"></app-customer-data>
 </p-sidebar>

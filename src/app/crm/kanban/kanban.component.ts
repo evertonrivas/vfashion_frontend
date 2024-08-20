@@ -15,6 +15,7 @@ import { Options, RequestResponse, ResponseError } from 'src/app/models/paginate
 import { UserService } from 'src/app/services/user.service';
 import { City, StateRegion } from 'src/app/models/place.model';
 import { LocationService } from 'src/app/services/location.service';
+import { OverlayPanel } from 'primeng/overlaypanel';
 
 export interface filterParams{
   rule:any|undefined
@@ -140,6 +141,9 @@ export class KanbanComponent extends Common implements AfterContentInit{
   //dagable customer
   draggedCustomer:Entity|null = null;
   originDragableStage:number = 0;
+
+  //comentario no historico do cliente
+  customerComment:string = "";
 
   constructor(
     private msgSvc:MessageService,
@@ -507,11 +511,14 @@ export class KanbanComponent extends Common implements AfterContentInit{
   }
 
   showMessage(msg:Message){
-    this.emailVisible   = false;
-    this.infoVisible    = false;
-    this.importVisible  = false;
-    this.uploadVisible  = false;
-    this.historyVisible = false;
+    if(msg.closable){
+      this.emailVisible   = false;
+      this.infoVisible    = false;
+      this.importVisible  = false;
+      this.uploadVisible  = false;
+      this.historyVisible = false;
+      msg.closable = true;
+    }
 
     //se houver stageOfCustomer significa que esta
     //cadastrando ou atualizando o cadastro
@@ -755,6 +762,30 @@ export class KanbanComponent extends Common implements AfterContentInit{
           });
         }else{
           this.stages_from_funnel = data as FunnelStage[];
+        }
+      }
+    });
+  }
+
+  saveCustomerComment(id:number,pnl:OverlayPanel){
+    this.entSvc.saveHistory(id,this.customerComment).subscribe({
+      next: (data) =>{
+        pnl.hide();
+        if(typeof data ==='boolean'){
+          this.showMessage({
+            key:'systemToast',
+            summary:"Sucesso!",
+            detail: "Comentário adicionado com sucesso!",
+            severity:"success"
+          });
+          this.customerComment = "";
+        }else{
+          this.showMessage({
+            key:'systemToast',
+            summary:"Falha...",
+            detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+            severity:"error"
+          });
         }
       }
     });

@@ -1,7 +1,7 @@
 import { Component,Input, ViewChild,Output, EventEmitter,OnChanges, SimpleChanges, AfterViewInit, input } from '@angular/core';
 import { Message } from 'primeng/api';
 import { AutoComplete, AutoCompleteCompleteEvent } from 'primeng/autocomplete';
-import { Entity, EntityContact, EntityType, EntityWeb, RepEntity } from 'src/app/models/entity.model';
+import { Cep, Entity, EntityContact, EntityType, EntityWeb, RepEntity } from 'src/app/models/entity.model';
 import { City } from 'src/app/models/place.model';
 import { EntitiesService } from 'src/app/services/entities.service';
 import { ConfirmationService } from 'primeng/api';
@@ -13,6 +13,7 @@ import { Common } from 'src/app/classes/common';
 import { ResponseError } from 'src/app/models/paginate.model';
 import { Router } from '@angular/router';
 import { CrmService } from 'src/app/services/crm.service';
+import { SysService } from 'src/app/services/sys.service';
 
 @Component({
   selector: 'app-customer-data',
@@ -21,11 +22,13 @@ import { CrmService } from 'src/app/services/crm.service';
   providers: [ConfirmationService]
 })
 export class CustomerDataComponent extends Common implements OnChanges, AfterViewInit{
+  //cliente que serah editado
+  @Input() idEditableCustomer:number = 0;
+
   @Input() isVisible:boolean = false;
-  @Input() isEditing:boolean = false;
+  isEditing:boolean = false;
   @Input() idStageOfCustomer:number = 0;
   @Output() idStageOfCustomerChange = new EventEmitter<number>();
-  @Input() idEditableCustomer:number = 0;
   @Input() idCustomerFunnel:number = 0;
   customerFunnel!:Funnel|null;
 
@@ -41,6 +44,17 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
   tabActive:number = 0;
   stages:FunnelStage[] = [];
   selectedStage:FunnelStage|null = null;
+
+  contact_types:any = [
+    {label:'E-mail',value:'E'},
+    {label:'Telefone Convencional',value:'P'},
+    {label:'Telefone Celular/Móvel',value:'C'},
+    {label:'Facebook',value:'F'},
+    {label:'Instagram',value:'I'},
+    {label:'Linkedin',value:'L'},
+    {label:'Outro Social',value:'O'},
+    {label:'Website',value:'W'}
+  ];
 
   editableCustomer:Entity = {
     id: 0,
@@ -95,6 +109,7 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
 
   constructor(private svc:EntitiesService,
     private crm:CrmService,
+    private sys:SysService,
     private confirmService:ConfirmationService,
     private localService:LocationService,
     route:Router){
@@ -110,11 +125,13 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    //console.log(changes);
     //se estiver editando um cliente entrarah aqui pois haverao as propriedades
     if(this.isVisible){
 
       //realiza carga dos funis existentes
       if(changes.hasOwnProperty("isVisible")){
+        this.tabActive = 0;
         this.crm.getFunnels({
           page:1,
           pageSize:1,
@@ -130,6 +147,8 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
               value: this.customerFunnel
             }
             this.getStagesOfFunnel(evt);
+            //define o funil do usuario
+            this.selectedStage = this.stages.find(v => v.id == this.idStageOfCustomer) as FunnelStage;
           }
         });
       }
@@ -174,16 +193,13 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
           agent: null
         });
         }
-      })
+      });
       
       if(changes.hasOwnProperty("idEditableCustomer")){
         //realiza a carga de dados do cliente
         this.svc.loadEntity(this.idEditableCustomer as number).subscribe({
           next: (data) =>{
             this.editableCustomer = data as Entity;
-            
-            //define o funil do usuario
-            this.selectedStage = this.stages.find(v => v.id == this.idStageOfCustomer) as FunnelStage;
           }
         });
       }
@@ -219,7 +235,7 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
       && this.editableCustomer.postal_code.trim().length > 0
       && this.editableCustomer.city.id >0 
       && this.editableCustomer.address.trim().length > 0
-      && (!this.isEditing && this.idStageOfCustomer > 0)){
+      && this.idStageOfCustomer > 0){
         this.editableCustomer.type = EntityType.C;
         this.svc.saveEntity(this.editableCustomer as Entity).subscribe({
           next: (data) =>{
@@ -229,14 +245,18 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
                 next:(data) =>{
                   this.hasSended = false;
                   if(typeof data ==='boolean' || typeof data==='number'){
-                    this.messageToShow.emit({ 
-                      key:'systemToast',
-                      severity:'success',
-                      summary:'Sucesso!',
-                      detail:'Dados do cliente salvos com sucesso.'
-                    });
+                    if(typeof data ==='number'){
+                      this.editableCustomer.id = data as number;
+                    }
+                    //nao exibe mais a mensagem por que pula para a aba de adicao de contato
+                    // this.messageToShow.emit({ 
+                    //   key:'systemToast',
+                    //   severity:'success',
+                    //   summary:'Sucesso!',
+                    //   detail:'Dados do cliente salvos com sucesso.'
+                    // });
                     //this.reloadData();
-                    this.clearData();
+                    this.tabActive = 1;
                   }else{
                     this.messageToShow.emit({
                       key:'systemToast',
@@ -263,73 +283,32 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
       }
   }
 
-  saveNewCustomerContact(idCustomer:number){
-    this.sendContact = true;
-    let cts:EntityContact[] = [];
-    this.newContact.id_legal_entity = idCustomer;
-    cts.push(this.newContact);
-
-    if (this.newContact.name.trim().length!=0 && this.newContact.value.trim().length!=0){
-      this.svc.saveContacts(cts).subscribe({
-        next: (data) =>{
-          if(data){
-            this.messageToShow.emit({key:'systemToast',severity:'success',summary:'Novo contato salvo com sucesso!'});
-            this.sendContact = false;
-            this.reloadData();
-          }
-        },
-        error: (err) => {
-          this.messageToShow.emit({key:'systemToast',
-            severity:'error',
-            summary:'Ocorreu o seguinte erro ao tentar salvar:',
-            detail: err,
-            life: 5000
-          });
-          this.sendContact = false;
-        }
-      });
-    }
+  onEditContact(ct:EntityContact){
+    this.newContact = ct;
   }
 
-  saveNewCustomerWeb(idCustomer:number){
-    this.sendWeb = true;
-    let wbs:EntityWeb[] = [];
-    this.newWeb.id_legal_entity = idCustomer;
-    wbs.push(this.newWeb);
-    
-
-    if (this.newWeb.name.trim().length!=0 && this.newWeb.value.trim().length!=0){
-      this.svc.saveWebs(wbs).subscribe({
-        next: (data) =>{
-          if(data){
-            this.messageToShow.emit({key:'systemToast',severity:'success',summary:'Novo endereço web salvo com sucesso!'});
-            this.sendWeb = false;
-            this.reloadData();
-          }
-        },
-        error: (err) => {
-          this.messageToShow.emit({key:'systemToast',
-            severity:'error',
-            summary:'Ocorreu o seguinte erro ao tentar salvar:',
-            detail: err,
-            life: 5000
-          });
-          this.sendWeb = false;
-        }
-      });
-    }
-  }
-
-  saveCustomerContact(idContact:number){
+  onSaveContact(idContact:number){
     this.sendContact = true;
     let cts:EntityContact[] = [];
-    cts.push(this.editableCustomer.contacts.find(contact => contact.id==idContact) as EntityContact);
+    if(idContact > 0){
+      cts.push(this.editableCustomer.contacts.find(contact => contact.id==idContact) as EntityContact);
+    }else{
+      this.newContact.id_legal_entity = this.editableCustomer.id;
+      cts.push(this.newContact);
+    }
      
     this.svc.saveContacts(cts).subscribe({
       next: (data) =>{
-        if(data){
+        this.sendContact = false;
+        if(typeof data ==='boolean'){
+          this.newContact.id = 0;
+          this.newContact.value = '';
+          this.newContact.contact_type = '';
+          this.newContact.is_default = false;
+          this.newContact.is_whatsapp = false;
+          this.newContact.name = '';
           this.messageToShow.emit({key:'systemToast',severity:'success',summary:'Contato salvo com sucesso!'});
-          this.sendContact = false;
+          this.tabActive = 1;
           this.reloadData();
         }
       },
@@ -340,78 +319,7 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
           detail: err,
           life: 5000
         });
-        this.sendContact = false;
       }
-    });
-  }
-
-  saveCustomerContacts(){
-    this.sendContact = true;
-    this.svc.saveContacts((this.editableCustomer as Entity).contacts).subscribe({
-      next: (data) =>{
-        if(data){
-          this.messageToShow.emit({key:'systemToast',severity:'success',summary:'Contatos salvos com sucesso!'});
-          this.sendContact = false;
-          this.reloadData();
-        }
-      },
-      error: (err) =>{
-        this.messageToShow.emit({
-          key:'systemToast',
-          severity:'error',
-          summary:'Ocorreu o seguinte erro ao tentar salvar:',
-          detail:err,
-          life: 5000
-        });
-        this.sendContact = false;
-      },
-    });
-  }
-
-  saveCustomerWeb(webId:number){
-    this.sendWeb = true;
-    let wbs:EntityWeb[] = [];
-    wbs.push(this.editableCustomer.web.find(web => web.id==webId) as EntityWeb);
-    this.svc.saveWebs(wbs).subscribe({
-      next: (data) =>{
-        if(data){
-          this.messageToShow.emit({key:'systemToast',severity:'success',summary:'Informação web salva com sucesso!'});
-          this.sendWeb = false;
-          this.reloadData();
-        }
-      },
-      error: (err) => {
-        this.messageToShow.emit({key:'systemToast',
-          severity:'error',
-          summary:'Ocorreu o seguinte erro ao tentar salvar:',
-          detail: err,
-          life: 5000
-        });
-        this.sendWeb = false;
-      },
-    });
-  }
-
-  saveCustomerWebs(){
-    this.sendWeb = true;
-    this.svc.saveWebs((this.editableCustomer as Entity).web).subscribe({
-      next: (data) =>{
-        if(data){
-          this.messageToShow.emit({key:'systemToast',severity:'success',summary:'Informações web salvas com sucesso!'});
-          this.sendWeb = false;
-          this.reloadData();
-        }
-      },
-      error: (err) =>{
-        this.messageToShow.emit({
-          key:'systemToast',
-          severity:'error',
-          summary:'Ocorreu o seguinte erro ao tentar salvar:',
-          detail:err,
-          life: 5000
-        });
-        this.sendWeb = false;
-      },
     });
   }
 
@@ -423,7 +331,7 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
     });
   }
 
-  verifyDeleteContact(ct:EntityContact){
+  onDeleteContact(ct:EntityContact){
     this.confirmService.confirm({
       message: 'Deseja realmente excluir esse contado do cliente?',
       header:'Confirmação: Ação irreversível',
@@ -436,29 +344,18 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
         cts.push(ct); 
         this.svc.deleteContacts(cts).subscribe({
           next: (data) =>{
-            this.messageToShow.emit({key:'systemToast',severity:'success',summary:'Contato excluído com sucesso!'});
-            this.reloadData();
-          }
-        });
-      }
-    });
-  }
-
-  verifyDeleteWeb(wb:EntityWeb){
-    this.confirmService.confirm({
-      message:'Deseja realmente excluir esse endereço web do cliente?',
-      header:'Confirmação: Ação irreversível',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel:'Sim',
-      rejectLabel: 'Não',
-      rejectButtonStyleClass:'p-button-danger',
-      accept: () =>{
-        let wbs:EntityWeb[] = [];
-        wbs.push(wb); 
-        this.svc.deleteWebs(wbs).subscribe({
-          next: (data) =>{
-            this.messageToShow.emit({key:'systemToast',severity:'success',summary:'Endereço web excluído com sucesso!'});
-            this.reloadData();
+            if(typeof data === 'boolean'){
+              this.messageToShow.emit({key:'systemToast',severity:'success',summary:'Contato excluído com sucesso!',closable:false});
+              this.reloadData();
+            }else{
+              this.messageToShow.emit(
+                {
+                  key:'systemToast',
+                  severity:'error',
+                  summary:'Falha ao excluir!',
+                  detail: (data as ResponseError).error_details
+                });
+            }
           }
         });
       }
@@ -556,63 +453,9 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
   }
 
   setStage(evt:DropdownChangeEvent){
-    this.idEditableCustomer = evt.value.id;
-    this.idStageOfCustomerChange.emit(this.idEditableCustomer);
+    this.idStageOfCustomer = evt.value.id;
+    this.idStageOfCustomerChange.emit(this.idStageOfCustomer);
   }
-
-  addContactInNewCustomer(){
-    this.sendContact = true;
-    if (this.newContact.name.trim().length > 0 &&
-      this.newContact.value.trim().length > 0){
-      let ct = this.newContact;
-      this.editableCustomer.contacts.push(ct);
-      this.newContact = {
-        id: 0,
-        id_legal_entity: 0,
-        name: '',
-        contact_type: '',
-        value: '',
-        is_whatsapp: false,
-        is_default: false
-      }
-      this.pnlContact?.toggle(new Event(''));
-      this.sendContact = false;
-    }
-  }
-
-  addWebInNewCustomer(){
-    this.sendWeb = true;
-    if (this.newWeb.name.trim().length > 0 &&
-    this.newWeb.value.trim().length > 0){
-      this.editableCustomer.web.push(this.newWeb);
-      this.newWeb = {
-        id: 0,
-        id_legal_entity: 0,
-        name: '',
-        web_type: '',
-        value: ''
-      }
-      this.pnlWeb?.toggle(new Event(''));
-      this.sendWeb = false;
-    }
-  }
-
-  removeContactFromNewCustomer(ct:EntityContact){
-    this.editableCustomer.contacts.forEach((cont,idx) =>{
-      if (ct==cont){
-        this.editableCustomer.contacts.splice(idx,1);
-      }
-    });
-  }
-
-  removeWebFromNewCustomer(wb:EntityWeb){
-    this.editableCustomer.web.forEach((ent,idx) =>{
-      if (wb==ent){
-        this.editableCustomer.web.splice(idx,1);
-      }
-    });
-  }
-
   
   dropFile(idFile:number){
     this.confirmService.confirm({
@@ -626,15 +469,37 @@ export class CustomerDataComponent extends Common implements OnChanges, AfterVie
         this.svc.deleteFile(idFile).subscribe({
           next: (data) =>{
             if(data){
-              this.messageToShow.emit({key:'systemToast',severity:'success',summary:'Arquivo excluído com sucesso!'});
+              this.messageToShow.emit({key:'systemToast',severity:'success',summary:'Arquivo excluído com sucesso!', closable:false});
             }else{
-              this.messageToShow.emit({key:'systemToast',severity:'error',summary:'Falha ao excluir arquivo!'});
+              this.messageToShow.emit({key:'systemToast',severity:'error',summary:'Falha ao excluir arquivo!', closable:false});
             }
-
             this.reloadData();
           }
         });
       }
     });
+  }
+
+  getPostalCode(evt:EventEmitter<any>){
+    if(evt.length==8){
+      this.loading = true;
+      this.sys.getPostalCode(evt.toString()).subscribe({
+        next: (data) =>{
+          this.loading = false;
+          if("address" in data){
+            this.editableCustomer.address = (data as Cep).address,
+            this.editableCustomer.neighborhood = (data as Cep).neighborhood,
+            this.editableCustomer.city = this.citySuggestions.find(v => v.id == (data as Cep).id_city) as City;
+          }else{
+            this.messageToShow.emit({
+              key:'systemToast',
+              severity:'error',
+              summary:'Falha...',
+              detail: (data as ResponseError).error_details
+            });
+          }
+        }
+      });
+    }
   }
 }

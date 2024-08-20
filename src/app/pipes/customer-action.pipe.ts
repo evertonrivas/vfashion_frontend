@@ -29,6 +29,7 @@ export class CustomerActionPipe implements PipeTransform {
       case 'RU': vReturn = "Devolução atualizada"; break;
       case 'FB': vReturn = "Bloqueio financeiro"; break;
       case 'FU': vReturn = "Desbloqueio financeiro"; break;
+      case 'CA': vReturn = "Observação"; break;
     }
 
     return vReturn;

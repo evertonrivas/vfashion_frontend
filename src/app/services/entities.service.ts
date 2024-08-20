@@ -54,21 +54,6 @@ export class EntitiesService extends MyHttp {
     });
   }
 
-  saveWebs(webs:EntityWeb[]):Observable<boolean|ResponseError>{
-    let url = this.sys_config.backend_cmm+'/legal-entities/save-webs';
-    return this.http.post<boolean|ResponseError>(url,JSON.stringify(webs),{
-      headers:this.getHeader(ContentType.json)
-    });
-  }
-
-  deleteWebs(webs:EntityWeb[]):Observable<boolean|ResponseError>{
-    let url = this.sys_config.backend_cmm+'/legal-entities/save-webs';
-    return this.http.delete<boolean|ResponseError>(url,{
-      headers: this.getHeader(ContentType.json),
-      body: JSON.stringify(webs)
-    });
-  }
-
   deleteFile(id:number):Observable<boolean|ResponseError>{
     let url = this.sys_config.backend_cmm+'/upload/'+id.toString();
     return this.http.delete<boolean>(url,{
@@ -77,10 +62,17 @@ export class EntitiesService extends MyHttp {
   }
 
   loadHistory(idCustomer:number,opt:Options):Observable<Entity[]|RequestResponse|ResponseError>{
-    let url = this.sys_config.backend_cmm+'/legal-entities/load-history/'+idCustomer.toString();
+    let url = this.sys_config.backend_cmm+'/legal-entities/history/'+idCustomer.toString();
     return this.http.get<Entity[]|RequestResponse|ResponseError>(url,{
       headers: this.getHeader(),
       params: this.getParams(opt)
+    });
+  }
+
+  saveHistory(idCustomer:number,text:string):Observable<boolean|ResponseError>{
+    return this.http.post<boolean|ResponseError>(this.sys_config.backend_cmm+'/legal-entities/history/'+idCustomer.toString(),
+    JSON.stringify(text),{
+      headers: this.getHeader(ContentType.json)
     });
   }
 
