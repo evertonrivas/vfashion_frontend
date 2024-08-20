@@ -39,6 +39,7 @@ export class GridComponent extends Common implements AfterViewInit{
   all_colors:B2bColor[] = [];
   selectedImg:SelectedImg = {};
   selectedItemColor:SelectedColor = [];
+  //habilita ou libera o seletor de cor "Todos"
   freeGridButton:boolean = false;
   selectedGridColor:B2bColor|null = null;
   sendAddGrid:boolean = false;
@@ -202,23 +203,32 @@ export class GridComponent extends Common implements AfterViewInit{
   }
 
   //adiciona apenas um item pela grade
-  addGrid(id:number):void{
+  addGrid(prod:Product):void{
     this.isAddGrid = true;
-    if(this.selectedItemColor[id]==undefined){
+    if(prod.colors.length == 1 ){
+      this.selectedItemColor[prod.id] = prod.colors[0].id;
+    }
+    else if(prod.colors.length > 1 && this.selectedItemColor[prod.id]==undefined){
       this.showDialog = true;
     }
-    else{
+    
+    if(this.selectedItemColor[prod.id]!=undefined){
       //verifica se existe o cliente
       if(this.level_access==this.levels.ADMIN || this.level_access==this.levels.REPR){
         //carrega os clientes 
-        this.loadCustomers(this.level_access==this.levels.REPR?true:false);
-        this.showNoCustomerDialog = true;
-        this.selectedProduct = id;
+        if(localStorage.getItem("id_customer")=="" || localStorage.getItem("id_customer")==null){
+          this.loadCustomers(this.level_access==this.levels.REPR?true:false);
+          this.showNoCustomerDialog = true;
+          this.selectedProduct = prod.id;
+        }else{
+          this.selectedCustomer = parseInt(JSON.stringify(localStorage.getItem("id_customer")).replaceAll('"',''));
+          this.saveGrid([prod.id],this.selectedItemColor[prod.id],this.selectedCustomer);
+        }
       }else{
         let ids:number[] = [];
-        ids.push(id);
+        ids.push(prod.id);
         let customer:number = parseInt(localStorage.getItem("id_profile") as string);
-        this.saveGrid(ids,this.selectedItemColor[id],customer);
+        this.saveGrid(ids,this.selectedItemColor[prod.id],customer);
       }
     }
   }
@@ -264,6 +274,11 @@ export class GridComponent extends Common implements AfterViewInit{
   }
 
   closeAndSave():void{
+
+    if(localStorage.getItem("id_customer")=="" || localStorage.getItem("id_customer")==null){
+      localStorage.setItem("id_customer",this.selectedCustomer.toString());
+    }
+
     this.showNoCustomerDialog = false;
     if(this.isAddGrid){
       if(this.selectedProduct > 0 ){

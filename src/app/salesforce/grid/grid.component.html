@@ -53,7 +53,7 @@
                         [style]="{'bottom':'1rem','right':'1rem','backdrop-filter':'blur(4px)','width':'calc(50% - 2rem)'}" (click)="prepareToAddToCart(product.id)"><i class="pi pi-shopping-cart mr-2"></i> <span class="text-sm">Adicionar ao Pedido</span>
                     </button>
                     <button type="button" pRipple class="p-ripple p-element border-1 border-white-alpha-20 border-round py-3 px-3 absolute bg-black-alpha-30 text-white inline-flex align-items-center justify-content-center hover:bg-black-alpha-40 transition-colors transition-duration-300 cursor-pointer font-semibold shadow-4"
-                        [style]="{'bottom':'1rem','left':'1rem','backdrop-filter':'blur(4px)','width':'calc(50% - 2rem)'}" (click)="addGrid(product.id)"><i class="pi pi-grid-view mr-2 text-base"></i> <span class="text-sm">Adicionar Grade</span>
+                        [style]="{'bottom':'1rem','left':'1rem','backdrop-filter':'blur(4px)','width':'calc(50% - 2rem)'}" (click)="addGrid(product)"><i class="pi pi-grid-view mr-2 text-base"></i> <span class="text-sm">Adicionar Grade</span>
                     </button>
                 </div>
                 <div class="flex flex-column align-items-center w-full">
@@ -62,7 +62,8 @@
                         {{product.name}}
                     </label>
                     <label class="text-2xl mb-3">{{product.price | currency}}</label>
-                    <p-dropdown *ngIf="product.colors.length > 0" [showClear]="true" 
+                    <span *ngIf="product.colors.length == 1" class="border-round p-2 border-1 border-gray-200" [pTooltip]="product.colors[0].name" [ngStyle]="{'background-color': product.colors[0].color}"></span>
+                    <p-dropdown *ngIf="product.colors.length > 1" [showClear]="true" 
                         [options]="product.colors" 
                         [(ngModel)]="selectedItemColor[product.id]" 
                         optionValue="id" 
