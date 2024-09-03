@@ -33,7 +33,7 @@
               "src/assets"
             ],
             "styles": [
-              "primeng/resources/themes/lara-light-indigo/theme.css",
+              "primeng/resources/themes/lara-light-amber/theme.css",
               "primeng/resources/primeng.min.css",
               "primeflex/primeflex.css",
               "src/assets/styles/layout/layout.scss",
