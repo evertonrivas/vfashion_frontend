@@ -66,10 +66,12 @@
                     [options]="field.options" 
                     [(ngModel)]="field.value" 
                     [placeholder]="field.placeholder!=undefined?field.placeholder:''" 
+                    styleClass="w-full"
                     [showClear]="true"
                     display="chip"
                     appendTo="body"
-                    [maxSelectedLabels]="3"
+                    [maxSelectedLabels]="5"
+                    [displaySelectedLabel]="true"
                     emptyMessage="Nenhum registro encontrado!"
                     [disabled]="field.disabled"
                     [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}"></p-multiSelect>

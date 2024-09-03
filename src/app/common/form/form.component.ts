@@ -199,6 +199,8 @@ export class FormComponent {
             value = f.value!=undefined?f.value.value:undefined
           }else if(f.type==this.fieldType.PASSWD){
             value = f.value[0];
+          }else if(f.type==this.fieldType.MCOMBO){
+            value = "["+f.value+"]"
           }else if(f.type==this.fieldType.IMGURL){
             let images:string[] = [];
             f.options?.forEach(o =>{
@@ -209,12 +211,12 @@ export class FormComponent {
             value = f.value!=undefined?f.value:undefined
           }
           if (f.case==FieldCase.UPPER){
-            this.dataToSave += ',"'+f.name+'":'+(value==undefined?null:(f.type!=this.fieldType.IMGURL?'"'+value?.toString().toUpperCase()+'"':value))
+            this.dataToSave += ',"'+f.name+'":'+(value==undefined?null:((f.type!=this.fieldType.IMGURL && f.type!=this.fieldType.MCOMBO)?'"'+value?.toString().toUpperCase()+'"':value))
           }else if(f.case==FieldCase.LOWER){
-            this.dataToSave += ',"'+f.name+'":'+(value==undefined?null:(f.type!=this.fieldType.IMGURL?'"'+value?.toString().toLowerCase()+'"':value))
+            this.dataToSave += ',"'+f.name+'":'+(value==undefined?null:((f.type!=this.fieldType.IMGURL && f.type!=this.fieldType.MCOMBO)?'"'+value?.toString().toLowerCase()+'"':value))
           }
           else{
-            this.dataToSave += ',"'+f.name+'":'+(value==undefined?null:(f.type!=this.fieldType.IMGURL?'"'+value?.toString()+'"':value))
+            this.dataToSave += ',"'+f.name+'":'+(value==undefined?null:((f.type!=this.fieldType.IMGURL && f.type!=this.fieldType.MCOMBO)?'"'+value?.toString()+'"':value))
           }
         });
       });
