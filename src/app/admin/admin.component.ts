@@ -43,8 +43,8 @@ export class AdminComponent extends Common implements OnInit, AfterViewInit{
                 items: [
                     //{ label: 'Configurações', icon: 'pi pi-fw pi-settings icon-small', routerLink: [this.modulePath+'/b2b/configurations'], queryParams: { place: this.modules.B2B } },
                     { label: 'Marcas', icon: 'pi pi-fw pi-marks icon-small', routerLink: [this.modulePath+'/b2b/brands'] },
-                    { label: 'Categorias/Cordenados', icon: 'pi pi-fw pi-category icon-small', routerLink: [this.modulePath+'/b2b/categories'] },
-                    { label: 'Coleções', icon: 'pi pi-fw pi-collection icon-small', routerLink: [this.modulePath+'/b2b/collections'] },
+                    { label: 'Categorias/Coordenados', icon: 'pi pi-fw pi-category icon-small', routerLink: [this.modulePath+'/b2b/categories'] },
+                    { label: 'Momentos/Coleções', icon: 'pi pi-fw pi-collection icon-small', routerLink: [this.modulePath+'/b2b/moments'] },
                     { label: 'Modelos', icon: 'pi pi-fw pi-models icon-small', routerLink: [this.modulePath+'/b2b/models'] },
                     { label: 'Tipos de Produtos', icon: 'pi pi-fw pi-prod-type icon-small', routerLink: [this.modulePath+'/b2b/product-types'] },
                     { label: 'Cond. de Pagamento',icon:'pi pi-fw pi-payment icon-small', routerLink: [this.modulePath+'/b2b/payment-condition']},
