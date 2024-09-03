@@ -5,8 +5,8 @@ import { Common } from 'src/app/classes/common';
 import { CalendarEvent, CalendarEventData, CalendarEventType } from 'src/app/models/calendar.model';
 import { CalendarService } from 'src/app/services/calendar.service';
 import { MessageService } from 'primeng/api';
-import { CollectionService } from 'src/app/services/collection.service';
-import { Collection } from 'src/app/models/collection.model';
+import { MomentService } from 'src/app/services/moment.service';
+import { Moment } from 'src/app/models/moment.model';
 
 
 @Component({
@@ -30,15 +30,15 @@ export class EventFormComponent extends Common implements OnDestroy, AfterViewIn
   eventParentEventId:number = 0;
   eventTypes:CalendarEventType[] = [];
   validPeriod:boolean = true;
-  all_collections:Collection[] = [];
-  selectedCollection!:Collection;
+  all_moments:Moment[] = [];
+  selectedMoment!:Moment;
 
   //trabalho com children
   showParentEvents:boolean = false;
   exsistentEvents:CalendarEvent[] = [];
 
   constructor(private svc:CalendarService,
-    private svcCol:CollectionService,
+    private svcMon:MomentService,
     private msgSvc:MessageService,
     route:Router){
     super(route);
@@ -54,10 +54,10 @@ export class EventFormComponent extends Common implements OnDestroy, AfterViewIn
   }
 
   loadData():void{
-    // realiza a carga das colecoes
-    this.svcCol.list({page:1,pageSize:1,query:'can:list-all 1||'}).subscribe({
+    // realiza a carga das momentos/colecoes
+    this.svcMon.list({page:1,pageSize:1,query:'can:list-all 1||'}).subscribe({
       next: (data) =>{
-        this.all_collections = data as Collection[];
+        this.all_moments = data as Moment[];
       }
     });
 
@@ -81,7 +81,7 @@ export class EventFormComponent extends Common implements OnDestroy, AfterViewIn
         },
         complete: () =>{
           if(this.selectedEventType?.use_collection){
-            this.selectedCollection = this.all_collections.find(v => v.id == this.selectedEvent?.collection.id) as Collection;
+            this.selectedMoment = this.all_moments.find(v => v.id == this.selectedEvent?.moment.id) as Moment;
           }
   
           //verifica se tem orcamento e seta
@@ -130,7 +130,7 @@ export class EventFormComponent extends Common implements OnDestroy, AfterViewIn
     }
 
     //se cria um funil, eh necessario informar a colecao
-    if(validated && (this.selectedEventType as CalendarEventType).create_funnel && (this.selectedCollection == undefined || this.selectedCollection.id == 0)){
+    if(validated && (this.selectedEventType as CalendarEventType).create_funnel && (this.selectedMoment == undefined || this.selectedMoment.id == 0)){
       validated = false;
       this.msgSvc.clear();
       this.msgSvc.add({
@@ -152,7 +152,7 @@ export class EventFormComponent extends Common implements OnDestroy, AfterViewIn
         date_end: (this.eventEnd as Date).toISOString().substring(0,10),
         budget_value: (this.selectedEventType as CalendarEventType).has_budget ? this.eventBudget: null,
         id_event_type: (this.selectedEventType as CalendarEventType).id,
-        id_collection: (this.selectedEventType as CalendarEventType).use_collection? this.selectedCollection.id: null,
+        id_collection: (this.selectedEventType as CalendarEventType).use_collection? this.selectedMoment.id: null,
         year: 0
       };
 
@@ -237,12 +237,12 @@ export class EventFormComponent extends Common implements OnDestroy, AfterViewIn
     }
     
     if(selected!=undefined){
-      console.log("Passou aqui no selected")
-      console.log(this.selectedEventType)
+      //console.log("Passou aqui no selected")
+      //console.log(this.selectedEventType)
       // realiza a carga das colecoes
-      this.svcCol.list({page:1,pageSize:1,query:'can:list-all 1||'}).subscribe({
+      this.svcMon.list({page:1,pageSize:1,query:'can:list-all 1||'}).subscribe({
         next: (data) =>{
-          this.all_collections = data as Collection[];
+          this.all_moments = data as Moment[];
         }
       });
     }
@@ -251,8 +251,8 @@ export class EventFormComponent extends Common implements OnDestroy, AfterViewIn
   closeForm():void{
     this.exsistentEvents = [];
     this.showParentEvents = false;
-    this.all_collections = [];
-    this.selectedCollection = {
+    this.all_moments = [];
+    this.selectedMoment = {
       id:0,
       name: "",
       brand: {
@@ -267,7 +267,7 @@ export class EventFormComponent extends Common implements OnDestroy, AfterViewIn
     this.eventEnd = null;
     this.eventBudget = null;
     this.eventParentEventId = 0;
-    this.selectedCollection = {
+    this.selectedMoment = {
       id: 0,
       brand: {
         id: 0,
