@@ -1,4 +1,4 @@
-import { Collection } from "./collection.model"
+import { Moment } from "./moment.model"
 
 export interface Months{
     position: number,
@@ -33,7 +33,7 @@ export interface CalendarEvent{
     type: CalendarEventType,
     year:number,
     budget_value:number | null,
-    collection: Collection,
+    moment: Moment,
     children: CalendarEvent[]
     date_created:string|null,
     date_updated:string|null

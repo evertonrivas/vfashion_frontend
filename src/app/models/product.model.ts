@@ -107,24 +107,24 @@ export interface ProductStockColor{
 
 export interface ProductStock2{
     id_product:number,
+    refCode: string,
     product:string,
     colors: ProductStockColor[]
 }
 
 export interface ProductGrid{
     id:number,
-    origin_id:number,
     name:string,
-    default:boolean,
-    distribution: ProductGridDistribution[]
+    sizes: Size[],
     date_created:string,
     date_updated:string|null
 }
 
 export interface ProductGridDistribution{
-    id_color:number,
-    color:string,
-    sizes:ProductGridDistributionSize[]
+    id:number,
+    name:string,
+    new_size:string,
+    value:number
 }
 
 export interface ProductGridDistributionSize{

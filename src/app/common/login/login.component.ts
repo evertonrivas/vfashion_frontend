@@ -86,6 +86,7 @@ export class LoginComponent implements AfterContentInit{
     localStorage.removeItem("token_expire");
     localStorage.removeItem("level_access");
     localStorage.removeItem("id_profile");
+    localStorage.removeItem("flimv_model");
     //busca as configuracoes do sistema
     this.svc.getConfig().subscribe({
       next:(data) =>{
@@ -101,6 +102,7 @@ export class LoginComponent implements AfterContentInit{
           localStorage.setItem("company_max_up_files",String(config.company_max_up_files));
           localStorage.setItem("company_max_up_images",String(config.company_max_up_images));
           localStorage.setItem("company_use_url_images",String(config.company_use_url_images?1:0));
+          localStorage.setItem("flimv_model",config.flimv_model);
 
           this.use_company_custom = config.use_company_custom;
           this.company_logo = config.company_logo;

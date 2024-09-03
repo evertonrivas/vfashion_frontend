@@ -19,5 +19,6 @@ export interface SysConfig{
     company_max_up_files:number,
     company_max_up_images:number,
     company_use_url_images:boolean,
-    system_pagination_size:number
+    system_pagination_size:number,
+    flimv_model:string,
 }
