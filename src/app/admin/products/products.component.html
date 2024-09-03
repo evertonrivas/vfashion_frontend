@@ -9,16 +9,11 @@
                 <label class="p-panel-title">Produtos</label>
             </div>
             <div class="flex flex-row gap-1">
-                <p-overlayPanel #pnlMassive>
-                    <ng-template pTemplate="content">
-                        <h5>Alteração em Massa</h5>
-                    </ng-template>
-                </p-overlayPanel>
                 <p-button icon="pi pi-plus" [severity]="'success'" styleClass="p-button-sm" pTooltip="Novo registro" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="onEditData()"></p-button>
                 <p-button *ngIf="!isTrash" [disabled]="tableSelected.length>0?false:true" icon="pi pi-trash" [severity]="'danger'" styleClass="p-button-sm" pTooltip="Excluir selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="onDataDelete(true)"></p-button>
                 <p-button *ngIf="isTrash" [disabled]="tableSelected.length>0?false:true" icon="pi pi-restore-from-trash icon-xsmall" [severity]="'danger'" styleClass="p-button-sm" pTooltip="Restaurar selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="onDataDelete(false)"></p-button>
                 <p-button icon="pi pi-upload" styleClass="p-button-sm" pTooltip="Importar" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="onImport()"></p-button>
-                <!-- <p-button [disabled]="tableSelected.length>0?false:true" icon="pi pi-massive-actions icon-xsmall" [severity]="'help'" styleClass="p-button-sm" pTooltip="Ações Massivas" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="pnlMassive.toggle($event)"></p-button> -->
+                <p-button [disabled]="tableSelected.length>0?false:true" icon="pi pi-massive-actions icon-xsmall" [severity]="'help'" styleClass="p-button-sm" pTooltip="Ações Massivas" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="showMassive = true;"></p-button>
                 <p-button icon="pi pi-filter" [severity]="'warning'" styleClass="p-button-sm" pTooltip="Filtro(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="showFilter()"></p-button>
                 <p-toggleButton [onIcon]="'pi pi-deleted icon-xsmall'" [offIcon]="'pi pi-deleted icon-xsmall'" styleClass="p-button-sm" pTooltip="Listar excluído(s)" tooltipPosition="top" tooltipStyleClass="text-xs" [(ngModel)]="isTrash" (onChange)="loadingData({page:0,pageCount:0},isTrash)"></p-toggleButton>
             </div>
@@ -38,10 +33,11 @@
                     <th style="width: 50px!important;" class="text-center" pFrozenColumn>Ações</th>
                     <th pSortableColumn="refCode" pFrozenColumn>Ref. <p-sortIcon field="refCode"></p-sortIcon></th>
                     <th pSortableColumn="name">Nome <p-sortIcon field="name"></p-sortIcon></th>
+                    <th pSortableColumn="measure_unit">UN. Medida <p-sortIcon field="measure_unit"></p-sortIcon></th>
+                    <th pSortableColumn="structure">Preço <p-sortIcon field="structure"></p-sortIcon></th>
                     <th pSortableColumn="model_description">Modelo <p-sortIcon field="model_description"></p-sortIcon></th>
                     <th pSortableColumn="type_description">Tipo <p-sortIcon field="type_description"></p-sortIcon></th>
-                    <th pSortableColumn="measure_unit">UN. Medida <p-sortIcon field="measure_unit"></p-sortIcon></th>
-                    <th pSortableColumn="structure">Estrutura <p-sortIcon field="structure"></p-sortIcon></th>
+                    <th>Categoria(s)</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-item>
@@ -51,12 +47,13 @@
                         <p-button [text]="true" icon="pi pi-pencil" pTooltip="Editar" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="onEditData(item.id)"></p-button>
                         <!-- <p-button [text]="true" icon="pi pi-prod-grid icon-small" pTooltip="Editar Grade" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="editData(item.id)"></p-button> -->
                     </td>
-                    <td pFrozenColumn>{{item.refCode}}</td>
+                    <td class="font-bold" pFrozenColumn>{{item.refCode}}</td>
                     <td>{{item.name}}</td>
+                    <td>{{item.measure_unit }}</td>
+                    <td class="text-right">{{item.price | currency}}</td>
                     <td>{{item.model_description}}</td>
                     <td>{{item.type_description}}</td>
-                    <td>{{item.measure_unit }}</td>
-                    <td>{{item.structure=='S'?'Simples':'Composto' }}</td>
+                    <td><div class="flex flex-column"><label class="mb-1" *ngFor="let cat of item.categories">{{cat.name}}</label></div></td>
                 </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">
@@ -124,3 +121,82 @@
         (onUpload)="uploadDone()"
         ></p-fileUpload>
 </p-dialog>
+
+<p-sidebar styleClass="w-30rem" [(visible)]="showMassive" position="right" (onHide)="clearMassive()">
+    <ng-template pTemplate="header">Ações em massa</ng-template>
+    <ng-template pTemplate="content">
+        <div class="flex flex-column gap-2 w-full lg:flex-row">
+            <p-multiSelect
+            placeholder="Selecione a(s) categoria(s)..."
+            styleClass="w-full"
+            emptyMessage="Nenhuma categoria encontrada!"
+            [options]="allOptCateg"
+            [(ngModel)]="selectedCategories"
+             [ngClass]="{'ng-invalid ng-dirty' : hasSendMassive && !selectedCategories && selectedAction==actions.CATEGORY,'w-full':true}"
+            ></p-multiSelect>
+            <p-button icon="pi pi-category icon-xsmall" styleClass="w-full lg:w-auto" label="Alterar" (onClick)="executeMassive(actions.CATEGORY)"></p-button>
+        </div>
+        <p-divider></p-divider>
+        <div class="flex flex-column w-full gap-2 lg:flex-row">
+            <p-dropdown
+            [options]="allOptGrid"
+            placeholder="Selecione a grade..."
+            emptyMessage="Nenhuma grade encontrada!"
+            styleClass="w-full"
+            [(ngModel)]="selectedGrid"
+            [ngClass]="{'ng-invalid ng-dirty' : hasSendMassive && !selectedGrid && selectedAction==actions.GRID,'w-full':true}"
+            ></p-dropdown>
+            <p-button icon="pi pi-prod-grid icon-xsmall" styleClass="w-full lg:w-auto" label="Alterar" (onClick)="executeMassive(actions.GRID)"></p-button>
+        </div>
+        <p-divider></p-divider>
+        <div class="flex flex-column w-full gap-2 lg:flex-row">
+            <p-dropdown
+            [options]="allOptModel"
+            emptyMessage="Nenhum modelo encontrado!"
+            placeholder="Selecione o modelo..."
+            styleClass="w-full"
+            [(ngModel)]="selectedModel"
+            [ngClass]="{'ng-invalid ng-dirty' : hasSendMassive && !selectedModel && selectedAction==actions.MODEL,'w-full':true}"
+            ></p-dropdown>
+            <p-button icon="pi pi-models icon-xsmall" styleClass="w-full lg:w-auto" label="Alterar" (onClick)="executeMassive(actions.MODEL)"></p-button>
+        </div>
+        <p-divider></p-divider>
+        <div class="flex flex-column w-full gap-2 lg:flex-row">
+            <p-inputNumber 
+                styleClass="w-full" 
+                [(ngModel)]="newPrice" 
+                mode="currency" 
+                currency="BRL" 
+                locale="pt-BR" 
+                placeholder="R$ 0,00" 
+                inputStyleClass="w-full"
+                [ngClass]="{'ng-invalid ng-dirty' : hasSendMassive && !newPrice && selectedAction==actions.PRICE, 'w-full':true}"
+                ></p-inputNumber>
+            <p-button icon="pi pi-dollar" styleClass="w-full lg:w-auto" label="Alterar" (onClick)="executeMassive(actions.PRICE)"></p-button>
+        </div>
+        <p-divider></p-divider>
+        <div class="flex flex-column w-full gap-2 lg:flex-row">
+            <p-dropdown
+            [options]="allOptType"
+            emptyMessage="Nenhum tipo encontrado!"
+            placeholder="Selecione o tipo..."
+            styleClass="w-full"
+            [(ngModel)]="selectedType"
+            [ngClass]="{'ng-invalid ng-dirty' : hasSendMassive && !selectedType && selectedAction==actions.TYPE,'w-full':true}"
+            ></p-dropdown>
+            <p-button icon="pi pi-prod-type icon-xsmall" styleClass="w-full lg:w-auto" label="Alterar" (onClick)="executeMassive(actions.TYPE)"></p-button>
+        </div>
+        <p-divider></p-divider>
+        <div class="flex flex-column gap-2 lg:flex-row w-full">
+            <p-dropdown
+            [options]="allOptMeasure"
+            emptyMessage="Nenhuma un. de medida encontrada!"
+            placeholder="Selecione a un. de medida..."
+            styleClass="w-full"
+            [(ngModel)]="selectedMeasure"
+            [ngClass]="{'ng-invalid ng-dirty' : hasSendMassive && !selectedMeasure && selectedAction==actions.MEASURE,'w-full':true}"
+            ></p-dropdown>
+            <p-button icon="pi pi-unity-measure icon-xsmall" styleClass="w-full lg:w-auto" label="Alterar" (onClick)="executeMassive(actions.MEASURE)"></p-button>
+        </div>
+    </ng-template>
+</p-sidebar>

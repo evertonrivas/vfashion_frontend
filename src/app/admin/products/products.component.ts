@@ -8,13 +8,13 @@ import { SharedModule } from 'src/app/common/shared.module';
 import { RequestResponse, ResponseError } from 'src/app/models/paginate.model';
 import { ProductsService } from 'src/app/services/products.service';
 import { FilterComponent } from "../../common/filter/filter.component";
-import { FieldCase, FieldType } from 'src/app/models/system.enum';
+import { FieldCase, FieldType, MassiveProductAction } from 'src/app/models/system.enum';
 import { FieldOption, FormField, FormRow } from 'src/app/models/field.model';
 import { B2bBrand, Color, Product, ProductCategory, ProductGrid, ProductModel, ProductType, Size } from 'src/app/models/product.model';
 import { forkJoin } from 'rxjs';
 import { BrandService } from 'src/app/services/brand.service';
 import { ModelService } from 'src/app/services/model.service';
-import { CollectionService } from 'src/app/services/collection.service';
+import { MomentService } from 'src/app/services/moment.service';
 import { CategoryService } from 'src/app/services/category.service';
 import { ColorService } from 'src/app/services/color.service';
 import { SizeService } from 'src/app/services/size.service';
@@ -24,7 +24,8 @@ import { MeasureUnitService } from 'src/app/services/measure-unit.service';
 import { MeasureUnit } from 'src/app/models/measure-unit';
 import { FileUploadModule } from 'primeng/fileupload';
 import { HttpHeaders } from '@angular/common/http';
-import { Collection } from 'src/app/models/collection.model';
+import { Moment } from 'src/app/models/moment.model';
+import { DividerModule } from 'primeng/divider';
 
 @Component({
     selector: 'app-products',
@@ -40,7 +41,8 @@ import { Collection } from 'src/app/models/collection.model';
         SharedModule,
         FilterComponent,
         FormComponent,
-        FileUploadModule
+        FileUploadModule,
+        DividerModule
     ]
 })
 export class ProductsComponent extends Common implements AfterViewInit {
@@ -49,13 +51,25 @@ export class ProductsComponent extends Common implements AfterViewInit {
   allOptModel:FieldOption[] = [];
   allOptGrid:FieldOption[]  = [];
   allOptMeasure:FieldOption[] = [];
+  allOptCateg:FieldOption[] = []; 
   showDialogUpload:boolean = false;
   showDialogImport:boolean = false;
   url_upload_images:string = this.envconfig.backend_cmm+'/upload/images/';
   url_upload_import:string = this.envconfig.backend_cmm+'/upload/import/?type=P';
   uploadHeaders:HttpHeaders = new HttpHeaders()
     .set("Authorization",localStorage.getItem('token_type')+" "+localStorage.getItem('token_access'));
-    
+  
+    //acoes massivas
+  showMassive:boolean = false;
+  selectedCategories:any;
+  selectedType:any;
+  selectedModel:any;
+  selectedGrid:any;
+  selectedMeasure:any;
+  newPrice:any;
+  actions = MassiveProductAction;
+  selectedAction!:MassiveProductAction;
+
   constructor(route:Router,
     private msg:MessageService,
     private cnf:ConfirmationService,
@@ -63,7 +77,7 @@ export class ProductsComponent extends Common implements AfterViewInit {
     private cdr:ChangeDetectorRef,
     private svcB:BrandService,
     private svcM:ModelService,
-    private svcCl:CollectionService,
+    private svcMo:MomentService,
     private svcCt:CategoryService,
     private svcCo:ColorService,
     private svcS:SizeService,
@@ -86,8 +100,9 @@ export class ProductsComponent extends Common implements AfterViewInit {
     const $pModel  = this.svcM.list({page:1,pageSize:1,query:'can:list-all 1'});
     const $pGrid   = this.svc.listGrid({page:1,pageSize:1,query:'can:list-all 1'});
     const $pMeasure= this.svcMU.list({page:1,pageSize:1,query:'can:list-all 1'});
+    const $pCateg  = this.svcCt.list({page:1,pageSize:1,query:'can:list-all 1'});
 
-    this.serviceSub [1] = forkJoin([$pType,$pModel,$pGrid,$pMeasure]).subscribe(([valType,valModel,valGrid,valMeasure]) =>{
+    this.serviceSub [1] = forkJoin([$pType,$pModel,$pGrid,$pMeasure,$pCateg]).subscribe(([valType,valModel,valGrid,valMeasure,valCateg]) =>{
       (valType as ProductType[]).forEach((t) =>{
         this.allOptType.push({value: t.id, label: t.name, id:undefined});
       });
@@ -100,9 +115,13 @@ export class ProductsComponent extends Common implements AfterViewInit {
         this.allOptGrid.push({value:g.id, label:g.name, id:undefined});
       });
 
-      (valMeasure as MeasureUnit[]).forEach((m)=>{
+      (valMeasure as MeasureUnit[]).forEach((m) =>{
         this.allOptMeasure.push({value:m.id,label:m.code, id:undefined});
-      })
+      });
+
+      (valCateg as ProductCategory[]).forEach((c) =>{
+        this.allOptCateg.push({value:c.id,label:c.name as string,id:undefined});
+      });
     });
 
 
@@ -146,19 +165,15 @@ export class ProductsComponent extends Common implements AfterViewInit {
 
     const $pBrand  = this.svcB.list({page:1,pageSize:1,query:'can:list-all 1'});
     const $pModel  = this.svcM.list({page:1,pageSize:1,query:'can:list-all 1'});
-    const $pCollec = this.svcCl.list({page:1,pageSize:1,query:'can:list-all 1'});
+    const $pMoment = this.svcMo.list({page:1,pageSize:1,query:'can:list-all 1'});
     const $pCateg  = this.svcCt.list({page:1,pageSize:1,query:'can:list-all 1'});
-    const $pColor  = this.svcCo.list({page:1, pageSize:1,query:'can:list-all 1'});
-    const $pSize   = this.svcS.list({page:1,pageSize:1,query:'can:list-all 1'});
     const $pType   = this.svcT.list({page:1,pageSize:1,query:'can:list-all 1'});
 
-    this.serviceSub [1] = forkJoin([$pBrand,$pModel,$pCollec,$pCateg,$pColor,$pSize,$pType]).subscribe(([valBrand,valModel,valCollec,valCateg,valColor,valSize,valType]) =>{
+    this.serviceSub [1] = forkJoin([$pBrand,$pModel,$pMoment,$pCateg,$pType]).subscribe(([valBrand,valModel,valMoment,valCateg,valType]) =>{
       let optBrand:FieldOption[]  = [];
       let optModel:FieldOption[]  = [];
-      let optCollec:FieldOption[] = [];
+      let optMoment:FieldOption[] = [];
       let optCateg:FieldOption[]  = [];
-      let optColor:FieldOption[]  = [];
-      let optSize:FieldOption[]   = [];
       let optType:FieldOption[]   = [];
       
       (valBrand as B2bBrand[]).forEach((b) =>{
@@ -169,20 +184,12 @@ export class ProductsComponent extends Common implements AfterViewInit {
         optModel.push({value: m.id, label: m.name, id:undefined});
       });
 
-      (valCollec as Collection[]).forEach((c) =>{
-        optCollec.push({value: c.id, label: c.name, id:undefined});
+      (valMoment as Moment[]).forEach((c) =>{
+        optMoment.push({value: c.id, label: c.name, id:undefined});
       });
 
       (valCateg as ProductCategory[]).forEach((c) =>{
         optCateg.push({value: c.id, label: c.name as string, id:undefined});
-      });
-
-      (valColor as Color[]).forEach((c) =>{
-        optColor.push({value: c.id, label: c.name, id:undefined});
-      });
-
-      (valSize as Size[]).forEach((s) =>{
-        optSize.push({value: s.id, label: s.name, id:undefined});
       });
 
       (valType as ProductType[]).forEach((t) =>{
@@ -195,20 +202,20 @@ export class ProductsComponent extends Common implements AfterViewInit {
         name:"brand",
         filter_name:"brand",
         filter_prefix:"is",
-        type: FieldType.COMBO,
+        type: FieldType.MCOMBO,
         value:undefined,
         options: optBrand
       });
 
       this.filters.push({
-        label:"Coleção(ões)",
+        label:"Momento(s)/Coleção(ões)",
         placeholder:"Selecione...",
         name:"collection",
         filter_name:"collection",
         filter_prefix:"is",
-        type:FieldType.COMBO,
+        type:FieldType.MCOMBO,
         value:undefined,
-        options:optCollec
+        options:optMoment
       });
 
       this.filters.push({
@@ -217,7 +224,7 @@ export class ProductsComponent extends Common implements AfterViewInit {
         name:"category",
         filter_name:"category",
         filter_prefix:"is",
-        type:FieldType.COMBO,
+        type:FieldType.MCOMBO,
         value:undefined,
         options:optCateg
       });
@@ -228,7 +235,7 @@ export class ProductsComponent extends Common implements AfterViewInit {
         name:"model",
         filter_name:"model",
         filter_prefix:"is",
-        type: FieldType.COMBO,
+        type: FieldType.MCOMBO,
         value:undefined,
         options: optModel
       });
@@ -239,31 +246,9 @@ export class ProductsComponent extends Common implements AfterViewInit {
         name:"type",
         filter_name:"type",
         filter_prefix:"is",
-        type: FieldType.COMBO,
+        type: FieldType.MCOMBO,
         value:undefined,
         options: optType
-      });
-
-      this.filters.push({
-        label: "Tamanho(s)",
-        placeholder:"Selecione...",
-        name:"size",
-        filter_name:"size",
-        filter_prefix:"is",
-        type: FieldType.COMBO,
-        value:undefined,
-        options: optSize
-      });
-
-      this.filters.push({
-        label: "Cor(es)",
-        placeholder:"Selecione...",
-        name:"color",
-        filter_name:"color",
-        filter_prefix:"is",
-        type: FieldType.COMBO,
-        value:undefined,
-        options: optColor
       });
     });
   }
@@ -634,5 +619,89 @@ export class ProductsComponent extends Common implements AfterViewInit {
 
   onImport(){
     this.showDialogImport = true;
+  }
+
+  clearMassive(){
+    this.selectedCategories = undefined;
+    this.selectedGrid = undefined;
+    this.selectedMeasure = undefined;
+    this.selectedModel = undefined;
+    this.selectedType = undefined;
+    this.newPrice = undefined;
+  }
+
+  executeMassive(act:MassiveProductAction){
+    this.hasSendMassive = true;
+    this.selectedAction = act;
+    this.msg.clear();
+    let selection:any;
+    switch(act){
+      case this.actions.CATEGORY: 
+        if(this.selectedCategories==undefined){
+          return;
+        }else{
+          selection = this.selectedCategories;
+        }
+      break;
+      case this.actions.GRID: 
+        if(this.selectedGrid==undefined){
+          return;
+        }else{
+          selection = this.selectedGrid
+        }
+      break;
+      case this.actions.MEASURE: 
+        if(this.selectedMeasure==undefined){
+          return;
+        }else{
+          selection = this.selectedMeasure;
+        }
+      break;
+      case this.actions.MODEL: 
+        if(this.selectedModel==undefined){
+          return;
+        }else{
+          selection = this.selectedModel;
+        }
+      break;
+      case this.actions.PRICE: 
+        if(this.newPrice==undefined){
+          return;
+        }else{
+          selection = this.newPrice;
+        }
+      break;
+      case this.actions.TYPE:
+        if(this.selectedType==undefined){
+          return;
+        }else{
+          selection = this.selectedType;
+        }
+      break;
+    }
+
+    let ids:number[] = [];
+    this.tableSelected.forEach(p =>{
+      ids.push(p.id);
+    });
+
+    this.svc.executeMassive(this.selectedAction,ids,selection).subscribe({
+      next:(data) =>{
+        if(typeof data ==='boolean'){
+          this.msg.add({
+            severity:"success",
+            summary:"Sucesso!",
+            detail:"Ação massiva executada com sucesso!"
+          });
+          this.loadingData();
+        }else{
+          this.msg.add({
+            summary:"Falha...",
+            detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
+            severity:"error"
+          });
+        }
+      }
+    });
   }
 }
