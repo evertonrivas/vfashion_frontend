@@ -10,7 +10,7 @@ import { EntitiesComponent } from './entities/entities.component';
 import { ProductsComponent } from './products/products.component';
 import { UsersComponent } from './users/users.component';
 import { BrandsComponent } from './b2b/brands/brands.component';
-import { CollectionsComponent } from './b2b/collections/collections.component';
+import { MomentComponent } from './b2b/moment/moment.component';
 import { ColorsComponent } from './b2b/colors/colors.component';
 import { CustomerGroupsComponent } from './b2b/customer-groups/customer-groups.component';
 import { ModelsComponent } from './b2b/models/models.component';
@@ -30,6 +30,7 @@ import { MeasureUnitComponent } from './measure-unit/measure-unit.component';
 import { ProfileComponent } from '../common/profile/profile.component';
 import { VersionComponent } from '../common/version/version.component';
 import { ProductStockComponent } from './b2b/product-stock/product-stock.component';
+import { ReportManagerComponent } from '../common/report-manager/report-manager.component';
 
 const routes: Routes = [{ 
   path: '', 
@@ -42,6 +43,7 @@ const routes: Routes = [{
     { path: 'products', component: ProductsComponent },
     { path: 'measure-unit', component: MeasureUnitComponent },
     { path: 'users', component: UsersComponent },
+    { path: 'reports', component: ReportManagerComponent },
     { path: 'version/:id', component: VersionComponent },
     {
       path: 'b2b',
@@ -49,7 +51,7 @@ const routes: Routes = [{
         { path: 'configurations', component: ConfigB2B },
         { path: 'brands', component: BrandsComponent },
         { path: 'categories', component: CategoriesComponent },
-        { path: 'collections', component: CollectionsComponent },
+        { path: 'moments', component: MomentComponent },
         { path: 'colors', component: ColorsComponent },
         { path: 'customer-groups', component: CustomerGroupsComponent },
         { path: 'models', component: ModelsComponent },
