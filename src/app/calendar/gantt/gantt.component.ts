@@ -169,7 +169,7 @@ export class GanttComponent extends Common implements OnDestroy,OnInit{
     if(this.periodDates!=null){
       if(this.periodDates[1]!=null){
         this.dpp?.toggle();
-        console.log(this.periodDates);
+        // console.log(this.periodDates);
         this.options.query = "is:start "+this.periodDates[0].toISOString().substring(0,10)+"||is:end "+this.periodDates[1].toISOString().substring(0,10);
         this.loadData();
       }
@@ -207,7 +207,7 @@ export class GanttComponent extends Common implements OnDestroy,OnInit{
       body.push(evt.name);
       body.push(evt.type.name as string);
       body.push((evt.budget_value==null?'':String(evt.budget_value)));
-      body.push(evt.collection.name);
+      body.push(evt.moment.name);
       body.push(evt.start_date);
       body.push(evt.end_date);
       body.push(evt.date_created==null?'':String(evt.date_created));
@@ -219,7 +219,7 @@ export class GanttComponent extends Common implements OnDestroy,OnInit{
         body.push(c.name);
         body.push(c.type.name as string);
         body.push((c.budget_value==null?'':String(c.budget_value)));
-        body.push(c.collection.name);
+        body.push(c.moment.name);
         body.push(c.start_date);
         body.push(c.end_date);
         body.push(c.date_created==null?'':String(c.date_created));
