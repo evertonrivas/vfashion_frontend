@@ -97,6 +97,7 @@
             <!-- &nbsp;&nbsp;<p-tag [severity]="getSeverity(selectedOrder.status)">{{selectedOrder.status | orderStatus}}</p-tag> -->
             <label class="mb-2 font-bold">Status: </label>
             <p-dropdown
+                [disabled]="finished"
                 [options]="all_order_status"
                 [(ngModel)]="selectedOrder.status"
                 appendTo="body"
@@ -112,6 +113,7 @@
         <div class="flex flex-column">
             <label class="mb-2 font-bold">Transportadora</label>
             <p-dropdown
+            [disabled]="finished"
             [options]="track_companies"
             styleClass="p-inputtext-sm"
             appendTo="body"
@@ -121,11 +123,11 @@
         </div>
         <div class="flex flex-column">
             <label class="mb-2 font-bold">Nota Fiscal</label>
-            <input pInputText ngClass="p-inputtext-sm" [(ngModel)]="selectedOrder.invoice_number">
+            <input [disabled]="finished" pInputText ngClass="p-inputtext-sm" [(ngModel)]="selectedOrder.invoice_number">
         </div>
         <div class="flex flex-column">
             <label class="mb-2 font-bold">Série NF</label>
-            <p-inputNumber min="0" inputStyleClass="p-inputtext-sm" styleClass="p-inputtext-sm" [(ngModel)]="selectedOrder.invoice_serie"></p-inputNumber>
+            <p-inputNumber [disabled]="finished" min="0" inputStyleClass="p-inputtext-sm" styleClass="p-inputtext-sm" [(ngModel)]="selectedOrder.invoice_serie"></p-inputNumber>
         </div>
     </div>
     <p-table
@@ -159,8 +161,8 @@
             </tr>
         </ng-template>
     </p-table>
-    <div class="flex flex-row mt-2" [ngClass]="selectedOrder.status==status.FINISHED?'justify-content-center':'justify-content-end gap-2'">
+    <div class="flex flex-row mt-2" [ngClass]="finished?'justify-content-center gap-2':'justify-content-end gap-2'">
         <p-button icon="pi pi-ban" label="Cancelar" (onClick)="onCloseView()" styleClass="p-button-sm" severity="danger"></p-button>
-        <p-button *ngIf="selectedOrder.status!=status.FINISHED" icon="pi pi-save" label="Salvar" styleClass="p-button-sm" (onClick)="saveOrder()" [loading]="loading"></p-button>
+        <p-button *ngIf="!finished" icon="pi pi-save" label="Salvar" styleClass="p-button-sm" (onClick)="saveOrder()" [loading]="loading"></p-button>
     </div>
 </p-dialog>

@@ -31,6 +31,7 @@ export class ManagementComponent extends Common implements AfterViewInit{
   showIntegrationTrack:boolean = false;
   status = OrderStatus;
   all_order_status:any[] = [0,1,2,3,4,5]
+  finished:boolean = false;
   selectedOrder:Order = {
     id: 0,
     customer: undefined,
@@ -136,6 +137,7 @@ export class ManagementComponent extends Common implements AfterViewInit{
       next: (data) =>{
         if ( "status" in data){
           this.selectedOrder = data as Order;
+          this.finished = (this.selectedOrder.status==this.status.FINISHED || this.selectedOrder.status==this.status.REJECTED)?true:false;
         }else{
           this.msg.add({
             summary:"Falha ao carregar...",
