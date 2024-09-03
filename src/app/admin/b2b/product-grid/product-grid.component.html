@@ -1,5 +1,5 @@
 <app-filter [fields]="filters" [(visible)]="filterVisible" [isTrash]="isTrash" (queryToFilter)="doFilter($event)"></app-filter>
-<app-form [(visible)]="formVisible" [rows]="formRows" title="Grade de Produto" [registryId]="idToEdit" (objectToSave)="onDataSave($event)"></app-form>
+<app-form [(visible)]="formVisible" [rows]="formRows" title="Grade de Produto" [registryId]="idToEdit" (objectToSave)="cnfOnDataSave($event)"></app-form>
 <p-toast></p-toast>
 <p-confirmDialog></p-confirmDialog>
 <p-panel>
@@ -36,7 +36,6 @@
                     <th style="width: 50px!important;" class="text-center" pFrozenColumn><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
                     <th style="width: 180px!important;" class="text-center" pFrozenColumn>Ações</th>
                     <th pSortableColumn="name" pFrozenColumn>Nome <p-sortIcon field="name"></p-sortIcon></th>
-                    <th pSortableColumn="default">Padrão? <p-sortIcon field="default"></p-sortIcon></th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-item>
@@ -44,41 +43,9 @@
                     <td class="text-center" pFrozenColumn><p-tableCheckbox [value]="item"></p-tableCheckbox></td>
                     <td pFrozenColumn>
                         <p-button [text]="true" icon="pi pi-pencil" pTooltip="Editar" tooltipPosition="top" tooltipStyleClass="text-sm" (onClick)="onEditData(item.id)"></p-button>
-                        <p-button [text]="true" icon="pi pi-prod-grid-edit" pTooltip="Adicionar Distribuição" tooltipPosition="top" tooltipStyleClass="text-sm" (onClick)="onEditGrid(item.id)"></p-button>
-                        <p-button [text]="true" icon="pi pi-eye" pTooltip="Ver Distribuição" tooltipPosition="top" tooltipStyleClass="text-sm" (onClick)="gridView.toggle($event)"></p-button>
-                        <p-overlayPanel #gridView (onShow)="onViewGrid({page:0,pageCount:0},item.id)" styleClass="w-30rem" (onHide)="onHideGrid()">
-                            <p-table styleClass="p-datatable-sm p-datatable-striped"
-                            [value]="distributionInGrid"
-                            [loading]="loadingGrid"
-                            [scrollable]="true"
-                            scrollHeight="200px">
-                                <ng-template pTemplate="header">
-                                    <tr>
-                                        <th>Cor(es)</th>
-                                        <th *ngFor="let size of sizes">{{size.size}}</th>
-                                        <th>Ação</th>
-                                    </tr>
-                                </ng-template>
-                                <ng-template pTemplate="body" let-grid>
-                                    <tr>
-                                        <td>{{grid.color}}</td>
-                                        <td *ngFor="let size of grid.sizes">{{size.value}}</td>
-                                        <td>
-                                            <p-button [text]="true" icon="pi pi-pencil" styleClass="p-button-sm" pTooltip="Editar" tooltipStyleClass="text-sm" tooltipPosition="top" (onClick)="onEditGrid(item.id,grid.id_color)"></p-button>
-                                            <p-button [text]="true" icon="pi pi-trash" styleClass="p-button-sm" severity="danger" pTooltip="Excluir" tooltipStyleClass="text-sm" tooltipPosition="top" (onClick)="onDeleteGrid(item.id,grid.id_color)"></p-button>
-                                        </td>
-                                    </tr>
-                                </ng-template>
-                                <ng-template pTemplate="emptymessage">
-                                    <tr>
-                                        <td class="text-center">Nenhum cliente encontrado!</td>
-                                    </tr>
-                                </ng-template>
-                            </p-table>
-                        </p-overlayPanel>
+                        <p-button [text]="true" icon="pi pi-prod-grid-edit" pTooltip="Editar Distribuição" tooltipPosition="top" tooltipStyleClass="text-sm" (onClick)="onEditGrid(item.id)"></p-button>
                     </td>
                     <td pFrozenColumn>{{item.name}}</td>
-                    <td>{{item.default==true?'Sim':'Não'}}</td>
                 </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">
@@ -101,30 +68,24 @@
         </p-paginator>
     </ng-template>
 </p-panel>
-<p-dialog [visible]="showDistribution" header="Distribuição de Grade" [modal]="true" [closable]="false"[style]="{ width: '30rem' }">
-    <div class="flex flex-column mb-2">
-        <label class="mb-1">Cor</label>
-        <p-dropdown 
-        [options]="all_color" 
-        optionLabel="name" 
-        appendTo="body"
-        placeholder="Selecione..."
-        styleClass="w-full"
-        [filter]="true"
-        filterBy="name"
-        [(ngModel)]="selectedColor">
-        <ng-template pTemplate="selectedItem">
-            <span class="border-round-sm pl-2 pr-2 mr-2" [ngStyle]="{'width': '15px', 'height':'10px', 'background-color': selectedColor.hexcode}"></span> {{selectedColor.name}}
+
+<p-dialog [visible]="showDistribution" header="Distribuição de Grade" [modal]="true" [closable]="false" styleClass="w-30rem lg:w-8">
+    <p-table *ngIf="localDistribution.length > 0" styleClass="p-datatable-strip" [columns]="localDistribution" [value]="localDistribution">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" class="text-center vertical-align-top">
+                    {{col.name}} ({{col.new_size}})
+                </th>
+            </tr>
         </ng-template>
-        <ng-template pTemplate="item" let-item>
-            <span class="border-round-sm pl-2 pr-2 mr-2" [ngStyle]="{'width': '15px', 'height':'10px', 'background-color': item.hexcode}"></span> {{item.name}}
+        <ng-template pTemplate="body" let-item let-columns="columns" let-index="rowIndex">
+            <tr *ngIf="index==0">
+                <td *ngFor="let col of columns;let i=index">
+                    <p-inputNumber [showButtons]="true" size="3" [min]="0" [(ngModel)]="col.value"></p-inputNumber>
+                </td>
+            </tr>
         </ng-template>
-    </p-dropdown>
-    </div>
-    <div class="flex flex-column mb-2" *ngFor="let size of all_size">
-        <label class="mb-1">{{size.name}} - {{size.new_size}}</label>
-        <p-inputNumber [showButtons]="true" [min]="0" styleClass="w-full" inputStyleClass="w-full" [(ngModel)]="formDistribution[size.id].value"></p-inputNumber>
-    </div>
+    </p-table>
     <div class="flex flex-row justify-content-end w-full gap-1">
         <p-button icon="pi pi-ban" label="Cancelar" severity="danger" styleClass="p-button-sm" (onClick)="onCancelEdit()"></p-button>
         <p-button icon="pi pi-save" label="Salvar" (onClick)="onSaveGrid()" styleClass="p-button-sm" [loading]="loading"></p-button>

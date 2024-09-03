@@ -10,7 +10,7 @@ import { Options, RequestResponse, ResponseError } from 'src/app/models/paginate
 import { FieldCase, FieldType } from 'src/app/models/system.enum';
 import { ProductsService } from 'src/app/services/products.service';
 import { FormComponent } from 'src/app/common/form/form.component';
-import { FormField, FormRow } from 'src/app/models/field.model';
+import { FieldOption, FormField, FormRow } from 'src/app/models/field.model';
 import { Color, ProductGrid, ProductGridDistribution, Size } from 'src/app/models/product.model';
 import { ColorService } from 'src/app/services/color.service';
 import { SizeService } from 'src/app/services/size.service';
@@ -45,14 +45,9 @@ interface localDistribution{
 })
 export class ProductGridComponent extends Common implements AfterViewInit,OnDestroy{
   localObject!:ProductGrid;
-  localDistribution!:ProductGridDistribution;
-  formDistribution:localDistribution = {};
-  selectedColor!:Color;
-  loadingGrid:boolean = false;
+  localDistribution:ProductGridDistribution[] = [];
   showDistribution:boolean = false;
-  all_color:Color[] = [];
-  all_size:Size[] = [];
-  sizes:sizes[] = [];
+  all_size:FieldOption[] = [];
 
   distributionInGrid:ProductGridDistribution[] = [];
   constructor(route:Router,
@@ -79,6 +74,7 @@ export class ProductGridComponent extends Common implements AfterViewInit,OnDest
   ngAfterViewInit(): void {
     this.loadingData();
     this.loadingFilterData();
+
     this.cdr.detectChanges();
   }
 
@@ -103,25 +99,28 @@ export class ProductGridComponent extends Common implements AfterViewInit,OnDest
       }
     });
 
-
-    //carga das cores
-    this.svcC.list({page:1,pageSize:1,query:'can:list-all 1'}).subscribe({
-      next: (data) =>{
-        this.all_color = data as Color[];
-      }
-    });
-
     //carga dos tamanhos
     this.svcS.list({page:1,pageSize:1,query:'can:list-all 1'}).subscribe({
       next: (data) =>{
-        this.all_size = data as Size[];
-        this.all_size.forEach(s =>{
-          if(this.formDistribution[s.id] == undefined){
-            this.formDistribution[s.id] = {
-              value: 0
-            }
-          }
-        });
+        if ("error_details" in data){
+
+        }else{
+          (data as Size[]).forEach(c =>{
+            this.all_size.push({
+              id: c.id,
+              label: c.name + " ( "+c.new_size+" )",
+              value: c.id
+            });
+          });
+        }
+        // this.all_size = data as Size[];
+        // this.all_size.forEach(s =>{
+        //   if(this.formDistribution[s.id] == undefined){
+        //     this.formDistribution[s.id] = {
+        //       value: 0
+        //     }
+        //   }
+        // });
       }
     });
   }
@@ -150,11 +149,24 @@ export class ProductGridComponent extends Common implements AfterViewInit,OnDest
       type: FieldType.INPUT,
       value: undefined,
       required: true,
-      case: FieldCase.UPPER,
+      case: FieldCase.NONE,
       disabled: false,
       lockField: undefined
     };
     this.idToEdit = id;
+
+    let fieldSizes:FormField = {
+      label: "Tamanhos",
+      name: "sizes",
+      options: this.all_size,
+      placeholder:"Selecione...",
+      type:FieldType.MCOMBO,
+      value:undefined,
+      required:true,
+      case:FieldCase.NONE,
+      disabled:false,
+      lockField:undefined
+    }
 
     if(id>0){
       //busca os dados do registro para edicao
@@ -163,12 +175,20 @@ export class ProductGridComponent extends Common implements AfterViewInit,OnDest
           if ("name" in data){
             this.localObject = data as ProductGrid;
             fieldName.value = this.localObject.name;
+            let f:number[] = [];
+            this.all_size.forEach(c =>{
+              this.localObject.sizes.forEach(s =>{
+                if(s.id == c.id){
+                  f.push(c.id);
+                }
+              });
+            });
+
+            fieldSizes.value = f;
 
             //monta as linhas do form e exibe o mesmo
-            let row:FormRow = {
-              fields: [fieldName]
-            }
-            this.formRows.push(row);
+            this.formRows.push({ fields: [fieldName]});
+            this.formRows.push({ fields: [fieldSizes]});
             this.formVisible = true;
             
           }else{
@@ -183,11 +203,27 @@ export class ProductGridComponent extends Common implements AfterViewInit,OnDest
       });
     }else{
       //monta as linhas do forme e exibe o mesmo
-      let row:FormRow = {
-        fields: [fieldName]
-      }  
-      this.formRows.push(row);
+      this.formRows.push({ fields: [fieldName]});
+      this.formRows.push({ fields: [fieldSizes]});
       this.formVisible = true;
+    }
+  }
+
+  cnfOnDataSave(data:any):void{
+    if(this.idToEdit >0 ){
+      this.cnf.confirm({
+        header:"Atenção ao atualizar",
+        message:"Ao alterar as informações, os dados de estoques poderão sofrer alteração. Deseja realmente continuar?",
+        acceptLabel:"Sim",
+        rejectLabel:"Não",
+        rejectButtonStyleClass:"p-button-danger",
+        accept: () =>{
+          this.onDataSave(data);
+        }
+      });
+    }
+    else{
+      this.onDataSave(data);
     }
   }
 
@@ -263,25 +299,13 @@ export class ProductGridComponent extends Common implements AfterViewInit,OnDest
     });
   }
 
-  onEditGrid(id:number,idColor:number = 0):void{
+  onEditGrid(id:number):void{
     this.idToEdit = id;
-    if(idColor>0){
-      this.svc.loadGridDistribution(id,idColor).subscribe({
-        next:(data) =>{
-          this.localDistribution = data as ProductGridDistribution;
-          this.selectedColor = this.all_color.find(v => v.id== this.localDistribution.id_color) as Color;
-          this.localDistribution.sizes.forEach(s =>{
-            this.formDistribution[s.id_size].value = s.value
-          });
-        }
-      });
-    }else{
-      this.localDistribution = {
-        color:'',
-        id_color:0,
-        sizes: []
+    this.svc.loadGridDistribution(id).subscribe({
+      next:(data) =>{
+        this.localDistribution = data as ProductGridDistribution[];
       }
-    }
+    });
     this.showDistribution = true;
   }
 
@@ -311,24 +335,6 @@ export class ProductGridComponent extends Common implements AfterViewInit,OnDest
 
   onSaveGrid():void{
     this.loading = true;
-    //atualiza os valores das cores
-    if(this.selectedColor!=undefined){
-      this.localDistribution.id_color = this.selectedColor.id;
-      this.localDistribution.color = this.selectedColor.color;
-      if (this.localDistribution.sizes.length == 0){
-        this.all_size.forEach(s =>{
-          this.localDistribution.sizes.push({
-            id_size: s.id,
-            size: s.new_size,
-            value: this.formDistribution[s.id].value
-          });
-        });
-      }else{
-        this.localDistribution.sizes.forEach(s =>{
-          s.value = this.formDistribution[s.id_size].value;
-        });
-      }
-    }
 
     this.svc.saveGridDistribution(this.idToEdit,this.localDistribution).subscribe({
       next:(data) =>{
@@ -358,25 +364,20 @@ export class ProductGridComponent extends Common implements AfterViewInit,OnDest
     })
   }
 
-  onViewGrid(evt:PaginatorState = { page: 0, pageCount: 0},id:number){
-    if (id > 0){
-      this.loadingGrid = true;
-      let options:Options = {
-        query : "is:id_group "+id.toString(),
-        page: (evt.page as number)+1,
-        pageSize: this.sysconfig.system_pagination_size
-      }
+  // onViewGrid(evt:PaginatorState = { page: 0, pageCount: 0},id:number){
+  //   if (id > 0){
+  //     this.loadingGrid = true;
 
-      this.serviceSub[2] = this.svc.listGridDistribution(id,options).subscribe({
-        next: (data) =>{
-          this.distributionInGrid = data as ProductGridDistribution[];
-          this.sizes = this.distributionInGrid[0].sizes;
-          this.cdr.detectChanges();
-          this.loadingGrid = false;
-        }
-      });
-    }
-  }
+  //     this.serviceSub[2] = this.svc.listGridDistribution(id).subscribe({
+  //       next: (data) =>{
+  //         this.distributionInGrid = data as ProductGridDistribution[];
+  //         this.sizes = this.distributionInGrid[0].sizes;
+  //         this.cdr.detectChanges();
+  //         this.loadingGrid = false;
+  //       }
+  //     });
+  //   }
+  // }
 
   onHideGrid(){
     this.distributionInGrid = [];
