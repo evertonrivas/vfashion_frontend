@@ -3,9 +3,10 @@ import { RouterModule, Routes } from '@angular/router';
 import { DevolutionComponent } from './devolution.component';
 import { DashboardComponent } from '../common/dashboard/dashboard.component';
 import { VersionComponent } from '../common/version/version.component';
-import { ReportsComponent } from '../reports/reports.component';
 import { ProfileComponent } from '../common/profile/profile.component';
 import { ProcessComponent } from './process/process.component';
+import { ReportManagerComponent } from '../common/report-manager/report-manager.component';
+
 
 const routes: Routes = [
   { 
@@ -14,7 +15,7 @@ const routes: Routes = [
     children:[{ path: 'dashboard', component: DashboardComponent},
       { path: 'version/:id', component: VersionComponent},
       { path: 'process', component: ProcessComponent },
-      { path: 'reports', component: ReportsComponent },
+      { path: 'reports', component: ReportManagerComponent },
       { path: 'profile', component: ProfileComponent }]
   }
 ];

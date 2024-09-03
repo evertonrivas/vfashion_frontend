@@ -6,21 +6,28 @@
                     <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 w-full" *ngFor="let product of products">
                         <img class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" [src]="product.img_url" [alt]="product.name" />
                         <div class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
-                            <div class="flex flex-column align-items-center sm:align-items-start gap-3 w-full">
+                            <div class="flex flex-column align-items-center sm:align-items-start gap-2 w-full">
                                 <div class="text-2xl font-bold text-900">{{ product.name }}</div>
                                 <small *ngIf="level_access==levels.ADMIN || level_access==levels.REPR">{{product.fantasy_name}}</small>
-                                <p-table styleClass="w-full p-datatable-striped" tableStyleClass="w-full" [value]="product.colors">
+                                <p-table [value]="product.colors">
                                     <ng-template pTemplate="header">
                                         <tr>
                                             <th>Cor</th>
-                                            <th class="text-center" *ngFor="let szk of sizeKeys">{{szk}}</th>
+                                            <th class="text-center">Tamanho(s)</th>
                                             <th class="text-center">Total</th>
                                         </tr>
                                     </ng-template>
                                     <ng-template pTemplate="body" let-color>
                                         <tr>
                                             <td><span class="px-2 border-round mr-1" [ngStyle]="{'background-color': color.hexa}"></span>{{color.name}}</td>
-                                            <td class="w-auto" *ngFor="let size of color.sizes;" style="padding:0.5rem 0.5rem!important;">{{size.quantity}}</td>
+                                            <td>
+                                                <div class="flex flex-wrap gap-5">
+                                                    <div class="flex flex-column text-center" *ngFor="let szk of color.sizes; let i = index;">
+                                                        <label>{{szk.id}}</label>
+                                                        <label>{{szk.quantity}}</label>
+                                                    </div>
+                                                </div>
+                                            </td>
                                             <td>{{ sumByColor(color.sizes) }}</td>
                                         </tr>
                                     </ng-template>
@@ -70,7 +77,7 @@
                     </div>
                     <div class="flex flex-column w-full">
                         <p-button *ngIf="level_access!=levels.ADMIN" styleClass="p-button-help w-full" label="Finalizar" icon="pi pi-order-finish" iconPos="right" (onClick)="finishOrder()"></p-button>
-                        <p-button *ngIf="level_access==levels.ADMIN" styleClass="p-button-help w-full" label="Finalizar adm" icon="pi pi-order-finish" iconPos="right" (onClick)="testFinishOrder()"></p-button>
+                        <p-button *ngIf="level_access==levels.ADMIN" styleClass="p-button-help w-full" label="Finalizar" icon="pi pi-order-finish" iconPos="right" (onClick)="testFinishOrder()"></p-button>
                     </div>
                 </div>
             </div>
@@ -93,17 +100,20 @@
                 <ng-template pTemplate="header">
                     <tr>
                         <th>Cor</th>
-                        <th *ngFor="let size of sizeKeys" class="text-center">{{size}}</th>
+                        <th>Tamanho(s)</th>
                         <th>Total</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-stock>
                     <tr>
                         <td><span class="px-2 border-round mr-1" [ngStyle]="{'background-color': stock.color_hexa}" style="width:20px!important;"></span>{{stock.color_name}}</td>
-                        <td *ngFor="let szk of stock.sizes; let i = index;">
-                            <div class="flex flex-column">
-                                <p-inputNumber [showButtons]="true" [min]="0" [(ngModel)]="stock.sizes[i].size_saved" [ngStyle]="{'max-width': '50px'}" [inputStyle]="{'max-width':'40px'}" (ngModelChange)="changeAndSum(stock.color_id)" [disabled]="(stock.sizes[i].size_value==null || stock.sizes[i].size_value==0)?true:false"></p-inputNumber>
-                                <label>{{ szk.size_value }}</label>
+                        <td>
+                            <div class="flex flex-wrap gap-1">
+                                <div class="flex flex-column text-center" *ngFor="let szk of stock.sizes; let i = index;">
+                                    <label>{{szk.size_code}}</label>
+                                    <p-inputNumber [showButtons]="true" [min]="0" [(ngModel)]="stock.sizes[i].size_saved" size="3" [inputStyle]="{'max-width':'40px'}" (ngModelChange)="changeAndSum(stock.color_id)" [disabled]="(stock.sizes[i].size_value==null || stock.sizes[i].size_value==0)?true:false"></p-inputNumber>
+                                    <label>{{ szk.size_value }}</label>
+                                </div>
                             </div>
                         </td>
                         <td class="justify-content-center vertical-align-middle">{{productToCartSubtotal[productToCart.id][stock.color_id]}}</td>

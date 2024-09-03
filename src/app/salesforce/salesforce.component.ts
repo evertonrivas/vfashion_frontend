@@ -10,13 +10,13 @@ import { B2bOrderService } from '../services/b2b.order.service';
 import { CartContent, CartItem } from '../models/order.model';
 import { SysService } from '../services/sys.service';
 import { BrandService } from '../services/brand.service';
-import { CollectionService } from '../services/collection.service';
+import { MomentService } from '../services/moment.service';
 import { CategoryService } from '../services/category.service';
 import { ProductTypeService } from '../services/product.type.service';
 import { ModelService } from '../services/model.service';
 import { SizeService } from '../services/size.service';
 import { ColorService } from '../services/color.service';
-import { Collection } from '../models/collection.model';
+import { Moment } from '../models/moment.model';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { IndicatorsService } from '../services/indicators.service';
 
@@ -31,7 +31,7 @@ export class SalesforceComponent extends Common implements AfterViewInit{
   sidebarVisible:boolean = false;
   sidebarCart:boolean = false;
   all_brand:B2bBrand[] = [];
-  all_collect:Collection[] = [];
+  all_moment:Moment[] = [];
   all_categ:ProductCategory[] = [];
   all_type:ProductType[] = [];
   all_model:ProductModel[] = [];
@@ -42,13 +42,11 @@ export class SalesforceComponent extends Common implements AfterViewInit{
   myTotal:number = 0;
 
   //edicao de produtos do carrinho
-  STK!:ProductStock[]; //necessario para obter o estoque do produto
-  productToCartStock!:ProductStock[];
-  productToCartSubtotal:SubTotal = {};
+  productToEditStock:ProductStock[] = [];
+  productToEditSubtotal:SubTotal = {};
   showEditCartDialog:boolean = false;
-  productToCartImage!:Image;
-  productToCart!:Product;
-  sizeKeys:string[] = []; //monta na tela os tamanhos dos produtos
+  productToEditImage!:Image;
+  productToEdit!:Product;
 
   //exclusao de itens do carrinho
   idToDelete:number = 0;
@@ -56,7 +54,7 @@ export class SalesforceComponent extends Common implements AfterViewInit{
 
 
   optBrand:Options = {page:1, pageSize:1, query:'can:list-all 1||is:order-by name||is:order asc' }
-  optCollect:Options = {page:1, pageSize:1, query:'can:list-all 1||is:order-by name||is:order asc' }
+  optMoment:Options = {page:1, pageSize:1, query:'can:list-all 1||is:order-by name||is:order asc' }
   optCateg:Options = {page:1, pageSize:1, query:'can:list-all 1||is:order-by name||is:order asc'}
   optType:Options = {page:1, pageSize:1, query:'can:list-all 1||is:order-by name||is:order asc'}
   optModel:Options = {page:1, pageSize:1, query:'can:list-all 1||is:order-by name||is:order asc'}
@@ -79,7 +77,7 @@ export class SalesforceComponent extends Common implements AfterViewInit{
     private ssvc:SysService,
     private svcOrd:B2bOrderService,
     private svcB:BrandService,
-    private svcCl:CollectionService,
+    private svcMo:MomentService,
     private svcCt:CategoryService,
     private svcT:ProductTypeService,
     private svcM:ModelService,
@@ -135,18 +133,18 @@ export class SalesforceComponent extends Common implements AfterViewInit{
 
   loadFilter():void{
     const $brand   = this.svcB.list(this.optBrand);
-    const $collect = this.svcCl.list(this.optCollect);
+    const $moment  = this.svcMo.list(this.optMoment);
     const $categ   = this.svcCt.list(this.optCateg);
     const $type    = this.svcT.list(this.optType);
     const $model   = this.svcM.list(this.optModel);
     const $size    = this.svcS.list(this.optSize);
     const $color   = this.svcCo.list(this.optColor);
 
-    this.serviceSub[0] = forkJoin([$brand,$collect,$categ,$type,$model,$size,$color])
+    this.serviceSub[0] = forkJoin([$brand,$moment,$categ,$type,$model,$size,$color])
     .subscribe({
-      next:([brand,collect,categ,type,model,size,color])=>{
+      next:([brand,moment,categ,type,model,size,color])=>{
         this.all_brand   = brand as B2bBrand[];
-        this.all_collect = collect as Collection[];
+        this.all_moment  = moment as Moment[];
         this.all_categ   = categ as ProductCategory[]; 
         this.all_type    = type as ProductType[];
         this.all_model   = model as ProductModel[];
@@ -169,25 +167,26 @@ export class SalesforceComponent extends Common implements AfterViewInit{
     this.route.navigate([this.modulePath+'/checkout']);
   }
 
+
   editCart(p_idProduct:number,p_idCustomer:number):void{
-    this.STK = [];
-    this.productToCartStock = [];
-    this.productToCartSubtotal = [];
+    this.productToEditStock = [];
+    this.productToEditSubtotal = [];
     this.showEditCartDialog = true;
 
-    if(this.productToCartSubtotal[p_idProduct]==undefined){
-      this.productToCartSubtotal[p_idProduct] = {}
+    if(this.productToEditSubtotal[p_idProduct]==undefined){
+      this.productToEditSubtotal[p_idProduct] = {}
     }
 
     //busca o estoque original do produto
     this.svcOrd.get_stock(p_idProduct).subscribe({
       next: (data) =>{
-        this.STK = data as ProductStock[];
+        this.productToEditStock = data as ProductStock[];
+
         this.cart_itens.forEach((ct) =>{
           if(ct.id_product==p_idProduct && ct.id_customer==p_idCustomer){
     
             //apenas informacoes minimas
-            this.productToCart = {
+            this.productToEdit = {
               id: p_idProduct,
               id_type:0,
               id_grid:0,
@@ -210,39 +209,18 @@ export class SalesforceComponent extends Common implements AfterViewInit{
             }
     
             //serve apenas para exibir a imagem
-            this.productToCartImage = {
+            this.productToEditImage = {
               id:0,
               img_url:ct.img_url,
               default:true
             }
     
             ct.colors.forEach((cl) =>{
-              if(this.productToCartSubtotal[ct.id_product][cl.id]==undefined){
-                this.productToCartSubtotal[ct.id_product][cl.id] = 0;
+              if(this.productToEditSubtotal[ct.id_product][cl.id]==undefined){
+                this.productToEditSubtotal[ct.id_product][cl.id] = 0;
               }
-              let ps:ProductStock = {
-                color_id: cl.id,
-                color_name: cl.name,
-                color_hexa: cl.hexa,
-                color_code: cl.code,
-                sizes: [],
-              }
-    
-              //busca os tamanhos da cor do estoque
-              let stkCor:ProductStock = this.STK.find((p) => p.color_id==cl.id) as ProductStock;
-    
-              cl.sizes.forEach((sz) =>{
-                let size:ProductStockSizes = {
-                  size_id: sz.id,
-                  size_name: sz.name,
-                  size_saved: sz.quantity,
-                  size_code:'',
-                  size_value: stkCor.sizes.find((psz) => psz.size_id == sz.id)?.size_value as number
-                }
-                this.productToCartSubtotal[ct.id_product][cl.id] += sz.quantity;
-                ps.sizes.push(size);
-              });
-              this.productToCartStock.push(ps);
+
+              this.changeAndSum(cl.id);
             });
           }
         });
@@ -251,11 +229,11 @@ export class SalesforceComponent extends Common implements AfterViewInit{
   }
 
   changeAndSum(codColor:number):void{
-    this.productToCartSubtotal[this.productToCart.id][codColor] = 0;
-    this.productToCartStock.forEach((stk) =>{
+    this.productToEditSubtotal[this.productToEdit.id][codColor] = 0;
+    this.productToEditStock.forEach((stk) =>{
        stk.sizes.forEach((sz) =>{
         if(codColor==stk.color_id){
-          this.productToCartSubtotal[this.productToCart.id][stk.color_id] += sz.size_saved;
+          this.productToEditSubtotal[this.productToEdit.id][stk.color_id] += sz.size_saved;
         }
        });
     });
@@ -263,15 +241,15 @@ export class SalesforceComponent extends Common implements AfterViewInit{
 
   saveCart():void{
     let cart:CartItem[] = [];
-    this.productToCartStock.forEach((ps) =>{
+    this.productToEditStock.forEach((ps) =>{
       ps.sizes.forEach((sz) =>{
         let item:CartItem = {
-          id_customer: (this.cart_itens.find((cc) => cc.id_product == this.productToCart.id) as CartContent).id_customer,
-          id_product: this.productToCart.id,
+          id_customer: (this.cart_itens.find((cc) => cc.id_product == this.productToEdit.id) as CartContent).id_customer,
+          id_product: this.productToEdit.id,
           id_color: ps.color_id,
           id_size: sz.size_id,
           quantity: sz.size_saved,
-          price: this.productToCart.price,
+          price: this.productToEdit.price,
           user_create: parseInt(localStorage.getItem("id_user") as string),
           date_create: new Date(),
           user_update: null,

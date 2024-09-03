@@ -6,6 +6,7 @@ import { SalesforceComponent } from './salesforce.component';
 import { SharedModule } from '../common/shared.module';
 import { SidebarModule } from 'primeng/sidebar';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { DividerModule } from 'primeng/divider';
 import { GridComponent } from './grid/grid.component';
 import { HistoryComponent } from './history/history.component';
 import { AutoOrderComponent } from './auto-order/auto-order.component';
@@ -36,6 +37,7 @@ import { OrderStatusPipe } from "../pipes/order-status.pipe";
     SharedModule,
     SidebarModule,
     MultiSelectModule,
+    DividerModule,
     ImageModule,
     CheckboxModule,
     TopbarComponent,

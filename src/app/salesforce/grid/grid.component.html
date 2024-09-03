@@ -25,8 +25,8 @@
                     placeholder="Selecione a cor" 
                     [options]="all_colors" 
                     optionLabel="name" 
-                    [(ngModel)]="selectedGridColor"
-                    [ngClass]="{'ng-invalid ng-dirty' : sendAddGrid && selectedGridColor==null}">
+                    [(ngModel)]="selectedGridColors"
+                    [ngClass]="{'ng-invalid ng-dirty' : sendAddGrid && selectedGridColors.length > 0}">
                     <ng-template pTemplate="item" let-color>
                         <div class="flex flex-row justify-content-start">
                             <span class="border-round-sm pl-2 pr-2 mr-2" [ngStyle]="{'width': '15px', 'height':'10px', 'background-color': color.hexcode}"></span> {{color.name}}
@@ -74,7 +74,9 @@
                             <span class="border-round-sm pl-2 pr-2 mr-2" [ngStyle]="{'width': '15px', 'height':'10px', 'background-color': selected?.color}"></span>{{selected?.name}}
                         </ng-template>
                         <ng-template pTemplate="item" let-item>
-                            <span class="border-round-sm pl-2 pr-2 mr-2" [ngStyle]="{'width': '15px', 'height':'10px', 'background-color': item.color}"></span>{{item.name}}
+                            <div class="text-left">
+                                <span class="border-round-sm pl-2 pr-2 mr-2" [ngStyle]="{'width': '15px', 'height':'10px', 'background-color': item.color}"></span>{{item.name}}
+                            </div>
                         </ng-template>
                     </p-dropdown>
                 </div>
@@ -132,20 +134,23 @@
                 <ng-template pTemplate="header">
                     <tr>
                         <th>Cor</th>
-                        <th *ngFor="let size of sizeKeys" class="text-center">{{size}}</th>
+                        <th claass="text-center">Tamanho(s)</th>
                         <th>Total</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-stock>
                     <tr>
                         <td><span class="px-2 border-round mr-1" [ngStyle]="{'background-color': stock.color_hexa}" style="width:20px!important;"></span>{{stock.color_name}}</td>
-                        <td *ngFor="let szk of stock.sizes; let i = index;">
-                            <div class="flex flex-column">
-                                <p-inputNumber [showButtons]="true" [min]="0" [(ngModel)]="stock.sizes[i].size_saved" [ngStyle]="{'max-width': '50px'}" [inputStyle]="{'max-width':'40px'}" (ngModelChange)="changeAndSum(stock.color_code)" [disabled]="(stock.sizes[i].size_value==null || stock.sizes[i].size_value==0)?true:false"></p-inputNumber>
-                                <label>{{ szk.size_value }}</label>
+                        <td>
+                            <div class="flex flex-wrap gap-1">
+                                <div class="flex flex-column text-center" *ngFor="let szk of stock.sizes; let i = index;">
+                                    <label>{{szk.size_code}}</label>
+                                    <p-inputNumber [showButtons]="true" [min]="0" [(ngModel)]="stock.sizes[i].size_saved" size="3" [inputStyle]="{'max-width':'40px'}" (ngModelChange)="changeAndSum(stock.color_id)" [disabled]="(stock.sizes[i].size_value==null || stock.sizes[i].size_value==0)?true:false"></p-inputNumber>
+                                    <label>{{ szk.size_value }}</label>
+                                </div>
                             </div>
                         </td>
-                        <td class="justify-content-center vertical-align-middle">{{productToCartSubtotal[productToCart.id][stock.color_code]}}</td>
+                        <td class="justify-content-center vertical-align-middle">{{productToCartSubtotal[productToCart.id][stock.color_id]}}</td>
                     </tr>
                 </ng-template>
             </p-table>

@@ -144,7 +144,7 @@ export class CheckoutComponent extends Common implements AfterViewInit{
 
         //nao havendo um profile associado significa que eh administrador
         this.svcOrd.cancelCart(
-          profile==0?parseInt(localStorage.getItem("id_user") as string):profile,
+          this.level_access==this.levels.ADMIN?parseInt(localStorage.getItem("id_user") as string):profile,
           this.level_access as string
         ).subscribe({
           next: (data) =>{
@@ -212,7 +212,7 @@ export class CheckoutComponent extends Common implements AfterViewInit{
     //busca o estoque original do produto
     this.svcOrd.get_stock(p_idProduct).subscribe({
       next: (data) =>{
-        this.STK = data as ProductStock[];
+        this.productToCartStock = data as ProductStock[];
         this.cart_itens.forEach((ct) =>{
           if(ct.id_product==p_idProduct && ct.id_customer==p_idCustomer){
     
@@ -250,29 +250,8 @@ export class CheckoutComponent extends Common implements AfterViewInit{
               if(this.productToCartSubtotal[ct.id_product][cl.id]==undefined){
                 this.productToCartSubtotal[ct.id_product][cl.id] = 0;
               }
-              let ps:ProductStock = {
-                color_id: cl.id,
-                color_name: cl.name,
-                color_hexa: cl.hexa,
-                color_code: cl.code,
-                sizes: [],
-              }
-    
-              //busca os tamanhos da cor do estoque
-              let stkCor:ProductStock = this.STK.find((p) => p.color_id==cl.id) as ProductStock;
-    
-              cl.sizes.forEach((sz) =>{
-                let size:ProductStockSizes = {
-                  size_id: sz.id,
-                  size_name: sz.name,
-                  size_saved: sz.quantity,
-                  size_code:'',
-                  size_value: stkCor.sizes.find((psz) => psz.size_id == sz.id)?.size_value as number
-                }
-                this.productToCartSubtotal[ct.id_product][cl.id] += sz.quantity;
-                ps.sizes.push(size);
-              });
-              this.productToCartStock.push(ps);
+              
+              this.changeAndSum(cl.id);
             });
           }
         });

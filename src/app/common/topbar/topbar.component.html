@@ -17,7 +17,7 @@
     <button *ngIf="module==modules.ORD || module==modules.SCM" class="p-link layout-topbar-button" [routerLink]="[modulePath+'/dashboard']" pTooltip="Dashboard" tooltipPosition="bottom" tooltipStyleClass="text-xs">
         <i class="material-symbols-outlined">dashboard</i>
     </button>
-    <button *ngIf="module==modules.SCM || module==modules.FPR" class="p-link layout-topbar-button" [routerLink]="[modulePath+'/reports']" pTooltip="Relatórios" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+    <button *ngIf="module==modules.SCM || module==modules.CRM || module==modules.ADM" class="p-link layout-topbar-button" [routerLink]="[modulePath+'/reports']" pTooltip="Relatórios" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">picture_as_pdf</i>
         </button>
     <!-- Modulo Calendário -->
@@ -25,8 +25,11 @@
         <button class="p-link layout-topbar-button" [routerLink]="[modulePath+'/gantt']" pTooltip="Calendário" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">calendar_month</i>
         </button>
-        <button class="p-link layout-topbar-button" [routerLink]="[modulePath+'/flimv']" pTooltip="FLIMV" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+        <button *ngIf="sysconfig.flimv_model=='FLIMVS'" class="p-link layout-topbar-button" [routerLink]="[modulePath+'/flimv']" pTooltip="FLIMV" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">military_tech</i>
+        </button>
+        <button class="p-link layout-topbar-button" [routerLink]="[modulePath+'/comission']" pTooltip="Comissões" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+            <i class="material-symbols-outlined">account_balance_wallet</i>
         </button>
     </ng-container>
     <!-- Modulo CRM -->

@@ -10,9 +10,9 @@
         <p-button icon="pi pi-check-circle" [rounded]="true" [text]="true" pTooltip="Adicionar Cliente Existente" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="searchCustomers()"></p-button>
         <p-button icon="pi pi-minus-circle" [rounded]="true" [text]="true" pTooltip="Remover selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="delCustomersSelected()"></p-button>
 
-        <p-button [text]="true" [rounded]="true" severity="warning" pTooltip="Recarregar Funil" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="getFunnels('can:list_all true')"><span class="material-symbols-outlined text-lg">autorenew</span></p-button>
-        <p-button [text]="true" [rounded]="true" severity="warning" pTooltip="Enviar e-mail para selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="showEmailSendMassive()"><span class="material-symbols-outlined text-lg">stacked_email</span></p-button>
-        <p-button [text]="true" severity="warning" [rounded]="true" pTooltip="Mover selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="opStages.toggle($event)"><span class="material-symbols-outlined text-lg">move_group</span></p-button>
+        <p-button [text]="true" [rounded]="true" severity="help" pTooltip="Recarregar Funil" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="getFunnels('can:list_all true')"><span class="material-symbols-outlined text-lg">autorenew</span></p-button>
+        <p-button [text]="true" [rounded]="true" severity="help" pTooltip="Enviar e-mail para selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="showEmailSendMassive()"><span class="material-symbols-outlined text-lg">stacked_email</span></p-button>
+        <p-button [text]="true" severity="help" [rounded]="true" pTooltip="Mover selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs" (onClick)="opStages.toggle($event)"><span class="material-symbols-outlined text-lg">move_group</span></p-button>
         <p-overlayPanel #opStages>
             <ng-template pTemplate="content">
                 <div class="flex flex-column">

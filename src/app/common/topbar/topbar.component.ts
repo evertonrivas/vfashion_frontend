@@ -55,6 +55,7 @@ export class TopbarComponent extends Common implements AfterContentInit,OnDestro
     route:Router
     ){
       super(route);
+
       this.IndSvc.counterAnnounced$.subscribe(() =>{
         this.IndSvc.b2bTotalCart(
           parseInt((localStorage.getItem("id_profile") as string)),
@@ -192,6 +193,7 @@ export class TopbarComponent extends Common implements AfterContentInit,OnDestro
       localStorage.removeItem("token_expire");
       localStorage.removeItem("level_access");
       localStorage.removeItem("id_profile");
+      localStorage.removeItem("flimv_model");
       this.route.navigate(["/"]);
     });
   }

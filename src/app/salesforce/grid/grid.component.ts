@@ -41,7 +41,7 @@ export class GridComponent extends Common implements AfterViewInit{
   selectedItemColor:SelectedColor = [];
   //habilita ou libera o seletor de cor "Todos"
   freeGridButton:boolean = false;
-  selectedGridColor:B2bColor|null = null;
+  selectedGridColors:B2bColor[] = [];
   sendAddGrid:boolean = false;
   filtered:boolean = false;
   showNoCustomerDialog:boolean = false;
@@ -177,7 +177,7 @@ export class GridComponent extends Common implements AfterViewInit{
     this.svcCo.list({
       page:1,
       pageSize: this.sysconfig.system_pagination_size,
-      query:'can:list-all 1'
+      query:'can:list-all 1||is:b2b 1'
     }).subscribe({
       next: (data) =>{
         this.all_colors = data as B2bColor[];
@@ -222,13 +222,14 @@ export class GridComponent extends Common implements AfterViewInit{
           this.selectedProduct = prod.id;
         }else{
           this.selectedCustomer = parseInt(JSON.stringify(localStorage.getItem("id_customer")).replaceAll('"',''));
-          this.saveGrid([prod.id],this.selectedItemColor[prod.id],this.selectedCustomer);
+          this.saveGrid([prod.id],[this.selectedItemColor[prod.id]],this.selectedCustomer);
         }
       }else{
         let ids:number[] = [];
         ids.push(prod.id);
         let customer:number = parseInt(localStorage.getItem("id_profile") as string);
-        this.saveGrid(ids,this.selectedItemColor[prod.id],customer);
+        this.selectedCustomer = customer;
+        this.saveGrid(ids,[this.selectedItemColor[prod.id]],customer);
       }
     }
   }
@@ -236,7 +237,7 @@ export class GridComponent extends Common implements AfterViewInit{
   addCheckedToGrid():void{
     this.isAddGrid = true;
     this.sendAddGrid = true;
-    if(this.selectedGridColor==null){
+    if(this.selectedGridColors.length == 0){
       return;
     }else{
       this.cfg.confirm({
@@ -251,8 +252,6 @@ export class GridComponent extends Common implements AfterViewInit{
               all_products.push(p.id);
             }
           });
-            
-          let cor:B2bColor = this.selectedGridColor as B2bColor;
 
           //verifica se existe o cliente pelo tipo de acesso
           if(this.level_access==this.levels.ADMIN || this.level_access==this.levels.REPR){
@@ -263,7 +262,11 @@ export class GridComponent extends Common implements AfterViewInit{
           }else{
             //adiconar metodo de adicionar produtos ao grid
             let cst:number = parseInt(localStorage.getItem("id_profile") as string);
-            this.saveGrid(all_products,cor.id,cst);
+            let cores:number[] = [];
+            this.selectedGridColors.forEach(c =>{
+              cores.push(c.id);
+            })
+            this.saveGrid(all_products,cores,cst);
           }
         },
         rejectLabel:'Não',
@@ -284,7 +287,7 @@ export class GridComponent extends Common implements AfterViewInit{
       if(this.selectedProduct > 0 ){
         let ids:number[] = [];
         ids.push(this.selectedProduct);
-        this.saveGrid(ids,this.selectedItemColor[this.selectedProduct],this.selectedCustomer);
+        this.saveGrid(ids,[this.selectedItemColor[this.selectedProduct]],this.selectedCustomer);
       }else{
         let all_products:number[] = [];
         (this.response.data as Product[]).forEach((p) =>{
@@ -292,18 +295,20 @@ export class GridComponent extends Common implements AfterViewInit{
             all_products.push(p.id);
           }
         });
-          
-        let cor:B2bColor = this.selectedGridColor as B2bColor;
   
-        this.saveGrid(all_products,cor.id,this.selectedCustomer);
+        let colors:number[] = [];
+        this.selectedGridColors.forEach(c =>{
+          colors.push(c.id);
+        })
+        this.saveGrid(all_products,colors,this.selectedCustomer);
       }
     }else{
       this.getStockAndShowDialog();
     }
   }
 
-  saveGrid(ids:number[],color:number,customer:number):void{
-    this.svcOrd.addGridToCart(ids,color,customer,parseInt(localStorage.getItem("id_user") as string)).subscribe({
+  saveGrid(ids:number[],colors:number[],customer:number):void{
+    this.svcOrd.addGridToCart(ids,colors,customer,parseInt(localStorage.getItem("id_user") as string)).subscribe({
       next:(data) => {
         if(typeof data === 'boolean'){
           if(data==true){
@@ -333,57 +338,71 @@ export class GridComponent extends Common implements AfterViewInit{
 
   prepareToAddToCart(id:number):void{
     this.isAddGrid = false;
-    //verifica se existe o cliente
+    //verifica se existe o cliente pelo tipo de acesso
+    //carrega os clientes
     if(this.level_access==this.levels.ADMIN || this.level_access==this.levels.REPR){
-      //carrega os clientes 
-      this.loadCustomers(this.level_access==this.levels.REPR?true:false);
-      this.showNoCustomerDialog = true;
-      this.selectedProduct = id;
+      if(localStorage.getItem("id_customer")=="" || localStorage.getItem("id_customer")==null){
+        this.loadCustomers(this.level_access==this.levels.REPR?true:false);
+        this.showNoCustomerDialog = true;
+        this.selectedProduct = id;
+      }else{
+        this.selectedCustomer = parseInt(JSON.stringify(localStorage.getItem("id_customer")).replaceAll('"',''));
+        this.selectedProduct = id;
+        this.getStockAndShowDialog();
+      }
     }else{
+      this.selectedCustomer = parseInt(JSON.stringify(localStorage.getItem("id_profile")).replaceAll('"',''));
+      this.selectedProduct = id;
       this.getStockAndShowDialog();
     }
+
+    // if(this.level_access==this.levels.ADMIN || this.level_access==this.levels.REPR){
+    //   //carrega os clientes 
+    //   this.loadCustomers(this.level_access==this.levels.REPR?true:false);
+    //   this.showNoCustomerDialog = true;
+    //   this.selectedProduct = id;
+    // }else{
+    //   this.getStockAndShowDialog();
+    // }
   }
 
   getStockAndShowDialog():void{
-    (this.response.data as Product[]).forEach((p) =>{
-      if(p.id==this.selectedProduct){
-        this.productToCart = p;
-        this.productToCart.images.forEach((img) =>{
-          if(img.default==true){
-            this.productToCartImage = img;
-          }
-        });
-        this.svcOrd.get_stock(this.selectedProduct).subscribe({
-          next: (data) =>{
-            this.productToCartStock = data as ProductStock[];
-            this.showAddToCartDialog = true;
+    this.productToCart = (this.response.data as Product[]).find(p => p.id== this.selectedProduct) as Product;
+    this.productToCartImage = this.productToCart.images.find(i => i.default==true) as Image;
 
-            this.productToCartStock.forEach((pstk) =>{
-              pstk.sizes.forEach((sz) =>{
-                if (this.productToCartSubtotal[this.productToCart.id]==undefined){
-                  this.productToCartSubtotal[this.productToCart.id] = {};
-                  if(this.productToCartSubtotal[this.productToCart.id][pstk.color_code]==undefined){
-                    this.productToCartSubtotal[this.productToCart.id][pstk.color_code] = 0;
-                  }else{
-                    this.productToCartSubtotal[this.productToCart.id][pstk.color_code] += sz.size_value;
-                  }
-                }
+    //zera as quantidades
+    this.productToCartSubtotal[this.productToCart.id] = {};
 
-                //obtem apenas os tamanhos do produto para configurar
-                if (this.sizeKeys.find(function(valor){
-                  return sz.size_code===valor;
-                })===undefined){
-                  this.sizeKeys.push(sz.size_code);
-                }
-              });
-            });
-          }
+    this.svcOrd.get_stock(this.selectedProduct).subscribe({
+      next:(data) =>{
+        this.productToCartStock = data as ProductStock[];
+        this.showAddToCartDialog = true;
+
+        this.productToCartStock.forEach((pstk) =>{
+          pstk.sizes.forEach((sz) =>{
+            if(this.productToCartSubtotal[this.productToCart.id][pstk.color_id]==undefined){
+              this.productToCartSubtotal[this.productToCart.id][pstk.color_id] = sz.size_saved;
+            }else{
+              this.productToCartSubtotal[this.productToCart.id][pstk.color_id] += sz.size_saved;
+            }
+
+            //obtem apenas os tamanhos do produto para configurar
+            if (this.sizeKeys.find(function(valor){
+              return sz.size_code===valor;
+            })===undefined){
+              this.sizeKeys.push(sz.size_code);
+            }
+          });
         });
       }
     });
   }
 
   addToCart():void{
+    if(localStorage.getItem("id_customer")=="" || localStorage.getItem("id_customer")==null){
+      localStorage.setItem("id_customer",this.selectedCustomer.toString());
+    }
+    
     let cart:CartItem[] = [];
     this.productToCartStock.forEach((ps) =>{
       ps.sizes.forEach((sz) =>{
@@ -483,14 +502,11 @@ export class GridComponent extends Common implements AfterViewInit{
     this.listProducts();
   }
 
-  changeAndSum(codColor:string):void{
+  changeAndSum(codColor:number):void{
     this.productToCartSubtotal[this.productToCart.id][codColor] = 0;
-    this.productToCartStock.forEach((stk) =>{
-       stk.sizes.forEach((sz) =>{
-        if(codColor==stk.color_code){
-          this.productToCartSubtotal[this.productToCart.id][stk.color_code] += sz.size_saved;
-        }
-       });
+    let product:ProductStock = this.productToCartStock.find(p => p.color_id==codColor) as ProductStock;
+    product.sizes.forEach(s =>{
+      this.productToCartSubtotal[this.productToCart.id][codColor] += s.size_saved;
     });
   }
 }

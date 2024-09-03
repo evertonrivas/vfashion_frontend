@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient,HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Product, ProductGrid, ProductGridDistribution } from 'src/app/models/product.model';
 import { ContentType, MyHttp } from './my-http';
 import { Options, RequestResponse, ResponseError } from '../models/paginate.model';
 import { Order } from '../models/order.model';
+import { MassiveProductAction } from '../models/system.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -57,7 +58,8 @@ export class ProductsService extends MyHttp{
   }
 
   saveGrid(data:any):Observable<number|boolean|ResponseError>{
-    return this.http.post<number|boolean|ResponseError>(this.sys_config.backend_cmm+'/products-grid/'+(data.id>0?data.id.toString():''),data,{
+    return this.http.post<number|boolean|ResponseError>(this.sys_config.backend_cmm+'/products-grid/'+(data.id>0?data.id.toString():''),
+    data,{
       headers: this.getHeader(ContentType.json)
     });
   }
@@ -73,23 +75,21 @@ export class ProductsService extends MyHttp{
   }
 
 
-  listGridDistribution(idGrid:number,opt:Options):Observable<RequestResponse|ProductGridDistribution[]|ResponseError>{
+  listGridDistribution(idGrid:number):Observable<RequestResponse|ProductGridDistribution[]|ResponseError>{
     return this.http.get<RequestResponse|ProductGridDistribution[]|ResponseError>(this.sys_config.backend_cmm+'/products-grid/distribution/'+idGrid.toString(),{
-      headers: this.getHeader(),
-      params: this.getParams(opt)
+      headers: this.getHeader()
     });
   }
 
-  loadGridDistribution(idGrid:number,id_color:number):Observable<ProductGridDistribution|ResponseError>{
-    return this.http.get<ProductGridDistribution|ResponseError>(this.sys_config.backend_cmm+'/products-grid/distribution/'+idGrid.toString(),{
-      headers: this.getHeader(),
-      params: new HttpParams().set("query","is:only-one 1||is:color "+id_color.toString())
+  loadGridDistribution(idGrid:number):Observable<ProductGridDistribution[]|ResponseError>{
+    return this.http.get<ProductGridDistribution[]|ResponseError>(this.sys_config.backend_cmm+'/products-grid/distribution/'+idGrid.toString(),{
+      headers: this.getHeader()
     });
   }
 
-  saveGridDistribution(idGrid:number,data:ProductGridDistribution):Observable<number|boolean|ResponseError>{
+  saveGridDistribution(idGrid:number,data:ProductGridDistribution[]):Observable<number|boolean|ResponseError>{
     return this.http.post<number|boolean|ResponseError>(this.sys_config.backend_cmm+'/products-grid/distribution/'+idGrid.toString(),
-    JSON.stringify(data),{
+    data,{
       headers: this.getHeader(ContentType.json)
     });
   }
@@ -100,6 +100,16 @@ export class ProductsService extends MyHttp{
       body: {
         id_color: id_color
       }
+    });
+  }
+
+  executeMassive(act:MassiveProductAction,products:number[],ids:any):Observable<boolean|ResponseError>{
+    return this.http.patch<boolean|ResponseError>(this.sys_config.backend_cmm+'/products/',{
+      "action": act,
+      "products": products,
+      "ids": ids
+    },{
+      headers: this.getHeader(ContentType.json)
     });
   }
 }

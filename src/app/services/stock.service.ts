@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ContentType, MyHttp } from './my-http';
 import { HttpClient } from '@angular/common/http';
-import { ProductStock2 as ProductStock } from '../models/product.model';
+import { ProductGridDistribution, ProductStock2 as ProductStock } from '../models/product.model';
 import { Observable } from 'rxjs';
 import { Options, RequestResponse, ResponseError } from '../models/paginate.model';
 
@@ -40,6 +40,18 @@ export class StockService extends MyHttp{
         toTrash: toTrash,
         ids: ids
       }
+    });
+  }
+
+  update(ids:number[],colors:number[],ilimited:boolean,grid:ProductGridDistribution[],remove:boolean):Observable<boolean|ResponseError>{
+    return this.http.patch<boolean|ResponseError>(this.sys_config.backend_b2b+'/product-stock/',{
+      "ids": ids,
+      "colors": colors,
+      "ilimited": ilimited,
+      "remove": remove,
+      "grid": grid
+    },{
+      headers: this.getHeader(ContentType.json)
     });
   }
 }

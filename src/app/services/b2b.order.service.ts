@@ -44,13 +44,13 @@ export class B2bOrderService extends MyHttp{
   }
 
   //adiciona produtos usando a grade padrao, para isso soh utiliza o codigo do produto, codigo da cor e codigo do cliente
-  addGridToCart(p_products:number[],p_idColor:number,p_idCustomer:number,p_idUser:number):Observable<boolean|ResponseError>{
+  addGridToCart(p_products:number[],p_idColor:number[],p_idCustomer:number,p_idUser:number):Observable<boolean|ResponseError>{
     return this.http.put<boolean|ResponseError>(this.sys_config.backend_b2b+'/cart/',
     {
-      customer: p_idCustomer,
-      color: p_idColor,
-      products: p_products,
-      user:p_idUser
+      "customer": p_idCustomer,
+      "colors": p_idColor,
+      "products": p_products,
+      "user": p_idUser
     },{
       headers: this.getHeader(ContentType.json)
     });
