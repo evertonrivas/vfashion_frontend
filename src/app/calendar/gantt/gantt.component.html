@@ -1,5 +1,5 @@
 <p-toast key="systemToast"></p-toast>
-<div class="card p-3 flex flex-wrap align-items-center justify-content-end vertical-align-middle mb-3">
+<div class="card p-3 flex flex-wrap align-items-center justify-content-end vertical-align-middle mb-3 border-round">
     <p-button icon="pi pi-calendar-plus" styleClass="p-button-rounded  p-button-text" (onClick)="onEvent(null)" pTooltip="Novo Evento" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button>
     <p-button icon="pi pi-calendar-minus" styleClass="p-button-rounded p-button-danger p-button-text" (onClick)="onDeleteEvents()" pTooltip="Excluir Evento(s) selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button>
     <p-button icon="pi pi-flag" styleClass="p-button-rounded  p-button-text p-button-help" (onClick)="onMilestone(null)" pTooltip="Novo Milestone(Marco)" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button>
@@ -12,7 +12,7 @@
         <input type="text" pInputText placeholder="Procurar evento..." (input)="doSearch($event)" class="p-inputtext-sm"/>
     </span>
 </div>
-<div class="card">
+<div class="card border-round">
     <p-table #dt [scrollable]="true"  [(selection)]="selectedEvents" dataKey="name" [globalFilterFields]="['name','type.name']" scrollDirection="both" responsiveLayout="scroll" [value]="calendarEvents" styleClass="p-datatable-sm p-datatable-gridlines">
         <ng-template pTemplate="header">
             <tr>

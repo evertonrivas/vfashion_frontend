@@ -1,15 +1,97 @@
 <p-toast key="systemToast"></p-toast>
 <p-confirmDialog></p-confirmDialog>
-<div class="card p-3 flex flex-wrap align-items-center vertical-align-middle mb-3">
-    <label class="font-bold">Configuração de Comissões de Representantes</label>
+<div class="card p-3 flex flex-wrap align-items-center vertical-align-middle mb-3 border-round">
+    <label class="font-bold">Configuração de Metas e Comissões</label>
 </div>
-<div class="card">
+<div class="flex flex-column lg:flex-row gap-3 w-full justify-content-between">
+    <div class="surface-card p-4 border-round mb-3 lg:w-4 w-full">
+        <div class="text-3xl font-medium text-900 mb-3">Metas de Vendas</div>
+        <div class="font-medium text-500 mb-3">Definição das metas de vendas globais.</div>
+        <div style="min-height: 150px" class="flex flex-column gap-2 border-2 border-dashed surface-border p-3">
+            <div class="flex flex-column w-full">
+                <label class="mb-1">Ano da(s) Meta(s)</label>
+                <p-calendar [(ngModel)]="yearTarget" styleClass="w-full" view="year" dateFormat="yy" />
+            </div>
+            <div class="flex flex-column w-full">
+                <label class="mb-1">Sazonalidade</label>
+                <p-dropdown styleClass="w-full"
+                    appendTo="body"
+                    placeholder="Selecione..."
+                    [options]="[{label:'Anual',value:'Y'},{label:'Trimestral',value:'Q'},{label:'Mensal',value:'M'}]"
+                    (onChange)="onCheckOption($event)"
+                    [(ngModel)]="selected_target"
+                    ></p-dropdown>
+            </div>
+            <div class="flex flex-column w-full" *ngIf="selected_target=='Y'">
+                <label class="mb-1">Valor</label>
+                <p-inputNumber [disabled]="disabled_target" [(ngModel)]="valueTargetYear" styleClass="w-full text-right" mode="currency" currency="BRL" locale="pt-BR" placeholder="R$ 0,00" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !valueTargetYear}"></p-inputNumber>
+            </div>
+            <ng-container *ngIf="selected_target=='Q'">
+                <div class="flex flex-column w-full" *ngFor="let quarter of quarters;let i=index">
+                    <label class="mb-1">Valor {{quarter}}</label>
+                    <p-inputNumber [disabled]="disabled_target" [(ngModel)]="valueTargetQuarter[i]" styleClass="w-full text-right" mode="currency" currency="BRL" locale="pt-BR" placeholder="R$ 0,00" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !valueTargetQuarter[i]}"></p-inputNumber>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="selected_target=='M'">
+                <div class="flex flex-column w-full" *ngFor="let month of months;let i=index;">
+                    <label class="mb-1">{{month}}</label>
+                    <p-inputNumber [disabled]="disabled_target" [(ngModel)]="valueTargetMonth[i]" styleClass="w-full text-right" mode="currency" currency="BRL" locale="pt-BR" placeholder="R$ 0,00" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !valueTargetMonth[i]}"></p-inputNumber>
+                </div>
+            </ng-container>
+        </div>
+        <div class="flex flex-row justify-content-end mt-2">
+            <p-button icon="pi pi-save" label="Salvar" (onClick)="onSaveTarget()"></p-button>
+        </div>
+    </div>
+
+    <div class="surface-card p-4 border-round mb-3 w-full">
+        <div class="text-3xl font-medium text-900 mb-3">Comissões</div>
+        <div class="font-medium text-500 mb-3">Definições das comissões por representantes.</div>
+        <div style="min-height: 150px" class="border-2 border-dashed surface-border p-3">
+            <div class="flex flex-column w-full mb-2">
+                <label class="mb-1">Ano das Comissões</label>
+                <p-calendar [(ngModel)]="yearComission" styleClass="w-full" view="year" dateFormat="yy" />
+            </div>
+            <p-table [value]="response.data" styleClass="p-datatable-striped">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Representante</th>
+                        <th colspan="2" style="min-width: 250px!important;">% Comissão</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item>
+                    <tr>
+                        <td>{{item.fantasy_name}}</td>
+                        <td style="width: 200px;"><p-slider [(ngModel)]="valueComission[item.id]" max="100" min="0" styleClass="w-full" [step]="5"></p-slider></td>
+                        <td><span>{{valueComission[item.id]}}%</span></td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                    <tr>
+                        <td>Todos</td>
+                        <td><p-slider [(ngModel)]="all_commission" max="100" min="0" styleClass="w-full" [step]="5" (ngModelChange)="recalcAll()"></p-slider></td>
+                        <td><span>{{all_commission}}%</span></td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <div class="flex flex-row justify-content-end mt-2">
+            <p-button icon="pi pi-save" label="Salvar" (onClick)="onSaveComission()"></p-button>
+        </div>
+    </div>
+</div>
+<!-- <div class="card">
+    <div class="flex flex-row">
+        <div class="flex flex-column">
+            
+        </div>
+    </div>
     <div class="flex flex-column">
-        <label class="mb-1">Tipo de Comisssionamento</label>
+        <label class="mb-1">Tipo de Comissionamento</label>
         <p-dropdown
             placeholder="Selecione..."
             [options]="[{label:'Fixo', value:'F'},{label:'Por Sazonalidade',value:'C'}]"
         >
     </p-dropdown>
     </div>
-</div>
+</div> -->

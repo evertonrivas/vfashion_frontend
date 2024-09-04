@@ -9,9 +9,6 @@ import { ConfirmationService, MessageService, ConfirmEventType } from 'primeng/a
 import { PrimeNGConfig } from 'primeng/api';
 import { FileType } from 'src/app/models/system.enum';
 
-
-declare var window:any;
-
 @Component({
   selector: 'app-gantt',
   templateUrl: './gantt.component.html',
