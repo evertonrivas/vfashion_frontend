@@ -46,7 +46,9 @@ export enum FieldType{
     MONEY   = 14,
     URL     = 15,
     IMGURL  = 16,
-    ICON    = 17
+    ICON    = 17,
+    TAXVAT  = 18,
+    POSTAL_CODE = 19
 }
 
 export enum FieldCase{
