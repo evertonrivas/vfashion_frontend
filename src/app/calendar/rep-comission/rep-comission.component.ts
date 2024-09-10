@@ -32,17 +32,19 @@ export interface f2bTarget{
   providers:[MessageService, ConfirmationService]
 })
 export class RepComissionComponent extends Common implements AfterViewInit{
-  yearComission?:Date;
-  valueComission:f2bComission = {};
+  comissionYear?:Date;
+  comissionValue:f2bComission = {};
   all_commission:number = 0;
   selected_target:string = "";
   disabled_target:boolean = false;
   months:string[] = [];
   quarters:string[] = [];
-  yearTarget?:Date;
-  valueTargetYear:number = 0;
-  valueTargetQuarter:f2bTarget = {};
-  valueTargetMonth:f2bTarget = {};
+
+  targetYear?:Date;
+  targetValueYear:number = 0;
+  targetValueQuarter:f2bTarget = {};
+  targetValueMonth:f2bTarget = {};
+  targetMaxValue:number = 0;
   constructor(route:Router,
     private svc:ComissionService,
     private svcE:EntitiesService,
@@ -76,8 +78,8 @@ export class RepComissionComponent extends Common implements AfterViewInit{
       next: (data) =>{
         this.response.data = data;
         (this.response.data as Entity[]).forEach(e =>{
-          if(this.valueComission[e.id]==undefined){
-            this.valueComission[e.id] = 0;
+          if(this.comissionValue[e.id]==undefined){
+            this.comissionValue[e.id] = 0;
           }
         });
       }
@@ -85,15 +87,15 @@ export class RepComissionComponent extends Common implements AfterViewInit{
 
     //monta o ponto de entrada mensal das metas
     for(let i=0;i<12;i++){
-      if(this.valueTargetMonth[i]==undefined){
-        this.valueTargetMonth[i] = 0;
+      if(this.targetValueMonth[i]==undefined){
+        this.targetValueMonth[i] = 0;
       }
     }
 
     //monta o pronto de entrada trimestral das metas
     for (let i=0;i<4;i++){
-      if(this.valueTargetQuarter[i]==undefined){
-        this.valueTargetQuarter[i] = 0;
+      if(this.targetValueQuarter[i]==undefined){
+        this.targetValueQuarter[i] = 0;
       }
     }
 
@@ -105,50 +107,54 @@ export class RepComissionComponent extends Common implements AfterViewInit{
   }
 
   onCheckOption(evt:DropdownChangeEvent){
-    Object.keys(this.valueTargetMonth).forEach(k =>{
-      this.valueTargetMonth[parseInt(k)] = 0;
+    Object.keys(this.targetValueMonth).forEach(k =>{
+      this.targetValueMonth[parseInt(k)] = 0;
     });
-    Object.keys(this.valueTargetQuarter).forEach(k =>{
-      this.valueTargetQuarter[parseInt(k)] = 0;
+    Object.keys(this.targetValueQuarter).forEach(k =>{
+      this.targetValueQuarter[parseInt(k)] = 0;
     });
-    this.valueTargetYear = 0;
+    this.targetValueYear = 0;
   }
 
   onLoadTarget():void{
-    let year = (this.yearTarget==null)? (new Date()).getFullYear() :this.yearTarget?.getFullYear();
+    let year = (this.targetYear==null)? (new Date()).getFullYear() :this.targetYear?.getFullYear();
     this.svc.loadTarget(year).subscribe({
       next: (data) =>{
-        this.yearTarget = new Date(data.year,0,1);
+        if(data == null){
+          this.targetYear = new Date(); 
+        }
+        this.targetYear = new Date(data.year,0,1);
         this.selected_target       = data.type;
-        this.valueTargetYear       = parseFloat(data.value_year);
-        this.valueTargetQuarter[0] = parseFloat(data.value_quarter1);
-        this.valueTargetQuarter[1] = parseFloat(data.value_quarter2);
-        this.valueTargetQuarter[2] = parseFloat(data.value_quarter3);
-        this.valueTargetQuarter[3] = parseFloat(data.value_quarter4);
-        this.valueTargetMonth[0]   = parseFloat(data.value_jan);
-        this.valueTargetMonth[1]   = parseFloat(data.value_feb);
-        this.valueTargetMonth[2]   = parseFloat(data.value_mar);
-        this.valueTargetMonth[3]   = parseFloat(data.value_apr);
-        this.valueTargetMonth[4]   = parseFloat(data.value_may);
-        this.valueTargetMonth[5]   = parseFloat(data.value_jun);
-        this.valueTargetMonth[6]   = parseFloat(data.value_jul);
-        this.valueTargetMonth[7]   = parseFloat(data.value_aug);
-        this.valueTargetMonth[8]   = parseFloat(data.value_sep);
-        this.valueTargetMonth[9]   = parseFloat(data.value_oct);
-        this.valueTargetMonth[10]  = parseFloat(data.value_nov);
-        this.valueTargetMonth[11]  = parseFloat(data.value_dec);
+        this.targetMaxValue        = parseFloat(data.max_value);
+        this.targetValueYear       = parseFloat(data.value_year);
+        this.targetValueQuarter[0] = parseFloat(data.value_quarter1);
+        this.targetValueQuarter[1] = parseFloat(data.value_quarter2);
+        this.targetValueQuarter[2] = parseFloat(data.value_quarter3);
+        this.targetValueQuarter[3] = parseFloat(data.value_quarter4);
+        this.targetValueMonth[0]   = parseFloat(data.value_jan);
+        this.targetValueMonth[1]   = parseFloat(data.value_feb);
+        this.targetValueMonth[2]   = parseFloat(data.value_mar);
+        this.targetValueMonth[3]   = parseFloat(data.value_apr);
+        this.targetValueMonth[4]   = parseFloat(data.value_may);
+        this.targetValueMonth[5]   = parseFloat(data.value_jun);
+        this.targetValueMonth[6]   = parseFloat(data.value_jul);
+        this.targetValueMonth[7]   = parseFloat(data.value_aug);
+        this.targetValueMonth[8]   = parseFloat(data.value_sep);
+        this.targetValueMonth[9]   = parseFloat(data.value_oct);
+        this.targetValueMonth[10]  = parseFloat(data.value_nov);
+        this.targetValueMonth[11]  = parseFloat(data.value_dec);
       }
     })
   }
 
   onLoadComission(){
-    let year = (this.yearComission==null)? (new Date()).getFullYear() :this.yearComission?.getFullYear();
+    let year = (this.comissionYear==null)? (new Date()).getFullYear() :this.comissionYear?.getFullYear();
     this.svc.loadComission(year).subscribe({
       next:(data) =>{
-        //this.yearTarget = new Date(data.year,0,1);
-        this.yearComission = new Date(data.year,0,1);
+        //this.targetYear = new Date(data.year,0,1);
+        this.comissionYear = new Date(data.year,0,1);
         data.comission.forEach((d: { id: number, id_representative: number; percent: number; value:number }) =>{
-          this.valueComission[d.id_representative] = d.percent;
+          this.comissionValue[d.id_representative] = d.percent;
         });
       }
     });
@@ -156,34 +162,34 @@ export class RepComissionComponent extends Common implements AfterViewInit{
 
   recalcAll():void{
     (this.response.data as Entity[]).forEach(e =>{
-      this.valueComission[e.id] = this.all_commission;
+      this.comissionValue[e.id] = this.all_commission;
     })
   }
 
   onSaveTarget():void{
     this.hasSended = true;
 
-    if(this.yearTarget==null || this.yearTarget==undefined){
+    if(this.targetYear==null || this.targetYear==undefined){
       return;
     }
 
     if(this.selected_target=='Y'){
-      if (this.valueTargetYear==0){
+      if (this.targetValueYear==0){
         return;
       }
     }
 
     if(this.selected_target=='Q'){
-      Object.keys(this.valueTargetQuarter).forEach(k =>{
-        if (this.valueTargetQuarter[parseInt(k)]==0){
+      Object.keys(this.targetValueQuarter).forEach(k =>{
+        if (this.targetValueQuarter[parseInt(k)]==0){
           return;
         }
       });
     }
 
     if(this.selected_target=='M'){
-      Object.keys(this.valueTargetMonth).forEach(k =>{
-        if (this.valueTargetMonth[parseInt(k)]==0){
+      Object.keys(this.targetValueMonth).forEach(k =>{
+        if (this.targetValueMonth[parseInt(k)]==0){
           return;
         }
       });
@@ -191,26 +197,27 @@ export class RepComissionComponent extends Common implements AfterViewInit{
 
     let save:any = {
       type: this.selected_target,
-      value_year: this.valueTargetYear,
-      value_quarter1: this.valueTargetQuarter[0],
-      value_quarter2: this.valueTargetQuarter[1],
-      value_quarter3: this.valueTargetQuarter[2],
-      value_quarter4: this.valueTargetQuarter[3],
-      value_jan: this.valueTargetMonth[0],
-      value_feb: this.valueTargetMonth[1],
-      value_mar: this.valueTargetMonth[2],
-      value_apr: this.valueTargetMonth[3],
-      value_may: this.valueTargetMonth[4],
-      value_jun: this.valueTargetMonth[5],
-      value_jul: this.valueTargetMonth[6],
-      value_aug: this.valueTargetMonth[7],
-      value_sep: this.valueTargetMonth[8],
-      value_oct: this.valueTargetMonth[9],
-      value_nov: this.valueTargetMonth[10],
-      value_dec: this.valueTargetMonth[11]
+      max_value: this.targetMaxValue,
+      value_year: this.targetValueYear,
+      value_quarter1: this.targetValueQuarter[0],
+      value_quarter2: this.targetValueQuarter[1],
+      value_quarter3: this.targetValueQuarter[2],
+      value_quarter4: this.targetValueQuarter[3],
+      value_jan: this.targetValueMonth[0],
+      value_feb: this.targetValueMonth[1],
+      value_mar: this.targetValueMonth[2],
+      value_apr: this.targetValueMonth[3],
+      value_may: this.targetValueMonth[4],
+      value_jun: this.targetValueMonth[5],
+      value_jul: this.targetValueMonth[6],
+      value_aug: this.targetValueMonth[7],
+      value_sep: this.targetValueMonth[8],
+      value_oct: this.targetValueMonth[9],
+      value_nov: this.targetValueMonth[10],
+      value_dec: this.targetValueMonth[11]
     };
 
-    this.svc.saveTarget(this.yearTarget.getFullYear(),save).subscribe({
+    this.svc.saveTarget(this.targetYear.getFullYear(),save).subscribe({
       next: (data) =>{
         this.msg.clear();
         this.hasSended = false;
@@ -239,17 +246,17 @@ export class RepComissionComponent extends Common implements AfterViewInit{
     (this.response.data as Entity[]).forEach(e =>{
       send.push({
         id_representative: e.id,
-        year: this.yearComission?.getFullYear(),
-        percent: this.valueComission[e.id],
+        year: this.comissionYear?.getFullYear(),
+        percent: this.comissionValue[e.id],
         value: undefined
       });
     });
 
-    if(this.yearComission==null || this.yearComission==undefined){
+    if(this.comissionYear==null || this.comissionYear==undefined){
       return;
     }
 
-    this.svc.saveComission(this.yearComission.getFullYear(),send).subscribe({
+    this.svc.saveComission(this.comissionYear.getFullYear(),send).subscribe({
       next: (data) =>{
         this.msg.clear();
         if (typeof data ==='boolean'){

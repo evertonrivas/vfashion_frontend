@@ -10,7 +10,11 @@
         <div style="min-height: 150px" class="flex flex-column gap-2 border-2 border-dashed surface-border p-3">
             <div class="flex flex-column w-full">
                 <label class="mb-1">Ano da(s) Meta(s)</label>
-                <p-calendar [(ngModel)]="yearTarget" styleClass="w-full" view="year" dateFormat="yy" />
+                <p-calendar [(ngModel)]="targetYear" styleClass="w-full" view="year" dateFormat="yy" />
+            </div>
+            <div class="flex flex-column w-full">
+                <label class="mb-1">Supermeta</label>
+                <p-inputNumber [showButtons]="true" [min]="0" [max]="100" [(ngModel)]="targetMaxValue" suffix=" %" styleClass="w-full"></p-inputNumber>
             </div>
             <div class="flex flex-column w-full">
                 <label class="mb-1">Sazonalidade</label>
@@ -24,18 +28,18 @@
             </div>
             <div class="flex flex-column w-full" *ngIf="selected_target=='Y'">
                 <label class="mb-1">Valor</label>
-                <p-inputNumber [disabled]="disabled_target" [(ngModel)]="valueTargetYear" styleClass="w-full text-right" mode="currency" currency="BRL" locale="pt-BR" placeholder="R$ 0,00" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !valueTargetYear}"></p-inputNumber>
+                <p-inputNumber [disabled]="disabled_target" [(ngModel)]="targetValueYear" styleClass="w-full text-right" mode="currency" currency="BRL" locale="pt-BR" placeholder="R$ 0,00" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !targetValueYear}"></p-inputNumber>
             </div>
             <ng-container *ngIf="selected_target=='Q'">
                 <div class="flex flex-column w-full" *ngFor="let quarter of quarters;let i=index">
                     <label class="mb-1">Valor {{quarter}}</label>
-                    <p-inputNumber [disabled]="disabled_target" [(ngModel)]="valueTargetQuarter[i]" styleClass="w-full text-right" mode="currency" currency="BRL" locale="pt-BR" placeholder="R$ 0,00" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !valueTargetQuarter[i]}"></p-inputNumber>
+                    <p-inputNumber [disabled]="disabled_target" [(ngModel)]="targetValueQuarter[i]" styleClass="w-full text-right" mode="currency" currency="BRL" locale="pt-BR" placeholder="R$ 0,00" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !targetValueQuarter[i]}"></p-inputNumber>
                 </div>
             </ng-container>
             <ng-container *ngIf="selected_target=='M'">
                 <div class="flex flex-column w-full" *ngFor="let month of months;let i=index;">
                     <label class="mb-1">{{month}}</label>
-                    <p-inputNumber [disabled]="disabled_target" [(ngModel)]="valueTargetMonth[i]" styleClass="w-full text-right" mode="currency" currency="BRL" locale="pt-BR" placeholder="R$ 0,00" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !valueTargetMonth[i]}"></p-inputNumber>
+                    <p-inputNumber [disabled]="disabled_target" [(ngModel)]="targetValueMonth[i]" styleClass="w-full text-right" mode="currency" currency="BRL" locale="pt-BR" placeholder="R$ 0,00" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !targetValueMonth[i]}"></p-inputNumber>
                 </div>
             </ng-container>
         </div>
@@ -50,7 +54,7 @@
         <div style="min-height: 150px" class="border-2 border-dashed surface-border p-3">
             <div class="flex flex-column w-full mb-2">
                 <label class="mb-1">Ano das Comissões</label>
-                <p-calendar [(ngModel)]="yearComission" styleClass="w-full" view="year" dateFormat="yy" />
+                <p-calendar [(ngModel)]="comissionYear" styleClass="w-full" view="year" dateFormat="yy" />
             </div>
             <p-table [value]="response.data" styleClass="p-datatable-striped">
                 <ng-template pTemplate="header">
@@ -62,8 +66,8 @@
                 <ng-template pTemplate="body" let-item>
                     <tr>
                         <td>{{item.fantasy_name}}</td>
-                        <td style="width: 200px;"><p-slider [(ngModel)]="valueComission[item.id]" max="100" min="0" styleClass="w-full" [step]="5"></p-slider></td>
-                        <td><span>{{valueComission[item.id]}}%</span></td>
+                        <td style="width: 200px;"><p-slider [(ngModel)]="comissionValue[item.id]" max="100" min="0" styleClass="w-full" [step]="5"></p-slider></td>
+                        <td><span>{{comissionValue[item.id]}}%</span></td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="footer">
