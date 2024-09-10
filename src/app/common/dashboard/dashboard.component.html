@@ -1,4 +1,4 @@
-<div class="grid">
+<div class="grid" *ngIf="!targetNeed">
     <div [class]="module==modules.ADM?'col-12 lg:col-6 xl:col-2':'col-12 lg:col-6 xl:col-3'" *ngFor="let card of topCards">
         <app-card [card]="card"></app-card>
     </div>
@@ -6,14 +6,14 @@
     <!--Calendario-->
     <ng-container *ngIf="module==modules.SCM">
         <div class="col-12 lg:col-9">
-            <div class="card">
+            <div class="card border-round">
                 <label class="font-bold">Vendas por Representante</label>
                 <div echarts [options]="firstChartOption"></div>
             </div>
         </div>
         <div class="col-12 lg:col-3">
-            <div class="card">
-                <label class="font-bold">Venda da Coleção</label>
+            <div class="card border-round">
+                <label class="font-bold">Meta {{targetName}}</label>
                 <div echarts [options]="secondChartOption"></div>
             </div>
         </div>
@@ -38,4 +38,11 @@
     <ng-container *ngIf="module==modules.ORD">
         
     </ng-container>
+</div>
+<div *ngIf="targetNeed" class="flex flex-row w-full justify-content-center">
+    <p-card header="Sem definição de metas">
+        <p class="m-0">
+            Ainda não foram definidas as metas para visualização do Dashboard, por favor configure-as antes!
+        </p>
+    </p-card>
 </div>
