@@ -26,7 +26,9 @@ export class Common{
         company_max_up_images: 0,
         company_use_url_images: false,
         system_pagination_size: 0,
-        flimv_model:""
+        flimv_model: "",
+        company_dashboard_color: "",
+        company_dashboard_image: ""
     }
     module:ModuleName = ModuleName.NONE; // nome do module que estah em uso no sistema
     modulePath:string = ""; //url do caminho do modulo
@@ -72,7 +74,9 @@ export class Common{
             company_max_up_images: parseInt(JSON.stringify(localStorage.getItem("company_max_up_images")).replaceAll('"',"")),
             company_use_url_images: JSON.stringify(localStorage.getItem("company_use_url_images")).replaceAll('"',"")=="1"?true:false,
             system_pagination_size: parseInt(JSON.stringify(localStorage.getItem("system_pagination_size")).replaceAll('"',"")),
-            flimv_model: JSON.stringify(localStorage.getItem("flimv_model")).replaceAll('"','')
+            flimv_model: JSON.stringify(localStorage.getItem("flimv_model")).replaceAll('"',''),
+            company_dashboard_color: JSON.stringify(localStorage.getItem("company_dashboard_color")).replaceAll('"',''),
+            company_dashboard_image: JSON.stringify(localStorage.getItem("company_dashboard_image")).replaceAll('"','')
         }
         this.options.pageSize = this.sysconfig.system_pagination_size;
 
