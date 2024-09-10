@@ -58,7 +58,7 @@ export class IndicatorsService extends MyHttp{
 
    //realiza a soma total dos pedidos por representante no calendario
    calendarValueOrderByRepresentative():Observable<any>{
-    return this.http.get<any>(this.sys_config.backend_b2b+'',{
+    return this.http.put<any>(this.sys_config.backend_b2b+'/orders/total/',{
       headers: this.getHeader()
     });
    }
