@@ -11,7 +11,7 @@
     <p-skeleton width="15rem" styleClass="mb-2"></p-skeleton>
     <p-skeleton width="10rem" styleClass="mb-2"></p-skeleton>
 </div>
-<div class="card mb-0" *ngIf="!loading && card!=null && !card.disabled">
+<div class="card mb-0 border-round" *ngIf="!loading && card!=null && !card.disabled">
     <div class="flex justify-content-between mb-3">
         <div>
             <span class="block text-500 font-medium mb-3">{{card.title}}</span>
@@ -35,7 +35,7 @@
     </ng-container>
 </div>
 
-<div class="card mb-0" *ngIf="!loading && card!=null && card.disabled">
+<div class="card mb-0 border-round" *ngIf="!loading && card!=null && card.disabled">
     <div class="flex justify-content-between mb-3">
         <div>
             <span class="block text-500 font-medium mb-3">{{card.title}}</span>
