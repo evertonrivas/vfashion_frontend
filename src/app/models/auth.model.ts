@@ -10,15 +10,17 @@ export interface Auth {
 
 
 export interface SysConfig{
-    use_company_custom:boolean,
-    company_name:string,
-    company_logo:string,
-    company_instagram:string,
+    company_dashboard_color:string,
+    company_dashboard_image:string,
     company_facebook:string,
+    company_instagram:string,
     company_linkedin:string,
+    company_logo:string,
     company_max_up_files:number,
     company_max_up_images:number,
+    company_name:string,
     company_use_url_images:boolean,
-    system_pagination_size:number,
     flimv_model:string,
+    system_pagination_size:number,
+    use_company_custom:boolean,
 }
