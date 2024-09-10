@@ -5,6 +5,11 @@
             <div class="flex flex-column w-full" *ngFor="let field of row.fields">
                 <label *ngIf="field.type!=fieldType.CHECK && field.type!=fieldType.HIDDEN && field.type!=fieldType.PASSWD" class="mb-1">{{field.label}}</label>
                 <input *ngIf="field.type==fieldType.INPUT" pInputText [placeholder]="field.placeholder!=undefined?field.placeholder:''" [(ngModel)]="field.value" [ngClass]="field.case==fieldCase.UPPER?'uppercase':(field.case==fieldCase.LOWER?'lowercase':'')" [disabled]="field.disabled" [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}">
+                <input *ngIf="field.type==fieldType.TAXVAT" mask="000.000.000-00||00.000.000/0000-00" pInputText [placeholder]="field.placeholder!=undefined?field.placeholder:''" [(ngModel)]="field.value" [ngClass]="field.case==fieldCase.UPPER?'uppercase':(field.case==fieldCase.LOWER?'lowercase':'')" [disabled]="field.disabled" [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}">
+                <p-iconField [iconPosition]="'right'" *ngIf="field.type==fieldType.POSTAL_CODE">
+                    <p-inputIcon *ngIf="loadingPC" styleClass="pi pi-spinner pi-spin" />
+                    <input *ngIf="field.type==fieldType.POSTAL_CODE" mask="00.000-000" pInputText [placeholder]="field.placeholder!=undefined?field.placeholder:''" [(ngModel)]="field.value" [ngClass]="field.case==fieldCase.UPPER?'uppercase':(field.case==fieldCase.LOWER?'lowercase':'')" [disabled]="field.disabled" [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}" (ngModelChange)="getPostalCode($event,field.dependent)">
+                </p-iconField>
                 <textarea *ngIf="field.type==fieldType.TEXT" rows="5" pInputTextarea [(ngModel)]="field.value"  [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}" class="w-full"></textarea>
                 <p-iconField iconPosition="right" *ngIf="field.type==fieldType.BARCODE" class="w-full">
                     <p-inputIcon styleClass="pi pi-barcode"/>

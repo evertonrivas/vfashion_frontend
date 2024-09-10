@@ -9,6 +9,9 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { HttpHeaders } from '@angular/common/http';
+import { provideNgxMask } from 'ngx-mask';
+import { SysService } from 'src/app/services/sys.service';
+import { Cep } from 'src/app/models/entity.model';
 
 @Component({
   selector: 'app-form',
@@ -23,7 +26,8 @@ import { HttpHeaders } from '@angular/common/http';
     InputTextareaModule
   ],
   templateUrl: './form.component.html',
-  styleUrl: './form.component.scss'
+  styleUrl: './form.component.scss',
+  providers:[provideNgxMask()]
 })
 export class FormComponent {
   @Input() visible:boolean = false;
@@ -39,10 +43,11 @@ export class FormComponent {
   selectedImageOption:any;
   kcolors:any[] = [];
   icons:string[] = [];
+  loadingPC:boolean = false;
   uploadHeaders:HttpHeaders = new HttpHeaders()
     .set("Authorization",localStorage.getItem('token_type')+" "+localStorage.getItem('token_access'));
 
-  constructor(){
+  constructor(private sys:SysService){
     //icones
     this.icons.push("list_alt");
     this.icons.push("phone_disabled");
@@ -258,5 +263,39 @@ export class FormComponent {
 
   setIcon(icon:any,field:FormField):void{
     field.value = icon;
+  }
+
+  getPostalCode(evt:EventEmitter<any>,dependents?:FormField[]){
+    if(evt.length==8){
+      this.loadingPC = true;
+      this.sys.getPostalCode(evt.toString()).subscribe({
+        next: (data) =>{
+          this.loadingPC = false;
+          if("address" in data){
+            dependents?.forEach(d =>{
+              if(d.name=="address"){
+                d.value = (data as Cep).address;
+              }
+              if(d.name=="neighborhood"){
+                d.value = (data as Cep).neighborhood;
+              }
+              if(d.name=="city"){
+                d.value = d.options?.find(f => f.id == (data as Cep).id_city);
+              }
+            })
+            // this.editableCustomer.address = (data as Cep).address,
+            // this.editableCustomer.neighborhood = (data as Cep).neighborhood,
+            // this.editableCustomer.city = this.citySuggestions.find(v => v.id == (data as Cep).id_city) as City;
+          }else{
+            // this.messageToShow.emit({
+            //   key:'systemToast',
+            //   severity:'error',
+            //   summary:'Falha...',
+            //   detail: (data as ResponseError).error_details
+            // });
+          }
+        }
+      });
+    }
   }
 }
