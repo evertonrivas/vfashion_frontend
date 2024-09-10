@@ -80,6 +80,8 @@ export class LoginComponent implements AfterContentInit{
     localStorage.removeItem("company_max_up_files");
     localStorage.removeItem("company_max_up_images");
     localStorage.removeItem("company_use_url_images");
+    localStorage.removeItem("company_dashboard_color");
+    localStorage.removeItem("company_dashboard_image");
     localStorage.removeItem("id_user");
     localStorage.removeItem("token_access");
     localStorage.removeItem("token_type");
@@ -102,6 +104,8 @@ export class LoginComponent implements AfterContentInit{
           localStorage.setItem("company_max_up_files",String(config.company_max_up_files));
           localStorage.setItem("company_max_up_images",String(config.company_max_up_images));
           localStorage.setItem("company_use_url_images",String(config.company_use_url_images?1:0));
+          localStorage.setItem("company_dashboard_image",String(config.company_dashboard_image));
+          localStorage.setItem("company_dashboard_color",String(config.company_dashboard_color));
           localStorage.setItem("flimv_model",config.flimv_model);
 
           this.use_company_custom = config.use_company_custom;
