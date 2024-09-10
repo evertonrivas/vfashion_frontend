@@ -14,40 +14,40 @@
     <button #menubutton class="p-link layout-menu-button layout-topbar-button" *ngIf="module==modules.ADM || module==modules.B2B" [pTooltip]="module==modules.ADM?'Exibir/Ocultar Menu':'Exibir/Ocultar Filtros'" tooltipPosition="bottom" tooltipStyleClass="text-xs" (click)="onMenu()">
         <i class="material-symbols-outlined">menu</i>
     </button>
-    <button *ngIf="module==modules.ORD || module==modules.SCM" class="p-link layout-topbar-button" [routerLink]="[modulePath+'/dashboard']" pTooltip="Dashboard" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+    <button *ngIf="module==modules.ORD || module==modules.SCM" class="p-link layout-topbar-button" routerLinkActive="active-route" [routerLink]="[modulePath+'/dashboard']" pTooltip="Dashboard" tooltipPosition="bottom" tooltipStyleClass="text-xs">
         <i class="material-symbols-outlined">dashboard</i>
     </button>
-    <button *ngIf="module==modules.SCM || module==modules.CRM || module==modules.ADM" class="p-link layout-topbar-button" [routerLink]="[modulePath+'/reports']" pTooltip="Relatórios" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+    <button *ngIf="module==modules.SCM || module==modules.CRM || module==modules.ADM" class="p-link layout-topbar-button" routerLinkActive="active-route" [routerLink]="[modulePath+'/reports']" pTooltip="Relatórios" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">picture_as_pdf</i>
         </button>
     <!-- Modulo Calendário -->
     <ng-container *ngIf="module==modules.SCM">
-        <button class="p-link layout-topbar-button" [routerLink]="[modulePath+'/gantt']" pTooltip="Calendário" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+        <button class="p-link layout-topbar-button" routerLinkActive="active-route" [routerLink]="[modulePath+'/gantt']" pTooltip="Calendário" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">calendar_month</i>
         </button>
-        <button *ngIf="sysconfig.flimv_model=='FLIMVS'" class="p-link layout-topbar-button" [routerLink]="[modulePath+'/flimv']" pTooltip="FLIMV" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+        <button *ngIf="sysconfig.flimv_model=='FLIMVS'" routerLinkActive="active-route" class="p-link layout-topbar-button" [routerLink]="[modulePath+'/flimv']" pTooltip="FLIMV" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">military_tech</i>
         </button>
-        <button class="p-link layout-topbar-button" [routerLink]="[modulePath+'/comission']" pTooltip="Metas e Comissões" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+        <button class="p-link layout-topbar-button" routerLinkActive="active-route" [routerLink]="[modulePath+'/comission']" pTooltip="Metas e Comissões" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">account_balance_wallet</i>
         </button>
     </ng-container>
     <!-- Modulo CRM -->
     <ng-container *ngIf="module==modules.CRM">
-        <button class="p-link layout-topbar-button" [routerLink]="[modulePath+'/kanban']" pTooltip="Kanban" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+        <button class="p-link layout-topbar-button" routerLinkActive="active-route" [routerLink]="[modulePath+'/kanban']" pTooltip="Kanban" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">view_kanban</i>
         </button>
     </ng-container>
 
     <ng-container *ngIf="module==modules.FPR">
-        <button class="p-link layout-topbar-button" pTooltip="Devoluções" tooltipPosition="bottom" tooltipStyleClass="text-xs" [routerLink]="[modulePath+'/process']">
+        <button class="p-link layout-topbar-button" routerLinkActive="active-route" pTooltip="Devoluções" tooltipPosition="bottom" tooltipStyleClass="text-xs" [routerLink]="[modulePath+'/process']">
             <i class="material-symbols-outlined">deployed_code_update</i>
             <label>Devoluções</label>
         </button>
     </ng-container>
 
     <ng-container *ngIf="module==modules.ORD">
-        <button class="p-link layout-topbar-button" pTooltip="Gestor de Pedidos" tooltipPosition="bottom" tooltipStyleClass="text-xs" [routerLink]="[modulePath+'/management']">
+        <button class="p-link layout-topbar-button" routerLinkActive="active-route" pTooltip="Gestor de Pedidos" tooltipPosition="bottom" tooltipStyleClass="text-xs" [routerLink]="[modulePath+'/management']">
             <i class="material-symbols-outlined">dvr</i>
             <label>Pedidos</label>
         </button>
