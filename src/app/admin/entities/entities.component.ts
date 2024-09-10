@@ -8,12 +8,12 @@ import { SharedModule } from 'src/app/common/shared.module';
 import { RequestResponse, ResponseError } from 'src/app/models/paginate.model';
 import { EntitiesService } from 'src/app/services/entities.service';
 import { FilterComponent } from "../../common/filter/filter.component";
-import { FieldType } from 'src/app/models/system.enum';
+import { FieldCase, FieldType, FileType } from 'src/app/models/system.enum';
 import { FormComponent } from 'src/app/common/form/form.component';
 import { Entity } from 'src/app/models/entity.model';
-import { FieldOption } from 'src/app/models/field.model';
+import { FieldOption, FormField } from 'src/app/models/field.model';
 import { LocationService } from 'src/app/services/location.service';
-import { Country, StateRegion } from 'src/app/models/place.model';
+import { City, Country, StateRegion } from 'src/app/models/place.model';
 import { FileUploadModule } from 'primeng/fileupload';
 import { HttpHeaders } from '@angular/common/http';
 
@@ -41,6 +41,7 @@ export class EntitiesComponent extends Common implements AfterViewInit{
   showDialogImport:boolean = false;
   uploadHeaders:HttpHeaders = new HttpHeaders()
     .set("Authorization",localStorage.getItem('token_type')+" "+localStorage.getItem('token_access'));
+  all_cities:FieldOption[] = [];
   constructor(route:Router,
     private svc:EntitiesService,
     private cdr:ChangeDetectorRef,
@@ -79,6 +80,15 @@ export class EntitiesComponent extends Common implements AfterViewInit{
         this.response = data as RequestResponse;
         this.cdr.detectChanges();
         this.loading = false;
+      }
+    });
+
+    this.all_cities = [];
+    this.lsvc.listCities({page:1,pageSize:1,query:"can:list-all 1||is:order-by name"}).subscribe({
+      next: (data) =>{
+        (data as City[]).forEach(c =>{
+          this.all_cities.push({ id:c.id,label:c.name,value:c.id });
+        });
       }
     });
   }
@@ -161,63 +171,198 @@ export class EntitiesComponent extends Common implements AfterViewInit{
   }
 
   onEditData(id:number = 0):void{
+    this.idToEdit = id;
 
-    //produzir formulario proprio adequado, ou transformar o do CRM em common
+    //limpa o formulario
+    this.formRows = [];
 
+    let fieldName:FormField = {
+      label: "Nome",
+      name: "name",
+      options: undefined,
+      placeholder: "Digite o nome...",
+      type: FieldType.INPUT,
+      value: undefined,
+      required: true,
+      case: FieldCase.UPPER,
+      disabled: false,
+      lockField: undefined
+    };
 
-    // //limpa o formulario
-    // this.formRows = [];
-    // let fieldName:FormField = {
-    //   label: "Nome",
-    //   name: "name",
-    //   options: undefined,
-    //   placeholder: "Digite o nome...",
-    //   type: FieldType.INPUT,
-    //   value: undefined,
-    //   required: true,
-    //   case: FieldCase.UPPER,
-    //   disabled: false
-    // };
-    // this.idToEdit = id;
+    let fieldFantasy:FormField = {
+      label: "Nome Fantasia ou apelido",
+      name: "fantasy_name",
+      options: undefined,
+      placeholder: "Digite o nome fantasia ou apelido...",
+      type: FieldType.INPUT,
+      value: undefined,
+      required: true,
+      case: FieldCase.UPPER,
+      disabled: false,
+      lockField: undefined
+    }
 
-    // if(id>0){
-    //   //busca os dados do registro para edicao
-    //   this.serviceSub[2] = this.svc.loadEntity(id).subscribe({
-    //     next: (data) =>{
-    //       if ("name" in data){
-    //         this.localObject = data as Entity;
-    //         fieldName.value = this.localObject.name;
+    let fieldTaxvat:FormField = {
+      label: "CPF/CNPJ",
+      name: "taxvat",
+      options: undefined,
+      placeholder: "Digite o CPF ou CNPJ...",
+      type: FieldType.TAXVAT,
+      value: undefined,
+      required: true,
+      case: FieldCase.UPPER,
+      disabled: false,
+      lockField: undefined
+    }
 
-    //         //monta as linhas do forme e exibe o mesmo
-    //         let row:FormRow = {
-    //           fields: [fieldName]
-    //         }
-    //         this.formRows.push(row);
-    //         this.formVisible = true;
+    let fieldAddress:FormField = {
+      label: "Endereço",
+      name: "address",
+      options: undefined,
+      placeholder: "Digite o endereço...",
+      type: FieldType.INPUT,
+      value: undefined,
+      required: true,
+      case: FieldCase.UPPER,
+      disabled: false,
+      lockField: undefined
+    }
+
+    let fieldBairro:FormField = {
+      label: "Bairro",
+      name: "neighborhood",
+      options: undefined,
+      placeholder: "Digite o bairro...",
+      type: FieldType.INPUT,
+      value: undefined,
+      required: true,
+      case: FieldCase.UPPER,
+      disabled: false,
+      lockField: undefined
+    }
+    
+    let fieldCity:FormField = {
+      label: "Cidade",
+      name: "city",
+      options: this.all_cities,
+      placeholder: "Selecione...",
+      type: FieldType.COMBO,
+      value: undefined,
+      required: true,
+      case: FieldCase.NONE,
+      disabled: false,
+      lockField: undefined
+    }
+
+    let fieldCEP:FormField = {
+      label: 'CEP',
+      name: 'postal_code',
+      options: undefined,
+      placeholder:undefined,
+      type: FieldType.POSTAL_CODE,
+      value: undefined,
+      required: true,
+      case: FieldCase.NONE,
+      disabled: false,
+      lockField: undefined,
+      dependent:[fieldAddress,fieldBairro,fieldCity]
+    }
+
+    let levelOpts:FieldOption[] = []
+    levelOpts.push({id:0,label:'Cliente',value:'C'});
+    levelOpts.push({id:0,label:'Fornecedor',value:'F'});
+    levelOpts.push({id:0,label:'Pessoa (física)',value:'P'});
+    levelOpts.push({id:0,label:'Representante',value:'R'});
+
+    let fieldType:FormField = {
+      label: 'Tipo',
+      name: 'type',
+      options: levelOpts,
+      placeholder:"Selecione...",
+      type: FieldType.COMBO,
+      value: undefined,
+      required: true,
+      case: FieldCase.NONE,
+      disabled: false,
+      lockField: undefined
+    }
+
+    if(id>0){
+      //busca os dados do registro para edicao
+      this.serviceSub[2] = this.svc.loadEntity(id).subscribe({
+        next: (data) =>{
+          if ("name" in data){
+            this.localObject   = data as Entity;
+            fieldName.value    = this.localObject.name;
+            fieldFantasy.value = this.localObject.fantasy_name;
+            fieldBairro.value  = this.localObject.neighborhood;
+            fieldAddress.value = this.localObject.address;
+            fieldCEP.value     = this.localObject.postal_code;
+            fieldTaxvat.value  = this.localObject.taxvat;
+            fieldCity.value    = this.all_cities.find(f => f.id == this.localObject.city.id);
+            fieldType.value    = levelOpts.find(f => f.value == this.localObject.type );
+
+            //monta as linhas do forme e exibe o mesmo
+            this.formRows.push({ fields: [fieldName]});
+            this.formRows.push({ fields: [fieldFantasy,fieldTaxvat]});
+            this.formRows.push({ fields: [fieldCEP,fieldAddress,fieldBairro]});
+            this.formRows.push({ fields: [fieldCity,fieldType]});
+            this.formVisible = true;
             
-    //       }else{
-    //         this.msg.clear();
-    //         this.msg.add({
-    //           summary:"Falha...",
-    //           detail: "Ocorreu um erro ao tentar carregar o registro",
-    //           severity:"error"
-    //         });
-    //       }
-    //     }
-    //   });
-    // }else{
-    //   //monta as linhas do forme e exibe o mesmo
-    //   let row:FormRow = {
-    //     fields: [fieldName]
-    //   }  
-    //   this.formRows.push(row);
-    //   this.formVisible = true;
-    // }
+          }else{
+            this.msg.clear();
+            this.msg.add({
+              summary:"Falha...",
+              detail: "Ocorreu um erro ao tentar carregar o registro",
+              severity:"error"
+            });
+          }
+        }
+      });
+    }else{
+      //monta as linhas do forme e exibe o mesmo
+      this.formRows.push({ fields: [fieldName]});
+      this.formRows.push({ fields: [fieldFantasy,fieldTaxvat]});
+      this.formRows.push({ fields: [fieldCEP,fieldAddress,fieldBairro]});
+      this.formRows.push({ fields: [fieldCity,fieldType]});
+      this.formVisible = true;
+    }
   }
 
   onDataSave(data:any):void{
+    let entity:Entity = {
+      id: data.id,
+      origin_id: 0,
+      name: data.name,
+      fantasy_name: data.fantasy_name,
+      taxvat: data.taxvat,
+      city: {
+        id: data.city,
+        state_region: {
+          id: 0,
+          country: {
+            id: 0,
+            name: ''
+          },
+          name: '',
+          acronym: ''
+        },
+        name: '',
+        brazil_ibge_code: null
+      },
+      agent: null,
+      contacts: [],
+      web: [],
+      files: [],
+      postal_code: data.postal_code,
+      neighborhood: data.neighborhood,
+      address: data.address,
+      type: data.type,
+      date_created: undefined,
+      date_updated: undefined
+    }
     this.hasSended = true;
-    this.serviceSub[3] = this.svc.saveEntity(data as Entity).subscribe({
+    this.serviceSub[3] = this.svc.saveEntity(entity).subscribe({
       next:(data) =>{
         this.hasSended = false;
         this.formVisible = false;
