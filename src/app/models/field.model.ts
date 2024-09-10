@@ -27,7 +27,8 @@ export interface FormField {
     required:boolean,
     case:FieldCase,
     disabled:boolean,
-    lockField: undefined|null|FormField
+    lockField: undefined|null|FormField,
+    dependent?: FormField[]
 }
 
 export interface FormRow{
