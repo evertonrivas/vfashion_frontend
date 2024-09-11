@@ -12,7 +12,7 @@ import { SharedModule } from 'src/app/common/shared.module';
 import { Moment } from 'src/app/models/moment.model';
 import { FieldOption } from 'src/app/models/field.model';
 import { RequestResponse, ResponseError } from 'src/app/models/paginate.model';
-import { B2bBrand, Color, ProductCategory, ProductGrid, ProductGridDistribution, ProductGridDistributionSize, ProductModel, ProductStockColor, ProductStockSizes2, ProductType, Size } from 'src/app/models/product.model';
+import { B2bBrand, Color, Product, ProductCategory, ProductGrid, ProductGridDistribution, ProductGridDistributionSize, ProductModel, ProductStock2, ProductStockColor, ProductStockSizes2, ProductType, Size } from 'src/app/models/product.model';
 import { FieldType } from 'src/app/models/system.enum';
 import { BrandService } from 'src/app/services/brand.service';
 import { CategoryService } from 'src/app/services/category.service';
@@ -39,12 +39,14 @@ import { StockService } from 'src/app/services/stock.service';
 })
 export class ProductStockComponent extends Common implements AfterViewInit{
   all_grid:ProductGrid[] = [];
-  selectedGrid!:ProductGrid;
+  selectedGrid?:ProductGrid;
+  selectedProduct?:Product;
   selectedGridSizes:ProductGridDistribution[] = [];
   ilimited:boolean = false;
   removeItem:boolean = false;
   all_colors:Color[] = [];
   selectedColors:Color[] = [];
+  all_products:Product[] = [];
   @ViewChild('pnlMassive') pnlMassive!:OverlayPanel;
   constructor(route:Router,
     private cdr:ChangeDetectorRef,
@@ -56,6 +58,7 @@ export class ProductStockComponent extends Common implements AfterViewInit{
     private sType:ProductTypeService,
     private sGrid:ProductsService,
     private sModel:ModelService,
+    private sProd:ProductsService,
     private cfg:ConfirmationService,
     private msg:MessageService
   ){
@@ -128,9 +131,10 @@ export class ProductStockComponent extends Common implements AfterViewInit{
     const $pCateg  = this.sCat.list({page:1,pageSize:1,query:'can:list-all 1||is:order-by name'});
     const $pColor  = this.sCor.list({page:1, pageSize:1,query:'can:list-all 1||is:order-by name'});
     const $pType   = this.sType.list({page:1,pageSize:1,query:'can:list-all 1||is:order-by name'});
+    const $products= this.sProd.listProducts({page:1,pageSize:1,query:'can:list-all 1||is:orer-by name||is:no-stock 1'});
 
-    this.serviceSub [1] = forkJoin([$pBrand,$pModel,$pMoment,$pCateg,$pColor,$pType]).subscribe(
-      ([valBrand,valModel,valMoment,valCateg,valColor,valType]) =>{
+    this.serviceSub [1] = forkJoin([$pBrand,$pModel,$pMoment,$pCateg,$pColor,$pType,$products]).subscribe(
+      ([valBrand,valModel,valMoment,valCateg,valColor,valType,valProd]) =>{
       let optBrand:FieldOption[]  = [];
       let optModel:FieldOption[]  = [];
       let optMoment:FieldOption[] = [];
@@ -228,15 +232,53 @@ export class ProductStockComponent extends Common implements AfterViewInit{
         value:undefined,
         options: optColor
       });
+
+      this.all_products = valProd as Product[];
     });
   }
 
   onEditData(id:number = 0):void{
-    
+    this.formVisible = true;
   }
 
   onDataSave(data:any):void{
+    this.hasSended = true;
+    if(this.selectedGrid==undefined && this.selectedProduct==undefined && this.selectedColors.length==0){
+      return
+    }
 
+    let ids:number[] = [];
+    let colors:number[] = [];
+    this.tableSelected.forEach(s =>{
+      ids.push(s.id_product);
+    });
+    
+    this.selectedColors.forEach(c =>{
+      colors.push(c.id);
+    });
+
+    this.pnlMassive.hide();
+
+    this.svc.update([this.selectedProduct?.id as number],colors,this.ilimited,this.selectedGridSizes,false).subscribe({
+      next: (data) =>{
+        this.msg.clear();
+        this.formVisible = false;
+        if(typeof data==='boolean'){
+          this.msg.add({
+            severity:"success",
+            summary:"Sucesso!",
+            detail:"Estoque atualizado com sucesso!"
+          });
+          this.loadingData();
+        }else{
+          this.msg.add({
+            summary:"Falha...",
+            detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
+            severity:"error"
+          });
+        }
+      }
+    });
   }
 
   onDataDelete(pSendToTrash:boolean):void{
@@ -291,6 +333,14 @@ export class ProductStockComponent extends Common implements AfterViewInit{
           });
         }
       }
-    })
+    });
+  }
+
+  onCancelData():void{
+    this.selectedGrid      = undefined;
+    this.selectedProduct   = undefined;
+    this.selectedColors    = [];
+    this.selectedGridSizes = [];
+    this.formVisible = false;
   }
 }

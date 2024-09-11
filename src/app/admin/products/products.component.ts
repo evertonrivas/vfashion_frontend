@@ -54,7 +54,7 @@ export class ProductsComponent extends Common implements AfterViewInit {
   allOptCateg:FieldOption[] = []; 
   showDialogUpload:boolean = false;
   showDialogImport:boolean = false;
-  url_upload_images:string = this.envconfig.backend_cmm+'/upload/images/';
+  url_upload_images:string = this.envconfig.backend_cmm+'/upload/products/';
   url_upload_import:string = this.envconfig.backend_cmm+'/upload/import/?type=P';
   uploadHeaders:HttpHeaders = new HttpHeaders()
     .set("Authorization",localStorage.getItem('token_type')+" "+localStorage.getItem('token_access'));

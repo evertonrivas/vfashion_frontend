@@ -1,12 +1,13 @@
 <app-filter [fields]="filters" [(visible)]="filterVisible" [isTrash]="isTrash" (queryToFilter)="doFilter($event)"></app-filter>
-<app-form [(visible)]="formVisible" [rows]="formRows" title="Condição de Pagamento" [registryId]="idToEdit" (objectToSave)="onDataSave($event)"></app-form>
+<!-- <app-form [(visible)]="formVisible" [rows]="formRows" title="Condição de Pagamento" [registryId]="idToEdit" (objectToSave)="onDataSave($event)"></app-form> -->
 <p-toast></p-toast>
 <p-confirmDialog></p-confirmDialog>
 <p-panel>
     <ng-template pTemplate="header">
         <div class="flex flex-row w-full justify-content-between align-items-center">
             <div class="align-items-baseline">
-                <label class="p-panel-title">Estoques de Produtos</label>
+                <label class="p-panel-title">Estoques de Produtos</label><br>
+                <small class="text-cyan-600">* Para editar, marque o item que deseja e utilize as ações massivas</small>
             </div>
             <div class="flex flex-row gap-1">
                 <p-overlayPanel #pnlMassive styleClass="w-30rem lg:w-8" >
@@ -80,7 +81,7 @@
             <ng-template pTemplate="header">
                 <tr>
                     <th style="width: 50px!important;" class="text-center" pFrozenColumn><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
-                    <th style="width: 100px!important;" class="text-center" pFrozenColumn>Ações</th>
+                    <!-- <th style="width: 100px!important;" class="text-center" pFrozenColumn>Ações</th> -->
                     <th pSortableColumn="refCode" pFrozenColumn>Referência <p-sortIcon field="refCode"></p-sortIcon></th>
                     <th pSortableColumn="name" pFrozenColumn>Produto <p-sortIcon field="name"></p-sortIcon></th>
                     <th class="text-center">Grade do Estoque</th>
@@ -91,7 +92,7 @@
                     <td class="text-center" pFrozenColumn>
                         <p-tableCheckbox [value]="item"></p-tableCheckbox>
                     </td>
-                    <td pFrozenColumn><p-button [text]="true" icon="pi pi-pencil" pTooltip="Editar" tooltipPosition="top" tooltipStyleClass="text-sm" (onClick)="onEditData(item.id)"></p-button></td>
+                    <!-- <td pFrozenColumn><p-button [text]="true" icon="pi pi-pencil" pTooltip="Editar" tooltipPosition="top" tooltipStyleClass="text-sm" (onClick)="onEditData(item.id_product)"></p-button></td> -->
                     <td class="font-bold" pFrozenColumn>{{item.refCode}}</td>
                     <td pFrozenColumn>{{item.product}}</td>
                     <td class="w-6">
@@ -138,3 +139,65 @@
         </p-paginator>
     </ng-template>
 </p-panel>
+
+<p-dialog [visible]="formVisible" header="Estoque de Produto" [modal]="true" [closable]="false" styleClass="w-30rem lg:w-8">
+    <div class="flex flex-column mb-2">
+        <label class="mb-1">Produto</label>
+        <p-dropdown *ngIf="idToEdit==0" [options]="all_products"
+            optionLabel="name"
+            styleClass="w-full"
+            appendTo="body"
+            [(ngModel)]="selectedProduct"
+            [ngClass]="{'ng-invalid ng-dirty' : hasSended && !selectedProduct}"
+            >
+        </p-dropdown>
+        <span *ngIf="idToEdit > 0">{{selectedProduct?.name}}</span>
+    </div>
+    <div class="flex flex-column mb-2">
+        <label class="mb-1">Cor(es)</label>
+        <p-multiSelect
+        [options]="all_colors"
+        optionLabel="name"
+        styleClass="p-inputtext-sm w-full"
+        [(ngModel)]="selectedColors"
+        appendTo="body"
+        [ngClass]="{'ng-invalid ng-dirty' : hasSended && selectedColors.length==0}"
+        ></p-multiSelect>
+    </div>
+    <div class="flex flex-column mb-2">
+        <label class="mb-1">Grade</label>
+        <p-dropdown
+            [options]="all_grid"
+            optionLabel="name"
+            styleClass="p-inputtext-sm w-full"
+            [(ngModel)]="selectedGrid"
+            (ngModelChange)="onGetGrid($event)"
+            [ngClass]="{'ng-invalid ng-dirty' : hasSended && !selectedGrid}"
+            >
+        </p-dropdown>
+    </div>
+    <p-table styleClass="mb-2" *ngIf="selectedGridSizes.length > 0" [columns]="selectedGridSizes" [value]="selectedGridSizes">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th>Ilimitado</th>
+                <th *ngFor="let col of columns" class="text-center">
+                    {{col.name}} ({{col.new_size}})
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item let-columns="columns" let-index="rowIndex">
+            <tr *ngIf="index==0">
+                <td class="text-center">
+                    <p-checkbox [(ngModel)]="ilimited" [binary]="true"></p-checkbox>
+                </td>
+                <td *ngFor="let col of columns;let i=index" class="text-center">
+                    <p-inputNumber [disabled]="ilimited" [showButtons]="true" size="3" [min]="0" [(ngModel)]="col.value"></p-inputNumber>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <div class="flex flex-row justify-content-end gap-2">
+        <p-button severity="danger" icon="pi pi-ban" label="Cancelar" (onClick)="onCancelData()"></p-button>
+        <p-button icon="pi pi-save" label="Salvar" (onClick)="onDataSave(null)"></p-button>
+    </div>
+</p-dialog>
