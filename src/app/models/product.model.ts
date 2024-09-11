@@ -107,6 +107,7 @@ export interface ProductStockColor{
 
 export interface ProductStock2{
     id_product:number,
+    id_grid: number,
     refCode: string,
     product:string,
     colors: ProductStockColor[]
