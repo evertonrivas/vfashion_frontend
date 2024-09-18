@@ -105,6 +105,8 @@ export class ProductGridComponent extends Common implements AfterViewInit,OnDest
         if ("error_details" in data){
 
         }else{
+          //sempere limpa os tamanhos
+          this.all_size = [];
           (data as Size[]).forEach(c =>{
             this.all_size.push({
               id: c.id,

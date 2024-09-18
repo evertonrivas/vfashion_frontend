@@ -382,7 +382,7 @@ export class ProductsComponent extends Common implements AfterViewInit {
       type: FieldType.COMBO,
       value: undefined,
       options: this.allOptMeasure,
-      required: true,
+      required: false, //tornado opcional em 18/09/2024
       case: FieldCase.NONE,
       disabled: false,
       lockField:undefined
