@@ -24,7 +24,7 @@
                         <p-checkbox [(ngModel)]="option.value" [binary]="true" (ngModelChange)="setOnlyCheckbox(option.id,field.options)"></p-checkbox>
                     </div>
                 </ng-container>
-                <p-inputNumber *ngIf="field.type==fieldType.MONEY" mode="currency" currency="BRL" locale="pt-BR" class="w-full" [placeholder]="field.placeholder!=undefined?field.placeholder:''" [(ngModel)]="field.value" [ngClass]="field.case==fieldCase.UPPER?'uppercase':(field.case==fieldCase.LOWER?'lowercase':'')" [disabled]="field.disabled" [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}"></p-inputNumber>
+                <p-inputNumber *ngIf="field.type==fieldType.MONEY" mode="currency" currency="BRL" locale="pt-BR" styleClass="w-full" inputStyleClass="w-full" [placeholder]="field.placeholder!=undefined?field.placeholder:''" [(ngModel)]="field.value" [ngClass]="field.case==fieldCase.UPPER?'uppercase':(field.case==fieldCase.LOWER?'lowercase':'')" [disabled]="field.disabled" [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}"></p-inputNumber>
                 <p-inputNumber *ngIf="field.type==fieldType.NUMBER" [(ngModel)]="field.value" [showButtons]="true" [min]="0" styleClass="w-full" [disabled]="field.disabled" [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}"></p-inputNumber>
                 <p-calendar *ngIf="field.type==fieldType.DATE" dateFormat="dd/mm/yyyy" [disabled]="field.disabled" [ngClass]="{'ng-invalid ng-dirty' : (sended && field.required) && !field.value}"></p-calendar>
                 <p-overlayPanel #pnlIcons appendTo="body">

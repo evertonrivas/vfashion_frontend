@@ -33,8 +33,8 @@
                     <th style="width: 50px!important;" class="text-center" pFrozenColumn>Ações</th>
                     <th pSortableColumn="refCode" pFrozenColumn>Ref. <p-sortIcon field="refCode"></p-sortIcon></th>
                     <th pSortableColumn="name">Nome <p-sortIcon field="name"></p-sortIcon></th>
-                    <th pSortableColumn="measure_unit">UN. Medida <p-sortIcon field="measure_unit"></p-sortIcon></th>
-                    <th pSortableColumn="structure">Preço <p-sortIcon field="structure"></p-sortIcon></th>
+                    <th pSortableColumn="price">Atacado <p-sortIcon field="price"></p-sortIcon></th>
+                    <th pSortableColumn="price_pos">Varejo <p-sortIcon field="price_pos"></p-sortIcon></th>
                     <th pSortableColumn="model_description">Modelo <p-sortIcon field="model_description"></p-sortIcon></th>
                     <th pSortableColumn="type_description">Tipo <p-sortIcon field="type_description"></p-sortIcon></th>
                     <th>Categoria(s)</th>
@@ -49,8 +49,8 @@
                     </td>
                     <td class="font-bold" pFrozenColumn>{{item.refCode}}</td>
                     <td>{{item.name}}</td>
-                    <td>{{item.measure_unit }}</td>
                     <td class="text-right">{{item.price | currency}}</td>
+                    <td class="text-right">{{item.price_pos | currency}}</td>
                     <td>{{item.model_description}}</td>
                     <td>{{item.type_description}}</td>
                     <td><div class="flex flex-column"><label class="mb-1" *ngFor="let cat of item.categories">{{cat.name}}</label></div></td>

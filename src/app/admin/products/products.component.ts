@@ -327,7 +327,7 @@ export class ProductsComponent extends Common implements AfterViewInit {
       label: "Preço Atacado",
       name: "price",
       options: undefined,
-      placeholder: undefined,
+      placeholder: "R$ 0,00",
       type: FieldType.MONEY,
       value: undefined,
       case: FieldCase.NONE,
@@ -340,7 +340,7 @@ export class ProductsComponent extends Common implements AfterViewInit {
       label: "Preço Varejo",
       name: "price",
       options: undefined,
-      placeholder: undefined,
+      placeholder: "R$ 0,00",
       type: FieldType.MONEY,
       value: undefined,
       case: FieldCase.NONE,
@@ -477,21 +477,14 @@ export class ProductsComponent extends Common implements AfterViewInit {
             }
 
             //monta as linhas do form e exibe o mesmo
-            this.formRows.push({
-              fields: [fName]
-            });
-            this.formRows.push({
-              fields: [fDesc]
-            });
-            this.formRows.push({
-              fields:[fCode,fRef,fBar,fPrice,fPricePos]
-            });
-            this.formRows.push({
-              fields:[fType,fModel,fGrid,fMeasure]
-            });
-            this.formRows.push({
-              fields:[fObserve]
-            });
+            this.formRows.push(
+              { fields: [fName] },
+              { fields: [fDesc] },
+              { fields:[fCode,fRef,fBar] },
+              { fields:[fPrice,fPricePos] },
+              { fields:[fType,fModel,fGrid,fMeasure] },
+              { fields:[fObserve] }
+            );
             if (this.sysconfig.company_use_url_images){
               this.formRows.push({
                 fields:[fImages]
@@ -511,21 +504,14 @@ export class ProductsComponent extends Common implements AfterViewInit {
       });
     }else{
       //monta as linhas do form e exibe o mesmo
-      this.formRows.push({
-        fields: [fName]
-      });
-      this.formRows.push({
-        fields: [fDesc]
-      });
-      this.formRows.push({
-        fields:[fCode,fRef,fBar,fPrice,fPricePos]
-      });
-      this.formRows.push({
-        fields:[fType,fModel,fGrid,fMeasure]
-      });
-      this.formRows.push({
-        fields:[fObserve]
-      });
+      this.formRows.push(
+        { fields: [fName] },
+        { fields: [fDesc] },
+        { fields:[fCode,fRef,fBar] },
+        { fields:[fPrice,fPricePos] },
+        { fields:[fType,fModel,fGrid,fMeasure] },
+        { fields:[fObserve] }
+      );
       if (this.sysconfig.company_use_url_images){
         this.formRows.push({
           fields:[fImages]
