@@ -338,7 +338,7 @@ export class ProductsComponent extends Common implements AfterViewInit {
 
     let fPricePos:FormField = {
       label: "Preço Varejo",
-      name: "price",
+      name: "price_pos",
       options: undefined,
       placeholder: "R$ 0,00",
       type: FieldType.MONEY,

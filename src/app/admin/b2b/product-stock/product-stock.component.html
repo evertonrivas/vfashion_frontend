@@ -171,6 +171,7 @@
             optionLabel="name"
             styleClass="p-inputtext-sm w-full"
             [(ngModel)]="selectedGrid"
+            appendTo="body"
             (ngModelChange)="onGetGrid($event)"
             [ngClass]="{'ng-invalid ng-dirty' : hasSended && !selectedGrid}"
             >

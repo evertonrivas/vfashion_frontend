@@ -190,9 +190,12 @@ body{
 }
 
 .pi-grid-view{
-    @include use-md-icon("inventory_2")
+    @include use-md-icon-normal("grid_4x4")
 }
 
+.pi-shopping-custom{
+    @include use-md-icon-normal("pin")
+}
 .mt-05{
     margin-top: 0.10rem!important;
 }
