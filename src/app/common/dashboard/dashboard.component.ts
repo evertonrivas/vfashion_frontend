@@ -142,7 +142,7 @@ export class DashboardComponent extends Common implements AfterViewInit,OnInit,O
           containLabel: true,
           tooltip:{
             formatter: function(params: { value: any; }){
-              console.log(params.value);
+              //console.log(params.value);
             }
           }
         },

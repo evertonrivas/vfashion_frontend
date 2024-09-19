@@ -45,7 +45,7 @@ export class ProductTypeComponent extends Common implements AfterViewInit, OnDes
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
+    //console.log(changes);
   }
   
   ngOnDestroy(): void {
