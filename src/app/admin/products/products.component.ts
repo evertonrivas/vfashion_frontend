@@ -324,7 +324,20 @@ export class ProductsComponent extends Common implements AfterViewInit {
     }
 
     let fPrice:FormField = {
-      label: "Preço",
+      label: "Preço Atacado",
+      name: "price",
+      options: undefined,
+      placeholder: undefined,
+      type: FieldType.MONEY,
+      value: undefined,
+      case: FieldCase.NONE,
+      disabled:false,
+      required:true,
+      lockField:undefined
+    }
+
+    let fPricePos:FormField = {
+      label: "Preço Varejo",
       name: "price",
       options: undefined,
       placeholder: undefined,
@@ -438,6 +451,7 @@ export class ProductsComponent extends Common implements AfterViewInit {
             fModel.value   = fModel.options?.find(v => v.value==this.localObject.id_model);
             fMeasure.value = fMeasure.options?.find(v => v.value==this.localObject.id_measure_unit);
             fPrice.value   = this.localObject.price;
+            fPricePos.value= this.localObject.price_pos;
             fBar.value     = this.localObject.barCode;
             fRef.value     = this.localObject.refCode;
             fCode.value    = this.localObject.prodCode;
@@ -470,7 +484,7 @@ export class ProductsComponent extends Common implements AfterViewInit {
               fields: [fDesc]
             });
             this.formRows.push({
-              fields:[fCode,fRef,fBar,fPrice]
+              fields:[fCode,fRef,fBar,fPrice,fPricePos]
             });
             this.formRows.push({
               fields:[fType,fModel,fGrid,fMeasure]
@@ -504,7 +518,7 @@ export class ProductsComponent extends Common implements AfterViewInit {
         fields: [fDesc]
       });
       this.formRows.push({
-        fields:[fCode,fRef,fBar,fPrice]
+        fields:[fCode,fRef,fBar,fPrice,fPricePos]
       });
       this.formRows.push({
         fields:[fType,fModel,fGrid,fMeasure]
