@@ -345,7 +345,7 @@ export class ProductsComponent extends Common implements AfterViewInit {
       value: undefined,
       case: FieldCase.NONE,
       disabled:false,
-      required:true,
+      required:false,
       lockField:undefined
     }
 

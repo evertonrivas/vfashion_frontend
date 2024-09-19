@@ -25,6 +25,7 @@ export interface Product {
     observation:string|null,
     ncm:string|null,
     price: number,
+    price_pos:number|null,
     id_measure_unit:number,
     structure:string,
     date_created:string,

@@ -230,6 +230,7 @@ export class CheckoutComponent extends Common implements AfterViewInit{
               observation:null,
               ncm:null,
               price: ct.price_un,
+              price_pos: null,
               id_measure_unit:0,
               structure:'S',
               date_created: new Date().toISOString().substring(0,10),
