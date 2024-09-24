@@ -150,7 +150,7 @@
                             <div class="flex flex-wrap gap-1">
                                 <div class="flex flex-column text-center" *ngFor="let szk of stock.sizes; let i = index;">
                                     <label>{{szk.size_code}}</label>
-                                    <p-inputNumber [showButtons]="true" [min]="0" [(ngModel)]="stock.sizes[i].size_saved" size="3" [inputStyle]="{'max-width':'40px'}" (ngModelChange)="changeAndSum(stock.color_id)" [disabled]="(stock.sizes[i].size_value==null || stock.sizes[i].size_value==0)?true:false"></p-inputNumber>
+                                    <p-inputNumber [showButtons]="true" [min]="0" [max]="szk.size_value!='999+'?szk.size_value:undefined" [(ngModel)]="stock.sizes[i].size_saved" size="3" [inputStyle]="{'max-width':'40px'}" (ngModelChange)="changeAndSum(stock.color_id)" [disabled]="(stock.sizes[i].size_value==null || stock.sizes[i].size_value==0)?true:false"></p-inputNumber>
                                     <label>{{ szk.size_value }}</label>
                                 </div>
                             </div>
