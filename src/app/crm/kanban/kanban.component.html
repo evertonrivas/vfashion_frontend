@@ -16,10 +16,10 @@
         <p-overlayPanel #opStages>
             <ng-template pTemplate="content">
                 <div class="flex flex-column">
-                    <label>Funil</label>
-                    <p-dropdown [options]="response.data" optionLabel="name" styleClass="p-inputtext-sm w-full" (onChange)="getStagesOfFunnel($event)" [ngModel]="selectedFunnel"></p-dropdown>
-                    <label>Etapa</label>
-                    <p-dropdown [options]="stagesToMove" optionLabel="name" (onChange)="moveSelectedsToStage()" [(ngModel)]="stageToMove" emptyMessage="Nenhum registro encontrado!" styleClass="p-inputtext-sm w-full"></p-dropdown>
+                    <label for="cbFunnel">Funil</label>
+                    <p-dropdown id="cbFuneel" [options]="response.data" optionLabel="name" styleClass="p-inputtext-sm w-full" (onChange)="getStagesOfFunnel($event)" [ngModel]="selectedFunnel"></p-dropdown>
+                    <label for="cbStage">Etapa</label>
+                    <p-dropdown id="cbStage" [options]="stagesToMove" optionLabel="name" (onChange)="moveSelectedsToStage()" [(ngModel)]="stageToMove" emptyMessage="Nenhum registro encontrado!" styleClass="p-inputtext-sm w-full"></p-dropdown>
                 </div>
             </ng-template>
         </p-overlayPanel>
@@ -72,7 +72,7 @@
                                         <div class="flex flex-column overflow-hidden  pt-3 pl-2 pr-3">
                                             <div class="flex flex-row gap-1">
                                                 <p-checkbox inputId="chkEmpresa{{customer.id}}" [style]="{ width: '20px', height:'18px'}" [(ngModel)]="stageChecked[stage.id][customer.id]" [binary]="true"></p-checkbox>
-                                                <label class="text-overflow-ellipsis white-space-nowrap overflow-hidden font-medium" for="chkEmpresa" pTooltip="{{customer.name}}" tooltipStyleClass="text-xs text-center" tooltipPosition="top">{{customer.name}}</label>
+                                                <span class="text-overflow-ellipsis white-space-nowrap overflow-hidden font-medium" for="chkEmpresa" pTooltip="{{customer.name}}" tooltipStyleClass="text-xs text-center" tooltipPosition="top">{{customer.name}}</span>
                                             </div>
                                             <p class="text-xs" style="margin-left: 27px!important;">Desde: {{customer.date_created | date}}</p>
                                         </div>
@@ -101,8 +101,8 @@
                                 <p-overlayPanel #pnlComment styleClass="w-30rem">
                                     <ng-template pTemplate="content">
                                         <div class="flex flex-column">
-                                            <label class="mb-1">Observação: </label>
-                                            <textarea pInputTextarea rows="5" [(ngModel)]="customerComment"></textarea>
+                                            <label class="mb-1" for="txtObs">Observação: </label>
+                                            <textarea id="txtObs" pInputTextarea rows="5" [(ngModel)]="customerComment"></textarea>
                                         </div>
                                         <div class="flex flex-row justify-content-end mt-2">
                                             <p-button icon="pi pi-save" label="Salvar" styleClass="p-button-sm" (onClick)="saveCustomerComment(customer.id,pnlComment)"></p-button>
