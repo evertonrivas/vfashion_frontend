@@ -28,6 +28,7 @@ import { ChipsModule } from 'primeng/chips';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { ToolbarModule } from 'primeng/toolbar';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { ToolbarModule } from 'primeng/toolbar';
     ChipsModule,
     IconFieldModule,
     InputIconModule,
-    ToolbarModule
+    ToolbarModule,
+    ProgressSpinnerModule
   ],
   providers:[
     provideNgxMask()
