@@ -1,6 +1,6 @@
 <div class="flex flex-column w-full mt-1">
-    <label>Para</label>
-    <p-dropdown *ngIf="!massiveEmail" [options]="emailToList" styleClass="w-full" [(ngModel)]="selectedEmail" optionLabel="name" placeholder="Selecione um e-mail" appendTo="body" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !selectedEmail}">
+    <label for="cbEmail">Para</label>
+    <p-dropdown id="cbEmail" *ngIf="!massiveEmail" [options]="emailToList" styleClass="w-full" [(ngModel)]="selectedEmail" optionLabel="name" placeholder="Selecione um e-mail" appendTo="body" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !selectedEmail}">
         <ng-template pTemplate="selectedItem">
             <div>{{selectedEmail.name}} &lt;{{selectedEmail.value}} &gt;</div>
         </ng-template>
@@ -16,13 +16,53 @@
     </ng-container>
 </div>
 <div class="flex flex-column w-full mt-1">
-    <label>Assunto</label>
-    <input pInputText class="w-full" [(ngModel)]="subject" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !subject}">
+    <label for="txtSubject">Assunto</label>
+    <input id="txtSubject" pInputText class="w-full" [(ngModel)]="subject" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !subject}">
 </div>
 <div class="flex flex-column w-full mt-1">
-    <label>Mensagem</label>
+    <label for="txtMessage">Mensagem</label>
     <!-- <textarea pInputTextarea rows="5"></textarea> -->
-    <p-editor [style]="{ height: '150px' }" [(ngModel)]="content" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !content}"></p-editor>
+    <p-editor id="txtMessage" [style]="{ height: '150px' }" [(ngModel)]="content" [ngClass]="{'ng-invalid ng-dirty' : hasSended && !content}">
+        <ng-template pTemplate="header">
+            <span class="ql-formats">
+                <button type="button" class="ql-bold" aria-label="Bold"></button>
+                <button type="button" class="ql-italic" aria-label="Italic"></button>
+                <button type="button" class="ql-underline" aria-label="Underline"></button>
+                <button type="button" class="ql-strike" aria-label="Underline"></button>
+            </span>
+            <span class="ql-formats">
+                <button class="ql-script" value="sub"></button>
+                <button class="ql-script" value="super"></button>
+            </span>
+            <span class="ql-formats">
+                <button type="button" class="ql-list" value="ordered"></button>
+                <button type="button" class="ql-list" value="bullet"></button>
+                <select class="ql-align">
+                    <option selected></option>
+                    <option value="center">center</option>
+                    <option value="right">right</option>
+                    <option value="justify">justify</option>
+                </select>
+            </span>
+            <span class="ql-formats">
+                <button type="button" class="ql-link"></button>
+                <button type="button" class="ql-clean"></button>
+                <button type="button" class="ql-code"></button>
+            </span>
+            <span class="ql-formats">
+                <!-- <button id="custom-button" (click)="makeAi()">
+                    <svg viewBox="0 0 24 24"> <path d="m22,0h-8c-1.103,0-2,.897-2,2v8.695c0,.483.264.924.69,1.152.193.104.405.155.616.155.254,0,.508-.075.729-.222l2.618-1.779h7.347V2c0-1.103-.897-2-2-2Zm1,9h-6.653l-2.87,1.95c-.137.091-.266.042-.314.015-.049-.026-.162-.104-.162-.27V2c0-.551.448-1,1-1h8c.552,0,1,.449,1,1v7Zm-5,4.5c0-.565-.195-1.081-.513-1.5l-.905.466c.257.269.418.632.418,1.034v9.5H3v-9.5c0-.827.673-1.5,1.5-1.5h6v-3h-1v2h-5c-1.378,0-2.5,1.122-2.5,2.5v1.5H0v6h2v3h16v-3h2v-6h-2v-1.5ZM1,20v-4h1v4h-1Zm18-4v4h-1v-4h1Zm-14,2c0,1.103.897,2,2,2s2-.897,2-2-.897-2-2-2-2,.897-2,2Zm3,0c0,.551-.449,1-1,1s-1-.449-1-1,.449-1,1-1,1,.449,1,1Zm5,2c1.103,0,2-.897,2-2s-.897-2-2-2-2,.897-2,2,.897,2,2,2Zm0-3c.552,0,1,.449,1,1s-.448,1-1,1-1-.449-1-1,.449-1,1-1Z"></path></svg>
+                </button> -->
+                <select class="ql-font" id="custom-select" (change)="makeAi($event)">
+                    <option selected="selected" value="">Sugestão I.A</option>
+                    <option value="A">Apresentação de produtos</option>
+                    <option value="M">Melhoria no texto do e-mail</option>
+                    <option value="P">Sugestão de proposta de venda</option>
+                    <option value="O">Sugestão de orçamento</option>
+                </select>
+            </span>
+        </ng-template>
+    </p-editor>
 </div>
 <div class="flex flex-column w-full mt-1">
     <p-fileUpload 
@@ -48,3 +88,23 @@
 <div class="flex flex-row justify-content-end w-full mt-2">
     <p-button icon="pi pi-envelope" label="Enviar" styleClass="p-button-sm" (onClick)="sendEmail()" [loading]="loading"></p-button>
 </div>
+
+<p-dialog [(visible)]="ai_loading">
+    <ng-template pTemplate="headless">
+        <div style="background-color:#FFFFFF!important;">
+            <p-progressSpinner ariaLabel="loading" />
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="ai_visible" header="Sugestão de I.A" [modal]="true"
+    [style]="{ width: '50rem' }" 
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
+    <div [innerHTML]="'<strong>Assunto: </strong>'+ai_suggestion_title"></div>
+    <hr size="1">
+    <div [innerHTML]="ai_suggestion_content"></div>
+    <div class="flex flex-row justify-content-end gap-2">
+        <p-button styleClass="p-button-sm" label="Cancelar" severity="danger" (onClick)="ai_visible = false"></p-button>
+        <p-button styleClass="p-button-sm" label="Utilizar sugestão" severity="contrast" (onClick)="useSuggestion()"></p-button>
+    </div>
+</p-dialog>
