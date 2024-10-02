@@ -9,7 +9,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { StyleClassModule } from 'primeng/styleclass';
 import { PasswordModule } from 'primeng/password';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
 import { CommonModule } from '@angular/common';
 import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
@@ -27,7 +27,6 @@ import { SysService } from 'src/app/services/sys.service';
     StyleClassModule,
     PasswordModule,
     FormsModule,
-    ReactiveFormsModule,
     ToastModule,
     OverlayPanelModule,
     CommonModule],
@@ -35,6 +34,10 @@ import { SysService } from 'src/app/services/sys.service';
 })
 export class LoginComponent implements AfterContentInit{
   @ViewChild('pnlRecovery') pnlRecovery:OverlayPanel|null = null;
+
+  username_value:string = "";
+  password_value:string = "";
+  remember_value:boolean = false;
   config_loading:boolean = false;
   sended:boolean = false;
   loading:boolean = false;
@@ -49,12 +52,6 @@ export class LoginComponent implements AfterContentInit{
     id_user: 0,
     id_profile: 0
   }
-
-  frmLogin = new FormGroup({
-    txtUsername: new FormControl('',Validators.required),
-    txtPassword: new FormControl('',Validators.required),
-    chkRemember: new FormControl()
-  });
 
   email_to_recovery:string = "";
 
@@ -121,10 +118,10 @@ export class LoginComponent implements AfterContentInit{
     });
 
 
-    this.frmLogin.controls.txtUsername.setValue(localStorage.getItem("username"));
-    this.frmLogin.controls.txtPassword.setValue(localStorage.getItem("password"));
+    this.username_value = localStorage.getItem("username") as string;
+    this.password_value = localStorage.getItem("password") as string;
     if(localStorage.getItem("username")!=null){
-      this.frmLogin.controls.chkRemember.setValue(true);
+      this.remember_value = true;
     }
 
     //se houver usuario logado realiza o logoff
@@ -136,26 +133,22 @@ export class LoginComponent implements AfterContentInit{
 
   onSubmit():boolean{
     this.sended = this.loading = true;
-    if(this.frmLogin.invalid){
+    if(!this.username_value || !this.password_value){
       this.loading = false;
       return false;
     }
 
-    let uname:string = this.frmLogin.controls.txtUsername.value as string;
-    let paswd:string = this.frmLogin.controls.txtPassword.value as string;
-    let chkbx:boolean|null = this.frmLogin.controls.chkRemember.value;
-
-    if(chkbx){
-      localStorage.setItem('username',uname);
-      localStorage.setItem('password',paswd);
+    if(this.remember_value){
+      localStorage.setItem('username',this.username_value);
+      localStorage.setItem('password',this.password_value);
     }else{
       localStorage.removeItem('username');
       localStorage.removeItem('password');
     }
 
     this.authService.tryAuth(
-      uname,
-      paswd
+      this.username_value,
+      this.password_value
     ).subscribe({
       next: (data) =>{
         var num:number = data as number;

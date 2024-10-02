@@ -1,5 +1,42 @@
-<form *ngIf="!config_loading" (ngSubmit)="onSubmit()" [formGroup]="frmLogin" class="no-validate" novalidate>
-    <div class="align-items-center flex justify-content-center lg:px-8 md:px-6 px-4 py-6 surface-ground ng-star-inserted">
+<div class="h-full w-full flex flex-row justify-content-center">
+    <div class="card border-1 shadow-2 border-round lg:w-6 w-full" style="margin-top:auto;margin-bottom:auto;">
+        <div class="text-center mb-5">
+            <img *ngIf="use_company_custom" src="assets/images/{{company_logo}}" alt="{{company_name}}" height="80">
+            <img *ngIf="!use_company_custom" src="assets/images/Fast2Bee.png" alt="Image" height="80">
+        </div>
+        <div>
+            <label for="email1" class="block text-900 font-medium mb-2">Login</label>
+            <input id="email1" type="text" placeholder="usuário, email ou CNPJ/CPF" pInputText class="w-full mb-3" [(ngModel)]="username_value" [ngClass]="{'ng-invalid ng-dirty':sended && !username_value}">
+
+            <label for="password1" class="block text-900 font-medium mb-2">Senha</label>
+            <p-password [toggleMask]="true" styleClass="w-full mb-3" inputStyleClass="w-full" [feedback]="false" [(ngModel)]="password_value" [ngClass]="{'ng-invalid ng-dirty':sended && !password_value}"></p-password>
+
+            <div class="flex align-items-center justify-content-between mb-6">
+                <div class="flex align-items-center">
+                    <p-checkbox id="rememberme1" [binary]="true" styleClass="mr-2" [(ngModel)]="remember_value"></p-checkbox>
+                    <label for="rememberme1" class="text-900">Lembrar credenciais</label>
+                </div>
+                <p-button [text]="true" (onClick)="pnlRecovery.toggle($event)">Esqueci minha senha</p-button>
+            </div>
+
+            <p-button label="Acessar" [loading]="loading" icon="pi pi-user" styleClass="w-full" (onClick)="onSubmit()"></p-button>
+        </div>
+    </div>
+</div>
+<p-toast></p-toast>
+
+<p-overlayPanel #pnlRecovery>
+    <div class="flex flex-column w-25rem">
+        <label>E-mail</label>
+        <input pInputText type="email" placeholder="Informe seu e-mail" class="w-full mb-3" [(ngModel)]="email_to_recovery" [ngClass]="{'ng-invalid ng-dirty':sended && !email_to_recovery}"/>
+    </div>
+    <div class="flex flex-row justify-content-end w-25rem">
+        <p-button label="Recuperar" styleClass="p-button-sm" (onClick)="onRecovery()" icon="pi pi-recovery-password"></p-button>
+    </div>
+</p-overlayPanel>
+
+<!-- <form *ngIf="!config_loading" (ngSubmit)="onSubmit()" [formGroup]="frmLogin" class="no-validate" novalidate>
+    <div style="margin-top:auto;margin-bottom:auto;" class="h-full flex justify-content-center lg:px-8 md:px-6 px-4 py-6 surface-ground ng-star-inserted">
             <div class="surface-card align-content-center p-4 shadow-2 border-round w-full lg:w-6">
                 <div class="text-center mb-5">
                     <img *ngIf="use_company_custom" src="assets/images/{{company_logo}}" alt="{{company_name}}" height="80">
@@ -7,7 +44,6 @@
                 </div>
                 <div>
                     <label for="email1" class="block text-900 font-medium mb-2">Login</label>
-                    <!-- ng-invalid ng-dirty -->
                     <input id="email1" type="text" placeholder="usuário, email ou CNPJ/CPF" pInputText class="w-full mb-3" formControlName="txtUsername" required [ngClass]="{'ng-invalid ng-dirty':sended && frmLogin.controls['txtUsername'].invalid}">
 
                     <label for="password1" class="block text-900 font-medium mb-2">Senha</label>
@@ -36,4 +72,4 @@
     <div class="flex flex-row justify-content-end w-25rem">
         <p-button label="Recuperar" styleClass="p-button-sm" (onClick)="onRecovery()" icon="pi pi-recovery-password"></p-button>
     </div>
-</p-overlayPanel>
+</p-overlayPanel> -->
