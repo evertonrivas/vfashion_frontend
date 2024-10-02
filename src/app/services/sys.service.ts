@@ -38,6 +38,15 @@ export class SysService extends MyHttp{
     })
   }
 
+  improvementAI(txt:string,helpType:string):Observable<any|ResponseError>{
+    return this.http.post<string|ResponseError>(this.sys_config.backend_cmm+'/ai/',{
+      "text": txt,
+      "type": helpType
+    },{
+      headers: this.getHeader(ContentType.json)
+    })
+  }
+
   // list(opt:Options):Observable<TablePrice[]|RequestResponse|ResponseError>{
   //   return this.http.get<TablePrice[]|RequestResponse|ResponseError>(this.sys_config.backend_b2b+'/price-table/',{
   //     headers: this.getHeader(),
