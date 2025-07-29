@@ -1,9 +1,9 @@
 export const environment = {
-    backend_b2b: "http://192.168.3.8:5000/b2b/api",
-    backend_fpr: "http://192.168.3.8:5000/fpr/api",
-    backend_crm: "http://192.168.3.8:5000/crm/api",
-    backend_scm: "http://192.168.3.8:5000/scm/api",
-    backend_cmm: "http://192.168.3.8:5000/cmm/api",
+    backend_b2b: "http://localhost:5000/b2b/api",
+    backend_fpr: "http://localhost:5000/fpr/api",
+    backend_crm: "http://localhost:5000/crm/api",
+    backend_scm: "http://localhost:5000/scm/api",
+    backend_cmm: "http://localhost:5000/cmm/api",
     locale: {
         language: "pt",
         currency_code: "R$",

@@ -1,5 +1,5 @@
 import { isDevMode } from "@angular/core";
-import { HttpClient, HttpHandler, HttpHeaders, HttpParams } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { environment as sys_config } from "src/environments/environment";
 import { environment as sys_config_dev } from "src/environments/environment.development";
 import { Options } from "../models/paginate.model";
@@ -34,7 +34,8 @@ export class MyHttp {
             }
         }
         let header = new HttpHeaders()
-        .set("Authorization",localStorage.getItem('token_type')+' '+localStorage.getItem('token_access'));
+        header = header.set("X-customer", (localStorage.getItem('id_profile')?.toString() ?? ''))
+        header = header.set("Authorization", (localStorage.getItem('token_type') ?? '') + ' ' + (localStorage.getItem('token_access') ?? ''));
         if (content_type!=''){
             header = header.set('Content-Type',content_type);
         }

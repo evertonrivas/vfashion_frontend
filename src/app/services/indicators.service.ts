@@ -20,15 +20,15 @@ export class IndicatorsService extends MyHttp{
     this.counterAnnounced.next(null);  
   }
 
-  b2bTotalCart(idProfile:number,userType:string):Observable<number|ResponseError>{
-    return this.http.get<number|ResponseError>(this.sys_config.backend_b2b+'/cart/total/'+idProfile.toString(),{
+  b2bTotalCart(userType:string):Observable<number|ResponseError>{
+    return this.http.get<number|ResponseError>(this.sys_config.backend_b2b+'/cart/total/',{
       headers: this.getHeader(),
       params: new HttpParams().set('userType',userType)
     });
   }
 
-  b2bTotalDevolution(idProfile:number,userType:string):Observable<number|ResponseError>{
-    return this.http.get<number|ResponseError>(this.sys_config.backend_fpr+'/devolution/indicator/'+idProfile.toString(),{
+  b2bTotalDevolution(userType:string):Observable<number|ResponseError>{
+    return this.http.get<number|ResponseError>(this.sys_config.backend_fpr+'/devolution/indicator/',{
       headers: this.getHeader(),
       params: new HttpParams().set('userType',userType)
     })

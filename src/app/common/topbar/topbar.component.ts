@@ -15,6 +15,7 @@ import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { BadgeModule } from 'primeng/badge';
 import { IndicatorsService } from 'src/app/services/indicators.service';
+import { ModuleName } from 'src/app/models/system.enum';
 
 @Component({
   selector: 'app-topbar',
@@ -57,10 +58,7 @@ export class TopbarComponent extends Common implements AfterContentInit,OnDestro
       super(route);
 
       this.IndSvc.counterAnnounced$.subscribe(() =>{
-        this.IndSvc.b2bTotalCart(
-          parseInt((localStorage.getItem("id_profile") as string)),
-          this.level_access as string
-        ).subscribe({
+        this.IndSvc.b2bTotalCart(this.level_access as string).subscribe({
           next: (data) =>{
             if(typeof data ==='number'){
               this.totalInCart = data as number;
@@ -85,27 +83,23 @@ export class TopbarComponent extends Common implements AfterContentInit,OnDestro
     },30000);//verifica a cada 30 segundos
 
     //busca o total de produtos do carrinho
-    this.IndSvc.b2bTotalCart(
-      parseInt((localStorage.getItem("id_profile") as string)),
-      this.level_access as string
-    ).subscribe({
-      next: (data) =>{
-        if(typeof data === 'number'){
-          this.totalInCart = data as number;
+    if(this.module==ModuleName.B2B){
+      this.IndSvc.b2bTotalCart(this.level_access as string).subscribe({
+        next: (data) =>{
+          if(typeof data === 'number'){
+            this.totalInCart = data as number;
+          }
         }
-      }
-    });
+      });
 
-    this.IndSvc.b2bTotalDevolution(
-      parseInt((localStorage.getItem("id_profile") as string)),
-      this.level_access as string
-    ).subscribe({
-      next: (data) =>{
-        if (typeof data ==='number'){
-          this.totalDevolution = data as number;
+      this.IndSvc.b2bTotalDevolution(this.level_access as string).subscribe({
+        next: (data) =>{
+          if (typeof data ==='number'){
+            this.totalDevolution = data as number;
+          }
         }
-      }
-    })
+      });
+    }
 
     this.chatSub = this.chatSvc.chatAnnounced$.subscribe({
       next(value) {

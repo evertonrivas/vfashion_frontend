@@ -1,5 +1,5 @@
 import { Component,OnInit,OnDestroy, AfterViewInit } from '@angular/core';
-import { EChartsOption, MarkLineComponentOption } from 'echarts';
+import { EChartsOption } from 'echarts';
 import { Card } from 'src/app/models/card.model';
 import { CardComponent } from './card/card.component';
 import { EntityType } from 'src/app/models/entity.model';
@@ -11,9 +11,8 @@ import { CommonModule } from '@angular/common';
 import { forkJoin } from 'rxjs';
 import { NgxEchartsModule, NGX_ECHARTS_CONFIG } from 'ngx-echarts';
 import { CardModule } from 'primeng/card';
-import { SubtitleCard, FormatType } from 'src/app/models/card.model';
+import { FormatType } from 'src/app/models/card.model';
 
-import * as echarts from 'echarts';
 import { IndicatorsService } from 'src/app/services/indicators.service';
 import { SecurityService } from 'src/app/services/security.service';
 import { ComissionService } from 'src/app/services/comission.service';
