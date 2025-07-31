@@ -16,11 +16,11 @@ export class SecurityService extends MyHttp{
     var frmData = new FormData();
     frmData.append("username",_username);
     frmData.append("password",_password);
-    return this.http.post<any>(this.sys_config.backend_cmm+"/users/auth",frmData);
+    return this.http.post<any>(this.sys_config.backend_smc+"/users/auth",frmData);
   }
 
   checkLogged():Observable<boolean|ResponseError>{
-    return this.http.put<boolean|ResponseError>(this.sys_config.backend_cmm+"/users/auth",{
+    return this.http.put<boolean|ResponseError>(this.sys_config.backend_smc+"/users/auth",{
       "token": localStorage.getItem('token_access')
     },{
       headers: this.getHeader(ContentType.json)
@@ -28,7 +28,7 @@ export class SecurityService extends MyHttp{
   }
 
   renewSession():Observable<any>{
-    return this.http.get<any>(this.sys_config.backend_cmm+'/users/auth',{
+    return this.http.get<any>(this.sys_config.backend_smc+'/users/auth',{
       headers: this.getHeader(),
       params: new HttpParams().set("id",localStorage.getItem("id_user") as string)
     });
@@ -41,7 +41,7 @@ export class SecurityService extends MyHttp{
   }
 
   recoveryPassword(p_email:string):Observable<boolean|ResponseError>{
-    return this.http.post<boolean|ResponseError>(this.sys_config.backend_cmm+'/users/password/',{
+    return this.http.post<boolean|ResponseError>(this.sys_config.backend_smc+'/users/password/',{
       "email": p_email
     },{
       headers: this.getHeader(ContentType.json)

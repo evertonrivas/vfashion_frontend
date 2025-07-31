@@ -1,4 +1,5 @@
 export const environment = {
+    backend_smc: "https://fast2bee.pythonanywhere.com/smc/api",
     backend_b2b: "https://fast2bee.pythonanywhere.com/b2b/api",
     backend_fpr: "https://fast2bee.pythonanywhere.com/fpr/api",
     backend_crm: "https://fast2bee.pythonanywhere.com/crm/api",

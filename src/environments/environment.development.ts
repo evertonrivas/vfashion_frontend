@@ -3,6 +3,7 @@ export const environment = {
     backend_fpr: "http://localhost:5000/fpr/api",
     backend_crm: "http://localhost:5000/crm/api",
     backend_scm: "http://localhost:5000/scm/api",
+    backend_smc: "http://localhost:5000/smc/api",
     backend_cmm: "http://localhost:5000/cmm/api",
     locale: {
         language: "pt",
