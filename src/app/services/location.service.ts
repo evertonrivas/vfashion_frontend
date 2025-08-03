@@ -15,21 +15,21 @@ export class LocationService extends MyHttp{
   }
 
   listCountries(opts:Options):Observable<Country[]|RequestResponse|ResponseError>{
-    return this.http.get<Country[]|RequestResponse|ResponseError>(this.sys_config.backend_cmm+'/countries/',{
+    return this.http.get<Country[]|RequestResponse|ResponseError>(this.sys_config.backend_smc+'/countries/',{
       headers: this.getHeader(),
       params: this.getParams(opts)
     });
   }
 
   listStageRegions(opts:Options):Observable<StateRegion[]|RequestResponse|ResponseError>{
-    return this.http.get<StateRegion[]|RequestResponse|ResponseError>(this.sys_config.backend_cmm+'/state-regions/',{
+    return this.http.get<StateRegion[]|RequestResponse|ResponseError>(this.sys_config.backend_smc+'/state-regions/',{
       headers: this.getHeader(),
       params: this.getParams(opts)
     });
   }
 
   listCities(opts:Options):Observable<City[]|RequestResponse|ResponseError>{
-    return this.http.get<City[]|RequestResponse|ResponseError>(this.sys_config.backend_cmm+'/cities/',{
+    return this.http.get<City[]|RequestResponse|ResponseError>(this.sys_config.backend_smc+'/cities/',{
       headers: this.getHeader(),
       params: this.getParams(opts)
     });

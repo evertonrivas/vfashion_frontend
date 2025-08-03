@@ -13,10 +13,12 @@ export class SecurityService extends MyHttp{
   }
 
   tryAuth(_username:string,_password:string): Observable<any>{
-    var frmData = new FormData();
-    frmData.append("username",_username);
-    frmData.append("password",_password);
-    return this.http.post<any>(this.sys_config.backend_smc+"/users/auth",frmData);
+    return this.http.post<any>(this.sys_config.backend_smc+"/users/auth",{
+      "username": _username,
+      "password": _password
+    },{
+      headers: this.getHeader(ContentType.json)
+    });
   }
 
   checkLogged():Observable<boolean|ResponseError>{
@@ -35,7 +37,7 @@ export class SecurityService extends MyHttp{
   }
 
   logoff():Observable<any>{
-    return this.http.post<any>(this.sys_config.backend_cmm+"/users/logout/"+localStorage.getItem("id_user"),{},{
+    return this.http.post<any>(this.sys_config.backend_smc+"/users/logout/"+localStorage.getItem("id_user"),{},{
       headers: this.getHeader()
     });
   }

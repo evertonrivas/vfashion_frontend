@@ -225,33 +225,6 @@ export class UsersComponent extends Common implements AfterViewInit{
       lockField:undefined
     }
 
-    let fEntity:FormField = {
-      label:"Entidade",
-      name: "id_entity",
-      placeholder: "Selecione...",
-      type: FieldType.COMBO,
-      value: undefined,
-      required: false,
-      case:FieldCase.NONE,
-      disabled: false,
-      options: [],
-      lockField:undefined
-    }
-    this.svcE.listEntity({page:1,pageSize:1,query:"can:list-all 1"}).subscribe({
-      next: (data) =>{
-        (data as Entity[]).forEach((e) =>{
-          fEntity.options?.push({
-            value: e.id.toString(),
-            label: (e.type=='C'?'CLIENTE - ':(e.type=='R'?'REPRESENTANTE - ':(e.type=='P'?'PESSOA (FÍSICA) - ':'FORNECEDOR - '))) + e.name,
-            id:undefined
-          });
-        });
-      },
-      complete: () =>{
-        this.cdr.detectChanges();
-      }
-    });
-
     let fPwd:FormField = {
       label: "Senha: | Confirmar senha:",
       name:"password",
@@ -282,18 +255,9 @@ export class UsersComponent extends Common implements AfterViewInit{
               case 'U': fLevel.value = { value:'U', label:'Usuário da Empresa' }; break;
             }
 
-            fEntity.options?.forEach((o) =>{
-              if(o.value ==this.localObject.id_entity){
-                fEntity.value = o;
-              }
-            });
-
             //monta as linhas do forme e exibe o mesmo
             let row:FormRow = {
               fields: [fieldName]
-            }
-            let row1:FormRow = {
-              fields: [fEntity]
             }
             let row2:FormRow = {
               fields: [fLevel,fActive]
@@ -302,7 +266,6 @@ export class UsersComponent extends Common implements AfterViewInit{
               fields: [fPwd]
             }
             this.formRows.push(row);
-            this.formRows.push(row1);
             this.formRows.push(row2);
             this.formRows.push(row3);
             this.formVisible = true;
@@ -322,9 +285,6 @@ export class UsersComponent extends Common implements AfterViewInit{
       let row:FormRow = {
         fields: [fieldName]
       }
-      let row1:FormRow = {
-        fields: [fEntity]
-      }
       let row2:FormRow = {
         fields: [fLevel,fActive]
       }
@@ -332,7 +292,6 @@ export class UsersComponent extends Common implements AfterViewInit{
         fields: [fPwd]
       }
       this.formRows.push(row);
-      this.formRows.push(row1);
       this.formRows.push(row2);
       this.formRows.push(row3);
       this.formVisible = true;
@@ -341,33 +300,58 @@ export class UsersComponent extends Common implements AfterViewInit{
 
   onDataSave(data:any):void{
     this.hasSended = true;
-    this.serviceSub[3] = this.svc.save([data]).subscribe({
-      next:(data) =>{
-        this.hasSended = false;
-        this.formVisible = false;
-        this.msg.clear();
-        if(typeof data ==='number'){
-          this.msg.add({
-            summary:"Sucesso...",
-            detail: "Registro criado com sucesso!",
-            severity:"success"
-          });
-        }else if(typeof data ==='boolean'){
-          this.msg.add({
-            summary:"Sucesso...",
-            detail: "Registro atualizado com sucesso!",
-            severity:"success"
-          });
-        }else{
-          this.msg.add({
-            summary:"Falha...",
-            detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
-            severity:"error"
-          });
+    if (this.idToEdit == 0 ){
+      this.serviceSub[3] = this.svc.save([data]).subscribe({
+        next:(data) =>{
+          this.hasSended = false;
+          this.formVisible = false;
+          this.msg.clear();
+          if(typeof data ==='number'){
+            this.msg.add({
+              summary:"Sucesso...",
+              detail: "Registro criado com sucesso!",
+              severity:"success"
+            });
+          }else if(typeof data ==='boolean'){
+            this.msg.add({
+              summary:"Sucesso...",
+              detail: "Registro atualizado com sucesso!",
+              severity:"success"
+            });
+          }else{
+            this.msg.add({
+              summary:"Falha...",
+              detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
+              severity:"error"
+            });
+          }
+          this.loadingData();
         }
-        this.loadingData();
-      }
-    });
+      });
+    }
+    else{
+      this.serviceSub[3] = this.svc.userUpdate(data).subscribe({
+        next:(data) =>{
+          this.hasSended = false;
+          this.formVisible = false;
+          this.msg.clear();
+          if(typeof data === 'boolean'){
+            this.msg.add({
+              summary: "Sucesso...",
+              detail: "Registro atualizado com sucesso!",
+              severity: "success"
+            });
+          }else{
+            this.msg.add({
+              summary:"Falha...",
+              detail: "Ocorreu o seguinte erro: "+(data as ResponseError).error_details,
+              severity:"error"
+            });
+          }
+          this.loadingData();
+        }
+      })
+    }
   }
 
   onDataDelete(pSendToTrash:boolean):void{

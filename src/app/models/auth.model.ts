@@ -6,6 +6,7 @@ export interface Auth {
     id_user:number,
     id_profile: number,
     level_access: string,
+    config: SysConfig
 }
 
 

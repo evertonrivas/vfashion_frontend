@@ -44,13 +44,31 @@ export class LoginComponent implements AfterContentInit{
   use_company_custom:boolean = false;
   company_logo:string = "";
   company_name:string = "";
+
+  app_config:SysConfig = {
+    system_pagination_size: 0,
+    use_company_custom: false,
+    company_name: "",
+    company_logo: "",
+    company_instagram: "",
+    company_facebook: "",
+    company_linkedin: "",
+    company_max_up_files: 0,
+    company_max_up_images: 0,
+    company_use_url_images: false,
+    company_dashboard_color: "",
+    company_dashboard_image: "",
+    flimv_model: ""
+  }
+
   app_token:Auth = {
     token_access: "",
     token_type: "",
     token_expire: "",
     level_access: "",
     id_user: 0,
-    id_profile: 0
+    id_profile: 0,
+    config: this.app_config
   }
 
   email_to_recovery:string = "";
@@ -79,15 +97,15 @@ export class LoginComponent implements AfterContentInit{
     localStorage.removeItem("company_use_url_images");
     localStorage.removeItem("company_dashboard_color");
     localStorage.removeItem("company_dashboard_image");
+    localStorage.removeItem("flimv_model");
     localStorage.removeItem("id_user");
     localStorage.removeItem("token_access");
     localStorage.removeItem("token_type");
     localStorage.removeItem("token_expire");
     localStorage.removeItem("level_access");
     localStorage.removeItem("id_profile");
-    localStorage.removeItem("flimv_model");
     //busca as configuracoes do sistema
-    this.svc.getConfig().subscribe({
+    /*this.svc.getConfig().subscribe({
       next:(data) =>{
         if ("system_pagination_size" in data){
           let config:SysConfig = data as SysConfig;
@@ -115,7 +133,7 @@ export class LoginComponent implements AfterContentInit{
 
         }
       }
-    });
+    });*/
 
 
     this.username_value = localStorage.getItem("username") as string;
@@ -171,6 +189,26 @@ export class LoginComponent implements AfterContentInit{
         localStorage.setItem('id_profile',String(this.app_token.id_profile));
         localStorage.setItem("level_access",String(this.app_token.level_access));
         localStorage.setItem("message_renew","1");
+
+        // configuracoes para essa conta
+        localStorage.setItem("system_pagination_size",String(this.app_token.config.system_pagination_size));
+        localStorage.setItem("use_company_custom",String(this.app_token.config.use_company_custom?1:0));
+        localStorage.setItem("company_name",this.app_token.config.company_name);
+        localStorage.setItem("company_logo",this.app_token.config.company_logo);
+        localStorage.setItem("company_instagram",this.app_token.config.company_instagram);
+        localStorage.setItem("company_facebook",this.app_token.config.company_facebook);
+        localStorage.setItem("company_linkedin",this.app_token.config.company_linkedin);
+        localStorage.setItem("company_max_up_files",String(this.app_token.config.company_max_up_files));
+        localStorage.setItem("company_max_up_images",String(this.app_token.config.company_max_up_images));
+        localStorage.setItem("company_use_url_images",String(this.app_token.config.company_use_url_images?1:0));
+        localStorage.setItem("company_dashboard_image",String(this.app_token.config.company_dashboard_image));
+        localStorage.setItem("company_dashboard_color",String(this.app_token.config.company_dashboard_color));
+        localStorage.setItem("flimv_model",this.app_token.config.flimv_model);
+
+        this.use_company_custom = this.app_token.config.use_company_custom;
+        this.company_logo = this.app_token.config.company_logo;
+        this.company_name = this.app_token.config.company_name;
+
         switch(this.app_token.level_access){
           case "A": this.route.navigate(["/admin"]); break;
           case "L": this.route.navigate(["/salesforce"]); break;

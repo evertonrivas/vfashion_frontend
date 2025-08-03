@@ -64,7 +64,7 @@ export class IndicatorsService extends MyHttp{
    }
 
    licenseCount(level:AccessLevel = AccessLevel.NONE):Observable<number|ResponseError>{
-    return this.http.get<number|ResponseError>(this.sys_config.backend_cmm+'/users/count/',{
+    return this.http.get<number|ResponseError>(this.sys_config.backend_smc+'/users/count/',{
       headers: this.getHeader(),
       params: new HttpParams().set("level",level.toString())
     });

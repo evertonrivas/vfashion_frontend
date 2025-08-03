@@ -1,6 +1,4 @@
 import { Component, OnInit, isDevMode } from '@angular/core';
-import { SysService } from './services/sys.service';
-import { SysConfig } from './models/auth.model';
 
 @Component({
   selector: 'app-root',
