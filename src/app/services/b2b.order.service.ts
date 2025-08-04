@@ -119,7 +119,7 @@ export class B2bOrderService extends MyHttp{
   }
 
   listMyOrders(options:Options):Observable<OrderHistory[]|RequestResponse|ResponseError>{
-    return this.http.get<OrderHistory[]|RequestResponse|ResponseError>(this.sys_config.backend_b2b+'/orders/history/'+localStorage.getItem("id_profile"),{
+    return this.http.get<OrderHistory[]|RequestResponse|ResponseError>(this.sys_config.backend_b2b+'/orders/history/',{
       headers: this.getHeader(),
       params: this.getParams(options)
     });

@@ -35,6 +35,11 @@
                 </td>
             </tr>
         </ng-template>
+        <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="10" class="text-center">Nenhum registro existente!</td>
+                </tr>
+            </ng-template>
     </p-table>
     <p-paginator *ngIf="response.pagination.registers>0"
         (onPageChange)="loadData($event)"

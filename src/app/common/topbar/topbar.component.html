@@ -25,7 +25,7 @@
         <button class="p-link layout-topbar-button" routerLinkActive="active-route" [routerLink]="[modulePath+'/gantt']" pTooltip="Calendário" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">calendar_month</i>
         </button>
-        <button *ngIf="sysconfig.flimv_model=='FLIMVS'" routerLinkActive="active-route" class="p-link layout-topbar-button" [routerLink]="[modulePath+'/flimv']" pTooltip="FLIMV" tooltipPosition="bottom" tooltipStyleClass="text-xs">
+        <button *ngIf="sysconfig.flimv_model=='S'" routerLinkActive="active-route" class="p-link layout-topbar-button" [routerLink]="[modulePath+'/flimv']" pTooltip="FLIMV" tooltipPosition="bottom" tooltipStyleClass="text-xs">
             <i class="material-symbols-outlined">military_tech</i>
         </button>
         <button class="p-link layout-topbar-button" routerLinkActive="active-route" [routerLink]="[modulePath+'/comission']" pTooltip="Metas e Comissões" tooltipPosition="bottom" tooltipStyleClass="text-xs">

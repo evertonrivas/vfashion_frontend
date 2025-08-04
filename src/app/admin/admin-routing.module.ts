@@ -6,6 +6,8 @@ import { ConfigComponent } from '../common/config/config.component';
 import { ConfigComponent as ConfigB2B } from '../common/config/config.component';
 import { ConfigComponent as ConfigFPR } from '../common/config/config.component';
 import { ConfigComponent as ConfigSCM } from '../common/config/config.component';
+import { ConfigComponent as ConfigSYS } from '../common/config/config.component';
+import { ConfigComponent as ConfigCRM } from './crm/config/config.component';
 import { EntitiesComponent } from './entities/entities.component';
 import { ProductsComponent } from './products/products.component';
 import { UsersComponent } from './users/users.component';
@@ -44,6 +46,7 @@ const routes: Routes = [{
     { path: 'measure-unit', component: MeasureUnitComponent },
     { path: 'users', component: UsersComponent },
     { path: 'reports', component: ReportManagerComponent },
+    { path: 'config', component: ConfigSYS },
     { path: 'version/:id', component: VersionComponent },
     {
       path: 'b2b',
@@ -65,7 +68,7 @@ const routes: Routes = [{
     },{
       path: 'crm',
       children:[
-        { path: 'config', component: CrmConfigComponent },
+        { path: 'config', component: ConfigCRM },
         { path: 'funnels', component: FunnelsComponent },
         { path: 'funnel-stages', component: FunnelStagesComponent }
       ]

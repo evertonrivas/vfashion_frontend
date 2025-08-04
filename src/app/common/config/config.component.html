@@ -1,3 +1,5 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
 <p-panel>
     <ng-template pTemplate="header">
         <div class="flex flex-row w-full justify-content-between align-items-center">
@@ -6,6 +8,34 @@
             </div>
             <div>
                 <!-- <p-button icon="pi pi-trash" [severity]="'danger'" styleClass="p-button-sm" pTooltip="Excluir selecionado(s)" tooltipPosition="top" tooltipStyleClass="text-xs"></p-button> -->
+            </div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="body">
+        <div  *ngIf="this.module==this.modules.CRM">
+            <div class="flex flex-column w-full">
+                <label class="mb-1">Funil padrão de coleção <i class="pi pi-info-circle" pTooltip="Usado para criar um novo funil no CRM quando definido no calendário" positionStyle="text-xs"></i></label>
+                <p-multiSelect
+                    [loading]="loading"
+                    styleClass="w-full"
+                    panelStyleClass="w-full"
+                    placeholder="Selecione..."
+                    optionLabel="name"
+                    [options]="all_funnel_stage"
+                    display="chip"
+                    [maxSelectedLabels]="100"
+                    [(ngModel)]="selected_stages"
+                    emptyMessage="Nenhum registro encontrado!"
+                    appendTo="body"
+                >
+                <ng-template pTemplate="item" let-item>
+                    <label>{{item.funnel}} - {{item.name}}</label>
+                </ng-template>
+                </p-multiSelect>
+            </div>
+            <div class="flex flex-row justify-content-end w-full gap-1 mt-2">
+            <!-- <p-button icon="pi pi-ban" label="Cancelar" severity="danger" styleClass="p-button-sm" (onClick)="clearFields()"></p-button> -->
+                <p-button icon="pi pi-save" label="Salvar" (onClick)="doSaveCRM()" styleClass="p-button-sm"></p-button>
             </div>
         </div>
     </ng-template>
