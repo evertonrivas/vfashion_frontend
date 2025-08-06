@@ -17,9 +17,9 @@ export enum ActionToPaginate{
 }
 
 export enum EntityType{
-    C = "C",
-    R = "R",
-    S = "S"
+    C = "C", //Customer
+    R = "R", //Representative
+    S = "S"  //Supplier
 }
 
 export enum FileType {
@@ -85,12 +85,13 @@ export enum DevolutionStatus{
 }
 
 export enum OrderStatus {
-    ANALIZING    = 0,
-    SENDED       = 1,
-    PROCESSING   = 2,
-    TRANSPORTING = 3,
-    FINISHED     = 4,
-    REJECTED     = 5
+    DRAFT        = -1, //Digitado
+    ANALIZING    = 0, //Em Análise
+    SENDED       = 1, //Enviado
+    PROCESSING   = 2, //Processando
+    TRANSPORTING = 3, //Em Transporte
+    FINISHED     = 4, //Finalizado
+    REJECTED     = 5 //Rejeitado
 }
 
 export enum CustomerAction{

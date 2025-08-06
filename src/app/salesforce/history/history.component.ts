@@ -76,6 +76,8 @@ export class HistoryComponent extends Common implements AfterViewInit{
       return "danger";
     }else if(status==OrderStatus.ANALIZING){
       return "contrast";
+    }else if(status==OrderStatus.DRAFT){
+      return undefined;
     }
     return "success";
   }
