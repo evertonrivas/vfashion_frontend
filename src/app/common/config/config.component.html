@@ -38,5 +38,72 @@
                 <p-button icon="pi pi-save" label="Salvar" (onClick)="doSaveCRM()" styleClass="p-button-sm"></p-button>
             </div>
         </div>
+        <div *ngIf="this.module==this.modules.ADM">
+            <div class="flex flex-column w-full md:flex-row mb-2 gap-2">
+                <div class="flex flex-column w-full">
+                    <label class="mb-1">Nome da Empresa</label>
+                    <input pInputText [(ngModel)]="tenant_config.company_name" ngClass="w-full">
+                </div>
+                <div class="flex flex-column w-full">
+                    <label class="mb-1">Logo da Empresa</label>
+                </div>
+            </div>
+            <div class="flex flex-column w-full md:flex-row mb-2 gap-2">
+                <div class="flex flex-column w-full">
+                    <label class="mb-1">URL Instagram</label>
+                    <input pInputText [(ngModel)]="tenant_config.url_instagram" ngClass="w-full" placeholder="https://www.instagram.com/">
+                </div>
+                <div class="flex flex-column w-full">
+                    <label class="mb-1">URL Facebook</label>
+                    <input pInputText [(ngModel)]="tenant_config.url_facebook" ngClass="w-full" placeholder="https://www.facebook.com/">
+                </div>
+                <div class="flex flex-column w-full">
+                    <label class="mb-1">URL Linkedin</label>
+                    <input pInputText [(ngModel)]="tenant_config.url_linkedin" ngClass="w-full" placeholder="https://www.linkedin.com/in/">
+                </div>
+            </div>
+            <div class="flex flex-column w-full md:flex-row mb-2 gap-2">
+                <div class="flex flex-column w-full">
+                    <label class="mb-1">Nome do Remetente</label>
+                    <input pInputText [(ngModel)]="tenant_config.email_from_name" ngClass="w-full" placeholder="Nome do remetente dos e-mails">
+                </div>
+                <div class="flex flex-column w-full">
+                    <label class="mb-1">E-mail do Remetente</label>
+                    <input pInputText [(ngModel)]="tenant_config.email_from_value" ngClass="w-full" placeholder="Endereço de e-mail (usar o mesmo do cadastro na brevo)">
+                </div>
+                <div class="flex flex-column w-full">
+                    <label class="mb-1">Chave API Brevo  <i class="pi pi-info-circle" pTooltip="Acesse o endereço https://www.brevo.com e faça seu cadastro." positionStyle="text-xs"></i></label>
+                    <input pInputText [(ngModel)]="tenant_config.email_brevo_api_key" ngClass="w-full">
+                </div>
+            </div>
+            <div class="flex flex-column w-full md:flex-row mb-2 gap-2">
+                <div class="flex flex-column w-2">
+                    <label class="mb-1">Paginação de Resultados</label>
+                    <p-dropdown styleClass="w-full"
+                    placeholder="Selecione..."
+                    [options]="[{'label':'25','option':25},{'label':'50','option':50},{'label':'75','option':75}]"
+                    optionLabel="label"
+                    optionValue="option"
+                    [(ngModel)]="tenant_config.pagination_size"></p-dropdown>
+                </div>
+                <div class="flex flex-column w-2">
+                    <label class="mb-1">I.A Generativa <i class="pi pi-info-circle" pTooltip="Modelo utilizado para formatar prompts no envio de e-mails" positionStyle="text-xs"></i></label>
+                    <p-dropdown styleClass="w-full"
+                    placeholder="Selecione..."
+                    [options]="[{'label':'ChatGPT','option':'C'},{'label':'DeepSeek','option':'D'},{'label':'Gemini','option':'G'}]"
+                    optionLabel="label"
+                    optionValue="option"
+                    [(ngModel)]="tenant_config.ai_model"></p-dropdown>
+                </div>
+                <div class="flex flex-column w-full">
+                    <label class="mb-1">Chave API I.A</label>
+                    <input pInputText [(ngModel)]="tenant_config.ai_api_key" ngClass="w-full">
+                </div>
+            </div>
+            <div class="flex flex-row justify-content-end w-full gap-1 mt-2">
+            <!-- <p-button icon="pi pi-ban" label="Cancelar" severity="danger" styleClass="p-button-sm" (onClick)="clearFields()"></p-button> -->
+                <p-button icon="pi pi-save" label="Salvar" (onClick)="doSaveSysConfig()" styleClass="p-button-sm"></p-button>
+            </div>
+        </div>
     </ng-template>
 </p-panel>

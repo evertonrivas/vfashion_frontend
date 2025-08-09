@@ -8,6 +8,8 @@ import { FunnelStage } from 'src/app/models/crm.model';
 import { CrmConfigKeys } from 'src/app/models/system.enum';
 import { CrmService } from 'src/app/services/crm.service';
 import { ResponseError } from 'src/app/models/paginate.model';
+import { TenantConfig } from 'src/app/models/auth.model';
+import { SysService } from 'src/app/services/sys.service';
 
 export interface Config{
   [index:string]: string
@@ -33,10 +35,25 @@ export class ConfigComponent extends Common implements AfterViewInit{
   all_funnel_stage:FunnelStage[] = [];
   selected_stages:FunnelStage[] = [];
   configs:Config = {};
+  tenant_config:TenantConfig = {
+    ai_model: '',
+    ai_api_key: '',
+    company_custom: false,
+    company_name: '',
+    company_logo: '',
+    url_instagram: '',
+    url_facebook: '',
+    url_linkedin: '',
+    pagination_size: 0,
+    email_brevo_api_key: '',
+    email_from_name: '',
+    email_from_value: ''
+  }
   constructor(route:Router,
     private msg:MessageService,
     private actRoute: ActivatedRoute,
     private sCrm:CrmService,
+    private sSys: SysService,
     private cdr:ChangeDetectorRef){
     super(route);
   }
@@ -75,7 +92,16 @@ export class ConfigComponent extends Common implements AfterViewInit{
           case this.modules.FPR.valueOf().toString(): this.title = " das Devoluções"; break;
           case this.modules.ORD.valueOf().toString(): this.title = " da Gestão de Pedidos"; break;
           case this.modules.SCM.valueOf().toString(): this.title = " do "; break;
-          default: this.title = "do Sistema"; break;
+          default:{
+            this.title = "do Sistema";
+            this.sSys.getConfig().subscribe({
+              next: (data) =>{
+                if("company_name" in data){
+                  this.tenant_config = data as TenantConfig;
+                }
+              }
+            })
+          }; break;
         }
       }
     });
@@ -94,6 +120,26 @@ export class ConfigComponent extends Common implements AfterViewInit{
       this.sCrm.saveConfig(this.configs).subscribe({
         next: (data) =>{
           if(typeof data ==='boolean'){
+            this.msg.add({
+              summary:"Sucesso...",
+              detail: "Configuração salva com sucesso!",
+              severity:"success"
+            });
+          }else{
+            this.msg.add({
+              summary:"Falha...",
+              detail: "Ocorreu o seguinte:"+(data as ResponseError).error_details,
+              severity:"error"
+            });
+          }
+        }
+      });
+    }
+
+    doSaveSysConfig():void{
+      this.sSys.saveConfig(this.tenant_config).subscribe({
+        next: (data) =>{
+          if (typeof data === 'boolean'){
             this.msg.add({
               summary:"Sucesso...",
               detail: "Configuração salva com sucesso!",

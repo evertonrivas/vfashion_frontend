@@ -25,3 +25,18 @@ export interface SysConfig{
     system_pagination_size:number,
     use_company_custom:boolean,
 }
+
+export interface TenantConfig{
+    ai_model: string,
+    ai_api_key: string,
+    company_custom: boolean,
+    company_name: string,
+    company_logo: string,
+    url_instagram: string,
+    url_facebook: string,
+    url_linkedin: string,
+    pagination_size: number,
+    email_brevo_api_key: string,
+    email_from_name: string,
+    email_from_value: string
+}

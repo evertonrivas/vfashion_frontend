@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { Filter } from '../models/filter.model';
 import { ContentType, MyHttp } from './my-http';
-import { SysConfig } from '../models/auth.model';
+import { SysConfig, TenantConfig } from '../models/auth.model';
 import { ResponseError } from '../models/paginate.model';
 import { Cep } from '../models/entity.model';
 
@@ -24,9 +24,15 @@ export class SysService extends MyHttp{
     return;
   }
 
-  getConfig():Observable<SysConfig|ResponseError>{
-    return this.http.get<SysConfig|ResponseError>(this.sys_config.backend_cmm+'/config/',{
+  getConfig():Observable<TenantConfig|ResponseError>{
+    return this.http.get<TenantConfig|ResponseError>(this.sys_config.backend_cmm+'/config/',{
       headers:this.getHeader()
+    });
+  }
+
+  saveConfig(cfg:TenantConfig):Observable<boolean|ResponseError>{
+    return this.http.post<boolean|ResponseError>(this.sys_config.backend_cmm+'/config/',cfg,{
+      headers: this.getHeader(ContentType.json)
     });
   }
 
